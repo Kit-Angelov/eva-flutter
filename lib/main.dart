@@ -43,8 +43,12 @@ class _LoadPageState extends State<LoadPage> {
 
   Future<bool> _checkAuth() async {
     FirebaseAuth _auth = await FirebaseAuth.instance;
-    await _auth.currentUser().then((user) {
-      return true;
+    return await _auth.currentUser().then((user) {
+      if (user != null) {
+        return true;
+      } else {
+        return false;
+      }
     }).catchError((error) {
       return false;
     });
@@ -58,6 +62,7 @@ class _LoadPageState extends State<LoadPage> {
       () {
         setState(() {
           _checkAuth().then((state){
+            print(state);
             if (state) {
               print('Auth');
               // Navigator.pushReplacementNamed(context, '/home');
@@ -65,6 +70,8 @@ class _LoadPageState extends State<LoadPage> {
               print('No Auth');
               // Navigator.pushReplacementNamed(context, '/home');
             }
+          }).catchError((error) {
+            print(error);
           });
         });
       }
