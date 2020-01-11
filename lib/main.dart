@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
-import 'screens/auth/sms_code_input.dart'
+import 'screens/auth/sms_code_input.dart';
 import 'screens/map/map.dart';
 import 'package:eva/models/testmodel.dart';
 
@@ -59,9 +59,11 @@ class _LoadPageState extends State<LoadPage> {
         setState(() {
           _checkAuth().then((state){
             if (state) {
-              Navigator.pushReplacementNamed(context, '/home');
+              print('Auth');
+              // Navigator.pushReplacementNamed(context, '/home');
             } else {
-              Navigator.pushReplacementNamed(context, '/home');
+              print('No Auth');
+              // Navigator.pushReplacementNamed(context, '/home');
             }
           });
         });
