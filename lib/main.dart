@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
@@ -38,7 +39,16 @@ class LoadPage extends StatefulWidget {
 }
 
 class _LoadPageState extends State<LoadPage> {
-  var text = "Heeey";
+  var text = "Load";
+
+  Future<bool> _checkAuth() async {
+    FirebaseAuth _auth = await FirebaseAuth.instance;
+    await _auth.currentUser().then((user) {
+      return true;
+    }).catchError((error) {
+      return false;
+    });
+  }
 
   @override
   void initState() {
@@ -47,7 +57,13 @@ class _LoadPageState extends State<LoadPage> {
       Duration(seconds: 5),
       () {
         setState(() {
-          Navigator.pushReplacementNamed(context, '/home');
+          _checkAuth().then((state){
+            if (state) {
+              Navigator.pushReplacementNamed(context, '/home');
+            } else {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          });
         });
       }
     );
