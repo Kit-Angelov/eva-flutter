@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
+import 'screens/auth/sms_code_input.dart'
 import 'screens/map/map.dart';
 import 'package:eva/models/testmodel.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
     final router = {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
+      '/authSmsCodeInput': (context) => AuthSmsCodeInputScreen(),
       '/map': (context) => MapScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
