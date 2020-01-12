@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthPhoneInputScreen extends StatefulWidget {
-  AuthPhoneInputScreen({Key key, this.title}) : super(key: key);
-
-  final String title;
 
   @override
   _AuthPhoneInputState createState() => _AuthPhoneInputState();
@@ -13,7 +10,6 @@ class AuthPhoneInputScreen extends StatefulWidget {
 
 class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
 
-  TextEditingController _smsCodeController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
   String verificationId;
 
@@ -34,6 +30,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
         (String verificationId, [int forceResendingToken]) async {
       this.verificationId = verificationId;
       print("code sent to " + _phoneNumberController.text);
+      Navigator.pushReplacementNamed(context, '/authSmsCodeInput', arguments: this.verificationId);
     };
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
@@ -50,17 +47,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
       codeSent: codeSent,
       codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
-  
-  void _signInWithPhoneNumber(String smsCode) async {
-    final AuthCredential credential = PhoneAuthProvider.getCredential(
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
-    FirebaseAuth _auth = await FirebaseAuth.instance;
-    final FirebaseUser user = await _auth.signInWithCredential(credential).then((user) {
-        print(user.user.uid);
-      });
-  }
 
   void _checkAuth() async {
     FirebaseAuth _auth = await FirebaseAuth.instance;
@@ -74,9 +60,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -84,12 +67,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
             new TextField(
               controller:  _phoneNumberController,
             ),
-            new TextField(
-              controller: _smsCodeController,
-            ),
-            new FlatButton(
-              onPressed: () => _signInWithPhoneNumber(_smsCodeController.text),
-              child: const Text("Sign In")),
             new FlatButton(
               onPressed: () => _checkAuth(),
               child: const Text("check")

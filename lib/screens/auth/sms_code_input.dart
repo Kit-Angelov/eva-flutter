@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthSmsCodeInputScreen extends StatefulWidget {
-  AuthSmsCodeInputScreen({Key key, this.title}) : super(key: key);
-
-  final String title;
 
   @override
   _AuthPhoneInputState createState() => _AuthPhoneInputState();
@@ -14,42 +10,7 @@ class AuthSmsCodeInputScreen extends StatefulWidget {
 class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
 
   TextEditingController _smsCodeController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
   String verificationId;
-
-  Future<void> _sendCodeToPhoneNumber() async {
-    final PhoneVerificationCompleted verificationCompleted = (AuthCredential credential) {
-      setState(() {
-          print('Inside _sendCodeToPhoneNumber: signInWithPhoneNumber auto succeeded');
-      });
-    };
-
-    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
-      setState(() {
-        print('Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');}
-        );
-    };
-
-    final PhoneCodeSent codeSent =
-        (String verificationId, [int forceResendingToken]) async {
-      this.verificationId = verificationId;
-      print("code sent to " + _phoneNumberController.text);
-    };
-
-    final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
-        (String verificationId) {
-      this.verificationId = verificationId;
-      print("time out");
-    };
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: _phoneNumberController.text,
-      timeout: const Duration(seconds: 5),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: codeSent,
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
-  }
   
   void _signInWithPhoneNumber(String smsCode) async {
     final AuthCredential credential = PhoneAuthProvider.getCredential(
@@ -57,9 +18,16 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
       smsCode: smsCode,
     );
     FirebaseAuth _auth = await FirebaseAuth.instance;
-    final FirebaseUser user = await _auth.signInWithCredential(credential).then((user) {
+
+    try {
+      await _auth.signInWithCredential(credential).then((user) {
         print(user.user.uid);
+      }).catchError((error) {
+        print('error code');
       });
+    } catch(error) {
+      print('error code');
+    }
   }
 
   void _checkAuth() async {
@@ -73,17 +41,12 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
 
   @override
   Widget build(BuildContext context) {
+    this.verificationId = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new TextField(
-              controller:  _phoneNumberController,
-            ),
             new TextField(
               controller: _smsCodeController,
             ),
@@ -97,11 +60,6 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () => _sendCodeToPhoneNumber(),
-        tooltip: 'get code',
-        child: new Icon(Icons.send),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
