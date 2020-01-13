@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:eva/screens/map/symbol.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class MapScreen extends StatefulWidget {
@@ -38,7 +40,7 @@ class _MapScreenState extends State<MapScreen> {
 
   factory _MapScreenState() {
     CameraPosition cameraPosition = _getCameraPosition();
-    
+
     return _MapScreenState._(
         cameraPosition, cameraPosition);
   }
@@ -94,10 +96,19 @@ class _MapScreenState extends State<MapScreen> {
     mapController = controller;
     mapController.addListener(_onMapChanged);
     _extractMapInfo();
-    mapController.addCircle(
-      CircleOptions(
-          geometry: LatLng(51.67204, 39.1843),
-          circleColor: "#FF0000"),
+    // addSymbol(mapController, "lib/screens/map/baba.jpg", 51.67204, 39.1843);
+    // mapController.addCircle(
+    //   CircleOptions(
+    //       geometry: LatLng(51.67204, 39.1843),
+    //       circleColor: "#FF0000"),
+    // );
+    
+    mapController.addSymbol(
+      SymbolOptions(
+        geometry: LatLng(51.67204, 39.1843),
+        iconImage: CachedNetworkImageProvider("https://image.flaticon.com/icons/png/512/65/65000.png"),
+        // iconSize: iconSize,
+      ),
     );
     setState(() {});
   }
