@@ -38,12 +38,7 @@ class _MapScreenState extends State<MapScreen> {
 
   factory _MapScreenState() {
     CameraPosition cameraPosition = _getCameraPosition();
-
-    final cityBounds = LatLngBounds(
-      southwest: LatLng(40.7413, -119.267),
-      northeast: LatLng(40.8365, -119.1465),
-    );
-
+    
     return _MapScreenState._(
         cameraPosition, cameraPosition);
   }
@@ -99,6 +94,11 @@ class _MapScreenState extends State<MapScreen> {
     mapController = controller;
     mapController.addListener(_onMapChanged);
     _extractMapInfo();
+    mapController.addCircle(
+      CircleOptions(
+          geometry: LatLng(51.67204, 39.1843),
+          circleColor: "#FF0000"),
+    );
     setState(() {});
   }
 }
