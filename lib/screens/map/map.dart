@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:eva/screens/map/symbol.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'dart:io';
 
 
 class MapScreen extends StatefulWidget {
@@ -92,7 +94,12 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 
-  void onMapCreated(MapboxMapController controller) {
+  Future<String> _findPath() async {
+    final file = await DefaultCacheManager().getSingleFile('https://image.flaticon.com/icons/png/512/65/65000.png');
+    return file.path;
+  }
+
+  Future<void> onMapCreated(MapboxMapController controller) async {
     mapController = controller;
     mapController.addListener(_onMapChanged);
     _extractMapInfo();
@@ -102,11 +109,17 @@ class _MapScreenState extends State<MapScreen> {
     //       geometry: LatLng(51.67204, 39.1843),
     //       circleColor: "#FF0000"),
     // );
-    
+    CachedNetworkImage(
+      // placeholder: (context, url) => CircularProgressIndicator(),
+      imageUrl: 'https://image.flaticon.com/icons/png/512/65/65000.png',
+    );
+    var imagePath = await _findPath();
+    print(imagePath);
+    print(File(imagePath).path);
     mapController.addSymbol(
       SymbolOptions(
         geometry: LatLng(51.67204, 39.1843),
-        iconImage: CachedNetworkImageProvider("https://image.flaticon.com/icons/png/512/65/65000.png"),
+        iconImage: 'file:/' + imagePath,
         // iconSize: iconSize,
       ),
     );
