@@ -9,6 +9,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="eva"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.mapbox.token" android:value="pk.eyJ1Ijoia2l0YW5nZWxvdiIsImEiOiJjamd1aHZncTMxMjF6MndtcWdjZGZhY2g1In0.s4vQ4pbKkTCpKt6psOPxMw" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

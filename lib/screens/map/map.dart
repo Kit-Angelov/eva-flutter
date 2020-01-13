@@ -1,38 +1,106 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 
 
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  final CameraPosition _kInitialPosition;
+  final CameraTargetBounds _cameraTargetBounds;
+  static double defaultZoom = 12.0;
+
+  CameraPosition _position;
+  MapboxMapController mapController;
+  bool _isMoving = false;
+  bool _compassEnabled = true;
+  MinMaxZoomPreference _minMaxZoomPreference =
+      const MinMaxZoomPreference(12.0, 18.0);
+  String _styleString = "mapbox://styles/mapbox/streets-v11";
+  bool _rotateGesturesEnabled = true;
+  bool _scrollGesturesEnabled = true;
+  bool _tiltGesturesEnabled = false;
+  bool _zoomGesturesEnabled = true;
+  bool _myLocationEnabled = false;
+  MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
+
+  _MapScreenState._(
+      this._kInitialPosition, this._position, this._cameraTargetBounds);
+
+  static CameraPosition _getCameraPosition() {
+    final latLng = LatLng(40.7864, -119.2065);
+    return CameraPosition(
+      target: latLng,
+      zoom: defaultZoom,
+    );
+  }
+
+  factory _MapScreenState() {
+    CameraPosition cameraPosition = _getCameraPosition();
+
+    final cityBounds = LatLngBounds(
+      southwest: LatLng(40.7413, -119.267),
+      northeast: LatLng(40.8365, -119.1465),
+    );
+
+    return _MapScreenState._(
+        cameraPosition, cameraPosition, CameraTargetBounds(cityBounds));
+  }
+
+  void _onMapChanged() {
+    setState(() {
+      _extractMapInfo();
+    });
+  }
 
   @override
-    Widget build(BuildContext context) {
-    return new FlutterMap(
-      options: new MapOptions(
-        center: new LatLng(51.658, 39.233),
-        zoom: 13.0,
-      ),
-      layers: [
-        new TileLayerOptions(
-          urlTemplate: "https://api.mapbox.com/styles/v1/kitangelov/cjzojp5lx0ajr1cntcuwaimnk/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2l0YW5nZWxvdiIsImEiOiJjamd1aHZncTMxMjF6MndtcWdjZGZhY2g1In0.s4vQ4pbKkTCpKt6psOPxMw",
-          additionalOptions: {
-            'id': 'mapbox.streets',
-          },
-        ),
-        new MarkerLayerOptions(
-          markers: [
-            new Marker(
-              width: 50.0,
-              height: 50.0,
-              point: new LatLng(51.658, 39.233),
-              builder: (ctx) =>
-              new Container(
-                child: new FlutterLogo(),
-              ),
-            ),
-          ],
-        ),
-      ],
+  void dispose() {
+    if (mapController != null) {
+      mapController.removeListener(_onMapChanged);
+    }
+    super.dispose();
+  }
+
+  void _extractMapInfo() {
+    _position = mapController.cameraPosition;
+    _isMoving = mapController.isCameraMoving;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: _buildMapBox(context),
     );
+  }
+
+  MapboxMap _buildMapBox(BuildContext context) {
+    return MapboxMap(
+        onMapCreated: onMapCreated,
+        initialCameraPosition: this._kInitialPosition,
+        trackCameraPosition: true,
+        compassEnabled: _compassEnabled,
+        cameraTargetBounds: _cameraTargetBounds,
+        minMaxZoomPreference: _minMaxZoomPreference,
+        styleString: _styleString,
+        rotateGesturesEnabled: _rotateGesturesEnabled,
+        scrollGesturesEnabled: _scrollGesturesEnabled,
+        tiltGesturesEnabled: _tiltGesturesEnabled,
+        zoomGesturesEnabled: _zoomGesturesEnabled,
+        myLocationEnabled: _myLocationEnabled,
+        myLocationTrackingMode: _myLocationTrackingMode,
+        onCameraTrackingDismissed: () {
+          this.setState(() {
+            _myLocationTrackingMode = MyLocationTrackingMode.None;
+          });
+        });
+  }
+
+  void onMapCreated(MapboxMapController controller) {
+    mapController = controller;
+    mapController.addListener(_onMapChanged);
+    _extractMapInfo();
+    setState(() {});
   }
 }

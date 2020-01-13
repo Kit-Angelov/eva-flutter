@@ -65,10 +65,10 @@ class _LoadPageState extends State<LoadPage> {
             print(state);
             if (state) {
               print('Auth');
-              Navigator.pushReplacementNamed(context, '/authPhoneInput');
+              Navigator.pushReplacementNamed(context, '/map');
             } else {
               print('No Auth');
-              Navigator.pushReplacementNamed(context, '/authPhoneInput');
+              Navigator.pushReplacementNamed(context, '/map');
             }
           }).catchError((error) {
             print(error);
