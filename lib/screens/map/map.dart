@@ -9,15 +9,14 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final CameraPosition _kInitialPosition;
-  final CameraTargetBounds _cameraTargetBounds;
-  static double defaultZoom = 12.0;
+  static double defaultZoom = 13.0;
 
   CameraPosition _position;
   MapboxMapController mapController;
   bool _isMoving = false;
   bool _compassEnabled = true;
   MinMaxZoomPreference _minMaxZoomPreference =
-      const MinMaxZoomPreference(12.0, 18.0);
+      const MinMaxZoomPreference(1.0, 18.0);
   String _styleString = "mapbox://styles/mapbox/streets-v11";
   bool _rotateGesturesEnabled = true;
   bool _scrollGesturesEnabled = true;
@@ -27,10 +26,10 @@ class _MapScreenState extends State<MapScreen> {
   MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
 
   _MapScreenState._(
-      this._kInitialPosition, this._position, this._cameraTargetBounds);
+      this._kInitialPosition, this._position);
 
   static CameraPosition _getCameraPosition() {
-    final latLng = LatLng(40.7864, -119.2065);
+    final latLng = LatLng(51.67204, 39.1843);
     return CameraPosition(
       target: latLng,
       zoom: defaultZoom,
@@ -46,7 +45,7 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     return _MapScreenState._(
-        cameraPosition, cameraPosition, CameraTargetBounds(cityBounds));
+        cameraPosition, cameraPosition);
   }
 
   void _onMapChanged() {
@@ -81,7 +80,6 @@ class _MapScreenState extends State<MapScreen> {
         initialCameraPosition: this._kInitialPosition,
         trackCameraPosition: true,
         compassEnabled: _compassEnabled,
-        cameraTargetBounds: _cameraTargetBounds,
         minMaxZoomPreference: _minMaxZoomPreference,
         styleString: _styleString,
         rotateGesturesEnabled: _rotateGesturesEnabled,
