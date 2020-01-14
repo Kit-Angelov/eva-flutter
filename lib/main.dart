@@ -40,6 +40,7 @@ class LoadPage extends StatefulWidget {
 
 class _LoadPageState extends State<LoadPage> {
   var text = "Load";
+  var _image;
 
   Future<bool> _checkAuth() async {
     FirebaseAuth _auth = await FirebaseAuth.instance;
