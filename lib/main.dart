@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
 import 'screens/auth/sms_code_input.dart';
-import 'screens/map/map.dart';
+import 'package:eva/screens/home/home.dart';
 import 'package:eva/models/testmodel.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
       '/authSmsCodeInput': (context) => AuthSmsCodeInputScreen(),
-      '/map': (context) => MapScreen(),
+      '/home': (context) => HomeScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
       ChangeNotifierProvider(builder: (context) => TestModel()),
@@ -40,7 +41,6 @@ class LoadPage extends StatefulWidget {
 
 class _LoadPageState extends State<LoadPage> {
   var text = "Load";
-  var _image;
 
   Future<bool> _checkAuth() async {
     FirebaseAuth _auth = await FirebaseAuth.instance;
@@ -66,10 +66,10 @@ class _LoadPageState extends State<LoadPage> {
             print(state);
             if (state) {
               print('Auth');
-              Navigator.pushReplacementNamed(context, '/map');
+              Navigator.pushReplacementNamed(context, '/home');
             } else {
               print('No Auth');
-              Navigator.pushReplacementNamed(context, '/map');
+              Navigator.pushReplacementNamed(context, '/home');
             }
           }).catchError((error) {
             print(error);

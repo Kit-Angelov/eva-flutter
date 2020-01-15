@@ -22,16 +22,17 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
     Timer(
       Duration(seconds: 5),
-      () {
+      () async {
+        var newMakres = await addMarker(markers);
         setState(() {
-          addMarker(markers);
+          markers = newMakres;
         });
       }
     );
