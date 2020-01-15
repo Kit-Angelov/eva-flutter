@@ -26,15 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Account'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.language),
-            title: Text('Map'),
+            icon: Icon(Icons.public),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.apps),
-            title: Text('Apps'),
           ),
         ],
         currentIndex: _selectedIndex,
