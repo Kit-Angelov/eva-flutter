@@ -7,6 +7,7 @@ import 'screens/auth/phone_input.dart';
 import 'screens/auth/sms_code_input.dart';
 import 'package:eva/screens/home/home.dart';
 import 'package:eva/models/testmodel.dart';
+import 'package:flutter/services.dart';
 
 
 void main() => runApp(MyApp());
@@ -14,6 +15,10 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+    ]);
     final router = {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
