@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/screens/map/map.dart';
+import 'package:eva/screens/profile/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,10 +11,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  var _currentWidget;
+
+  List _widgetOptions = [
+    ProfileScreen(),
+    MapScreen(),
+    Text(
+      'Apps',
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _currentWidget = _widgetOptions.elementAt(_selectedIndex);
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _currentWidget = _widgetOptions.elementAt(_selectedIndex);
     });
   }
 
@@ -21,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: MapScreen(),
+      body: Center(
+        child: _currentWidget
+      ),
       bottomNavigationBar: CupertinoTabBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -36,8 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _selectedIndex,
         iconSize: 30.0,
-        // selectedItemColor: Colors.amber[800],
-        // showUnselectedLabels: false,
         onTap: _onItemTapped,
       ),
     );
