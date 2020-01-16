@@ -1,7 +1,7 @@
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:eva/widgets/inputWithLabelWidget.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -9,12 +9,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _textController;
+  TextEditingController _usernameTextController;
+
+  void usernameSubmit(String value) {
+    print(value);
+  }
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: 'initial text');
+    _usernameTextController = TextEditingController(text: 'initial text');
   }
   
   @override
@@ -57,42 +61,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
               child: Column(
                 children: <Widget>[
-                  TextField(
-                    obscureText: false,
-                    autofocus: false,
-                    maxLength: 15,
-                    controller: _textController,
-                    onSubmitted: (String value){print(value);},
-                    decoration: InputDecoration(
-                      counterText: "",
-                      border: UnderlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                      ),
-                      labelText: 'username',
-                      labelStyle: TextStyle(
-                        color: Colors.grey
-                      ),
-                      errorStyle: TextStyle(
-                        color: Colors.black
-                      ),
-                      contentPadding: const EdgeInsets.fromLTRB(20, 0, 0, 0)
-                    ),
-                  )
+                  InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username"),
+                  Divider(height: 30, thickness: 1, indent: 10, endIndent: 10),
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "phone"),
+                    )
+                  ],)
                 ],
               ),
             )
