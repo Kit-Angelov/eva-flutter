@@ -6,8 +6,9 @@ class InputWithLabelWidget extends StatelessWidget {
   final _submitFunction;
   final int _maxLength;
   final String _labelText;
+  final String _hintText;
 
-  InputWithLabelWidget(this._textController, this._submitFunction, this._maxLength, this._labelText);
+  InputWithLabelWidget(this._textController, this._submitFunction, this._maxLength, this._labelText, this._hintText);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,7 @@ class InputWithLabelWidget extends StatelessWidget {
       controller: _textController,
       onSubmitted: _submitFunction,
       decoration: InputDecoration(
+        hintText: _hintText,
         counterText: "",
         border: InputBorder.none,
         focusedBorder: InputBorder.none,

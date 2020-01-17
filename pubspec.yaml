@@ -33,6 +33,7 @@ dependencies:
   latlong: ^0.6.1
   google_maps_flutter: ^0.5.21+15
   font_awesome_flutter: ^8.5.0
+  flutter_google_places:
 
 dev_dependencies:
   flutter_test:

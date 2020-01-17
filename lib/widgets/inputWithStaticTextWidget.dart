@@ -5,8 +5,9 @@ class InputWithStaticTextWidget extends StatelessWidget {
   final TextEditingController _textController;
   final _submitFunction;
   final int _maxLength;
+  final String _hintText;
 
-  InputWithStaticTextWidget(this._textController, this._submitFunction, this._maxLength, this._staticText);
+  InputWithStaticTextWidget(this._textController, this._submitFunction, this._maxLength, this._staticText, this._hintText);
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class InputWithStaticTextWidget extends StatelessWidget {
               controller: _textController,
               onSubmitted: _submitFunction,
               decoration: InputDecoration(
+                hintText: _hintText,
                 counterText: "",
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,

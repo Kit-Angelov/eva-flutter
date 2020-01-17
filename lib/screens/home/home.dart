@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/screens/map/map.dart';
 import 'package:eva/screens/profile/profile.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:eva/widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,12 +12,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
   var _currentWidget;
 
   List _widgetOptions = [
     ProfileScreen(),
     MapScreen(),
+    SearchWidget(),
     Text(
       'Apps',
     ),
@@ -50,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.account_circle),
           ),
           BottomNavigationBarItem(
-            // icon: Icon(Icons.public),
             icon: Icon(Icons.public),
           ),
           BottomNavigationBarItem(

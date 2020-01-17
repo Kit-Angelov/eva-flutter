@@ -41,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
+      isScrollControlled: true,
       context: context, 
       builder: (context) {
       return Container(
@@ -137,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
               child: Column(
                 children: <Widget>[
-                  InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username"),
+                  InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username", "username"),
                   Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -177,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icon(FontAwesomeIcons.instagram),
                         SizedBox(width: 30),
                         Expanded(
-                          child: InputWithStaticTextWidget(_instagramTextController, instagramSubmit, 20, "instagram.com/"),
+                          child: InputWithStaticTextWidget(_instagramTextController, instagramSubmit, 20, "instagram.com/", "username"),
                         )
                       ],),
                       SizedBox(height: 10),
@@ -205,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icon(FontAwesomeIcons.telegramPlane),
                         SizedBox(width: 30),
                         Expanded(
-                          child: InputWithStaticTextWidget(_telegramTextController, telegramSubmit, 20, "t.me/"),
+                          child: InputWithStaticTextWidget(_telegramTextController, telegramSubmit, 20, "t.me/", "username"),
                         )
                       ],),
                       SizedBox(height: 10),
