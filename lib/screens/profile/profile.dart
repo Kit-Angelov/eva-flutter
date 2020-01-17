@@ -1,7 +1,10 @@
 
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eva/widgets/inputWithLabelWidget.dart';
+import 'package:eva/widgets/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -10,15 +13,79 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _usernameTextController;
+  TextEditingController _instagramTextController;
+  TextEditingController _telegramTextController;
+
+  File _image;
 
   void usernameSubmit(String value) {
     print(value);
+  }
+  void instagramSubmit(String value) {
+    print(value);
+  }
+  void telegramSubmit(String value) {
+    print(value);
+  }
+
+  Future _getImageFromDevice(ImageSource imageSource) async {
+    Navigator.pop(context);
+    var image = await ImagePicker.pickImage(source: imageSource);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void _getImage() {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      context: context, 
+      builder: (context) {
+      return Container(
+        child: _bottomSheetPhotoSource(),
+        height: 180,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(10),
+            topRight: const Radius.circular(10),
+          )
+        ),
+      );
+    });
+  }
+  
+  Column _bottomSheetPhotoSource() {
+    return Column (
+      children: <Widget>[
+        ListTile(
+          title: Text(
+            "Select image",
+            style: TextStyle(fontSize: 20),
+          )
+        ),
+        ListTile(
+          leading: Icon(Icons.camera_alt),
+          title: Text('make photo'),
+          onTap: (){_getImageFromDevice(ImageSource.camera);},
+        ),
+        ListTile(
+          leading: Icon(Icons.image),
+          title: Text('select from gallery'),
+          onTap: (){_getImageFromDevice(ImageSource.gallery);},
+        )
+      ],
+    ); 
   }
 
   @override
   void initState() {
     super.initState();
     _usernameTextController = TextEditingController(text: 'initial text');
+    _instagramTextController = TextEditingController(text: 'balexander64');
+    _telegramTextController = TextEditingController(text: 'blinkcast');
   }
   
   @override
@@ -27,6 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
+          physics: BouncingScrollPhysics(),
           padding: const EdgeInsets.all(0),
           children: <Widget>[
             Container(
@@ -35,9 +103,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    child: Image(
-                      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                      fit: BoxFit.cover,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: _image == null
+                            ? Text('No image selected.')
+                            : Image.file(
+                              _image,
+                              fit: BoxFit.cover,
+                            ),
+                        )
+                      ],
                     ),
                   ),
                   Positioned(
@@ -50,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Icon(Icons.photo_camera),
                         elevation: 0.0,
                         mini: true,
-                        onPressed: (){print("new photo");},
+                        onPressed: _getImage,
                       ),
                     ),
                   )
@@ -58,16 +134,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+              padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
               child: Column(
                 children: <Widget>[
                   InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username"),
-                  Divider(height: 30, thickness: 1, indent: 10, endIndent: 10),
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "phone"),
-                    )
-                  ],)
+                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'phone',
+                        style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Icon(FontAwesomeIcons.phoneAlt),
+                        SizedBox(width: 30),
+                        Text("+79803404209"),
+                      ],),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Expanded(
+                          child: Text("visible to other users"),
+                        ),
+                        CupertinoSwitch(
+                          value: true,
+                          onChanged: (bool value) {}
+                        ),
+                      ],),
+                    ],
+                  ),
+                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'instagram',
+                        style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Icon(FontAwesomeIcons.instagram),
+                        SizedBox(width: 30),
+                        Expanded(
+                          child: InputWithStaticTextWidget(_instagramTextController, instagramSubmit, 20, "instagram.com/"),
+                        )
+                      ],),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Expanded(
+                          child: Text("visible to other users"),
+                        ),
+                        CupertinoSwitch(
+                          value: true,
+                          onChanged: (bool value) {}
+                        ),
+                      ],),
+                    ],
+                  ),
+                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'telegram',
+                        style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Icon(FontAwesomeIcons.telegramPlane),
+                        SizedBox(width: 30),
+                        Expanded(
+                          child: InputWithStaticTextWidget(_telegramTextController, telegramSubmit, 20, "t.me/"),
+                        )
+                      ],),
+                      SizedBox(height: 10),
+                      Row(children: <Widget>[
+                        Expanded(
+                          child: Text("visible to other users"),
+                        ),
+                        CupertinoSwitch(
+                          value: true,
+                          onChanged: (bool value) {}
+                        ),
+                      ],),
+                    ],
+                  ),
+                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                  SizedBox(height: 50),
                 ],
               ),
             )

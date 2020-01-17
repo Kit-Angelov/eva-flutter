@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/screens/map/map.dart';
 import 'package:eva/screens/profile/profile.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -49,7 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.account_circle),
           ),
           BottomNavigationBarItem(
+            // icon: Icon(Icons.public),
             icon: Icon(Icons.public),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.apps),
