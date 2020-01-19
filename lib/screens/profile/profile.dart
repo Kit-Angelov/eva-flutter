@@ -62,19 +62,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column (
       children: <Widget>[
         ListTile(
-          title: Text(
-            "Select image",
-            style: TextStyle(fontSize: 20),
-          )
-        ),
-        ListTile(
           leading: Icon(Icons.camera_alt),
           title: Text('make photo'),
           onTap: (){_getImageFromDevice(ImageSource.camera);},
         ),
         ListTile(
           leading: Icon(Icons.image),
-          title: Text('select from gallery'),
+          title: Text('choose from gallery'),
           onTap: (){_getImageFromDevice(ImageSource.gallery);},
         )
       ],
