@@ -40,26 +40,31 @@ class _SearchWidgetState extends State<SearchWidget> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "asdf",
-                                style: TextStyle(fontSize: 16)
-                              ),
-                              Text(
-                                "qwerqwre",
-                                style: TextStyle(color: Colors.black38)
-                              )
-                            ],
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: (){print("tap");}, 
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "asdf",
+                                  style: TextStyle(fontSize: 16),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "qwerqwre",
+                                  style: TextStyle(color: Colors.black38),
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         Container(
                           height: 30.0,
                           width: 1.0,
-                          color: Colors.grey.shade300,
-                          // margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                          color: Colors.black12,
                         ),
                         ButtonTheme(
                           height: 30,
@@ -87,8 +92,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                   SizedBox(width: 15),
                   Expanded(
                     child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                       autofocus: true,
-                      maxLength: 30,
                       decoration: InputDecoration(
                         hintText: "search",
                         counterText: "",
