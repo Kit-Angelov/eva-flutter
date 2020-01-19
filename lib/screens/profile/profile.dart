@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) {
       return Container(
         child: _bottomSheetPhotoSource(),
-        height: 180,
+        height: 120,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
