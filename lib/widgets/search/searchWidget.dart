@@ -33,9 +33,10 @@ class _SearchWidgetState extends State<SearchWidget> {
                 ],
               ),
             ),
+            Divider(height: 0, thickness: 1, indent: 40, endIndent: 15, color: Colors.grey.shade300,),
             Row(
               children: <Widget>[
-                Icon(Icons.search),
+                Icon(Icons.search, color: Colors.black54),
                 SizedBox(width: 15),
                 Expanded(
                   child: TextField(
@@ -55,7 +56,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 Container(
                   height: 30.0,
                   width: 1.0,
-                  color: Colors.grey,
+                  color: Colors.grey.shade300,
                   // margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                 ),
                 ButtonTheme(
@@ -64,7 +65,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   child: FlatButton(
                     child: Icon(
                       Icons.near_me,
-                      color: Colors.grey
+                      color: Colors.black54
                     ),
                     onPressed: (){print("search");},
                   )
