@@ -19,31 +19,60 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: ListView(
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(15, 20, 0, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  Text("asdf"),
+                  Text("qwerqwre")
+                ],
+              ),
+            ),
+            Row(
               children: <Widget>[
-                Text("asdf"),
-                Text("qwerqwre")
+                Icon(Icons.search),
+                SizedBox(width: 15),
+                Expanded(
+                  child: TextField(
+                    autofocus: true,
+                    maxLength: 30,
+                    decoration: InputDecoration(
+                      hintText: "search",
+                      counterText: "",
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      // contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 10)
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 30.0,
+                  width: 1.0,
+                  color: Colors.grey,
+                  // margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                ),
+                ButtonTheme(
+                  height: 30,
+                  minWidth: 30,
+                  child: FlatButton(
+                    child: Icon(
+                      Icons.near_me,
+                      color: Colors.grey
+                    ),
+                    onPressed: (){print("search");},
+                  )
+                )
               ],
-            ),
-          ),
-          TextField(
-            autofocus: true,
-            maxLength: 30,
-            decoration: InputDecoration(
-              hintText: "search",
-              counterText: "",
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 10)
-            ),
-          )
-        ],
+            )
+          ],
+        )
       )
     );
   }
