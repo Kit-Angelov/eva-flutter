@@ -12,18 +12,15 @@ class _SearchWidgetState extends State<SearchWidget> {
   final kGoogleApiKey = "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E";
   final places = new GoogleMapsPlaces(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
   final List<String> entries = ["1", "4", '5'];
-  // List<Prediction> entries;
+  List<Prediction> placesList = [];
   String sessionToken;
 
   Future<void> searchPlaceByText(String text) async{
     PlacesAutocompleteResponse response = await places.autocomplete(text, sessionToken: sessionToken);
     print(response.predictions);
-    for (var r in response.predictions) {
-      print(r.description);
-      print(r.placeId);
-      print(r.structuredFormatting.mainText);
-      print(r.structuredFormatting.secondaryText);
-    }
+    setState(() {
+      placesList = response.predictions;
+    });
   }
 
   @override
@@ -53,7 +50,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   BuildContext context, 
                   int index) => const Divider(height: 10, thickness: 1, indent: 0, endIndent: 0, color: Colors.black12),
                 padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                itemCount: entries.length,
+                itemCount: placesList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     child: Row(
@@ -68,12 +65,12 @@ class _SearchWidgetState extends State<SearchWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "asdf",
+                                  placesList[index].structuredFormatting.mainText,
                                   style: TextStyle(fontSize: 16),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  "qwerqwre",
+                                  placesList[index].structuredFormatting.secondaryText,
                                   style: TextStyle(color: Colors.black38),
                                   overflow: TextOverflow.ellipsis,
                                 )
