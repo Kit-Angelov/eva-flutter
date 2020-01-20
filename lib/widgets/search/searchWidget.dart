@@ -14,12 +14,19 @@ class _SearchWidgetState extends State<SearchWidget> {
   final List<String> entries = ["1", "4", '5'];
   List<Prediction> placesList = [];
   String sessionToken;
+  TextEditingController _textController;
 
   Future<void> searchPlaceByText(String text) async{
     PlacesAutocompleteResponse response = await places.autocomplete(text, sessionToken: sessionToken);
     print(response.predictions);
     setState(() {
       placesList = response.predictions;
+    });
+  }
+
+  void fillSearchInput(Prediction place) {
+    setState(() {
+      _textController = TextEditingController(text: place.description);
     });
   }
 
@@ -59,7 +66,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onPanDown: (_){FocusScope.of(context).requestFocus(FocusNode());},
-                            onTap: (){print("tap");}, 
+                            onTap: (){fillSearchInput(placesList[index]);}, 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +120,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       maxLines: null,
                       maxLength: 99,
                       autofocus: true,
+                      controller: _textController,
                       decoration: InputDecoration(
                         hintText: "search",
                         counterText: "",
