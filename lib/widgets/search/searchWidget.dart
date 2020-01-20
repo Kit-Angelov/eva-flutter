@@ -1,5 +1,7 @@
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_maps_webservice/places.dart';
 
 class SearchWidget extends StatefulWidget {
   @override
@@ -7,12 +9,29 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  final List<String> entries = <String>['A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C'];
+  final kGoogleApiKey = "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E";
+  final places = new GoogleMapsPlaces(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
+  final List<String> entries = ["1", "4", '5'];
+  // List<Prediction> entries;
+  String sessionToken;
+
+  Future<void> searchPlaceByText(String text) async{
+    PlacesAutocompleteResponse response = await places.autocomplete(text, sessionToken: sessionToken);
+    print(response.predictions);
+    for (var r in response.predictions) {
+      print(r.description);
+      print(r.placeId);
+      print(r.structuredFormatting.mainText);
+      print(r.structuredFormatting.secondaryText);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    var uuid = Uuid();
     setState(() {
+      sessionToken = uuid.v4();
     });
   }
 
@@ -42,6 +61,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                         Expanded(
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
+                            onPanDown: (_){FocusScope.of(context).requestFocus(FocusNode());},
                             onTap: (){print("tap");}, 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -94,6 +114,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     child: TextField(
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
+                      maxLength: 99,
                       autofocus: true,
                       decoration: InputDecoration(
                         hintText: "search",
@@ -102,6 +123,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
                       ),
+                      onChanged: (String text){searchPlaceByText(text);},
                     ),
                   ),
                   SizedBox(width: 10),
