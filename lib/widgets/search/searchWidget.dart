@@ -2,21 +2,29 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_webservice/places.dart';
+import "package:google_maps_webservice/geocoding.dart";
+
+typedef void GeocodingCallback(double lat, double lng);
 
 class SearchWidget extends StatefulWidget {
+  SearchWidget({
+    Key key,
+    this.geocodingCallback,
+  }) : super(key: key);
+
+  final GeocodingCallback geocodingCallback;
   @override
   State<StatefulWidget> createState() => _SearchWidgetState();
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  final kGoogleApiKey = "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E";
   final places = new GoogleMapsPlaces(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
-  final List<String> entries = ["1", "4", '5'];
+  final geocoding = new GoogleMapsGeocoding(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
   List<Prediction> placesList = [];
   String sessionToken;
-  TextEditingController _textController;
+  TextEditingController _textController = TextEditingController(text: "");
 
-  Future<void> searchPlaceByText(String text) async{
+  Future<void> _searchPlaceByText(String text) async{
     PlacesAutocompleteResponse response = await places.autocomplete(text, sessionToken: sessionToken);
     print(response.predictions);
     setState(() {
@@ -24,7 +32,20 @@ class _SearchWidgetState extends State<SearchWidget> {
     });
   }
 
-  void fillSearchInput(Prediction place) {
+  Future<void> _geocodingByAddress(String text) async{
+    if (text == "") {
+      return;
+    }
+    GeocodingResponse response = await geocoding.searchByAddress(text);
+    if (response.status == 'OK') {
+      GeocodingResult result = response.results.first;
+      print(result.geometry.location.lat);
+      print(result.geometry.location.lng);
+      widget.geocodingCallback(result.geometry.location.lat, result.geometry.location.lng);
+    }
+  }
+
+  void _fillSearchInput(Prediction place) {
     setState(() {
       _textController = TextEditingController(text: place.description);
     });
@@ -66,7 +87,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onPanDown: (_){FocusScope.of(context).requestFocus(FocusNode());},
-                            onTap: (){fillSearchInput(placesList[index]);}, 
+                            onTap: (){_fillSearchInput(placesList[index]);}, 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +119,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                               Icons.near_me,
                               color: Colors.black54
                             ),
-                            onPressed: (){print("search");},
+                            onPressed: (){_geocodingByAddress(placesList[index].description);},
                           )
                         )
                       ],
@@ -118,7 +139,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     child: TextField(
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
-                      maxLength: 99,
+                      maxLength: 150,
                       autofocus: true,
                       controller: _textController,
                       decoration: InputDecoration(
@@ -128,7 +149,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
                       ),
-                      onChanged: (String text){searchPlaceByText(text);},
+                      onChanged: (String text){_searchPlaceByText(text);},
                     ),
                   ),
                   SizedBox(width: 10),
@@ -146,7 +167,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                         Icons.near_me,
                         color: Colors.black54
                       ),
-                      onPressed: (){print("search");},
+                      onPressed: (){_geocodingByAddress(_textController.text);},
                     )
                   )
                 ],
