@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:eva/screens/map/map.dart';
+import 'package:eva/widgets/map/map.dart';
 import 'package:eva/screens/profile/profile.dart';
 
 import 'package:eva/widgets/widgets.dart';
@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List _widgetOptions = [
     ProfileScreen(),
-    MapScreen(),
+    MapWidget(),
     SearchWidget(),
     Text(
       'Apps',
@@ -101,15 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapScreen(),),
+              Expanded(child: MapWidget(),),
             ],),
             Positioned(
-              bottom: 20,
-              left: 20,
+              bottom: 30,
+              left: 5,
               child: Opacity(
-                opacity: 0.8,
+                opacity: 0.9,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.blueGrey,
+                  backgroundColor: Colors.purple.shade500,
                   child: Icon(Icons.search),
                   elevation: 0.0,
                   mini: true,

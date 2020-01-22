@@ -71,8 +71,8 @@ class _SearchWidgetState extends State<SearchWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              child: placesList.length < 1 ?
-              Row(
+              child: placesList.length < 1
+              ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
