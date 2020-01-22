@@ -86,7 +86,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                         Expanded(
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
-                            onPanDown: (_){FocusScope.of(context).requestFocus(FocusNode());},
                             onTap: (){_fillSearchInput(placesList[index]);}, 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
