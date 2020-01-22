@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(lng);
   }
 
-  void _openSearch() {
+  void _openPlaceSearch() {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(Icons.search),
                   elevation: 0.0,
                   mini: true,
-                  onPressed: (){_openSearch();},
+                  onPressed: (){_openPlaceSearch();},
                 ),
               ),
             )
