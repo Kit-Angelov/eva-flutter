@@ -65,14 +65,24 @@ class _SearchWidgetState extends State<SearchWidget> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 15),
             Expanded(
-              child: ListView.separated(
+              child: placesList.length < 1 ?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "no results",
+                    style: TextStyle(fontSize: 18, color: Colors.black26),
+                  )
+                ],
+              )
+              : ListView.separated(
                 physics: BouncingScrollPhysics(),
                 separatorBuilder: (
                   BuildContext context, 
@@ -127,7 +137,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 }
               ),
             ),
-            Divider(height: 0, thickness: 1, indent: 0, endIndent: 0, color: Colors.black26,),
+            Divider(height: 0, thickness: 1, indent: 0, endIndent: 0, color: Colors.black12,),
             Padding(
               padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
               child: Row(

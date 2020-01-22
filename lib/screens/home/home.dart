@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
       context: context, 
       builder: (context) {
@@ -40,9 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
               child: Container(
-                height: 30,
+                height: 20,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,13 +59,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: (){print("close");},
                       child: Text(
                         "close",
-                        style: TextStyle(color: Colors.black54, fontSize: 16, fontWeight: FontWeight.w400,),
+                        style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w400,),
                       ),
                     )
                   ],
                 ),
               ), 
             ),
+            Divider(height: 0, thickness: 1, indent: 0, endIndent: 0),
             Expanded(
               child: SearchWidget(geocodingCallback: _searchCallback),
             )
