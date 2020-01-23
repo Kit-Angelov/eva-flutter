@@ -106,6 +106,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: (){_openPlaceSearch();},
                 ),
               ),
+            ),
+            Positioned(
+              top: 30,
+              left: 5,
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.purple.shade500,
+                  borderRadius: BorderRadius.all(Radius.circular(25))
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
+                    fit: BoxFit.cover,
+                  )
+                ),
+              ),
             )
           ],
         ),
