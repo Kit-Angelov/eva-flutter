@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:eva/screens/map/marker.dart';
+import 'package:eva/widgets/map/marker.dart';
 
 
-class MapScreen extends StatefulWidget {
+class MapWidget extends StatefulWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  _MapWidgetState createState() => _MapWidgetState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapWidgetState extends State<MapWidget> {
   String _mapStyle;
-  Completer<GoogleMapController> _controller = Completer();
+  // Completer<GoogleMapController> _controller = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -42,14 +42,15 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: GoogleMap(
-        mapType: MapType.hybrid,
+        mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          controller.setMapStyle(_mapStyle);
+          // _controller.complete(controller);
+          // controller.setMapStyle(_mapStyle);
         },
         markers: Set<Marker>.of(markers.values),
         mapToolbarEnabled: false,
+        compassEnabled: false
       )
     );
   }

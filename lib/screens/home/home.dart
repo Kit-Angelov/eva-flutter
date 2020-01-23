@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:eva/screens/map/map.dart';
-import 'package:eva/screens/profile/profile.dart';
+import 'package:eva/widgets/map/map.dart';
 
 import 'package:eva/widgets/widgets.dart';
 
@@ -12,15 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  List _widgetOptions = [
-    ProfileScreen(),
-    MapScreen(),
-    SearchWidget(),
-    Text(
-      'Apps',
-    ),
-  ];
 
   void _searchCallback(lat, lng) {
     print(lat);
@@ -32,17 +22,16 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
-      context: context, 
+      context: context,
       builder: (context) {
       return Container(
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
               child: Container(
-                height: 30,
+                height: 20,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,16 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){print("close");},
+                      onTap: (){Navigator.pop(context);},
                       child: Text(
                         "close",
-                        style: TextStyle(color: Colors.black54, fontSize: 16, fontWeight: FontWeight.w400,),
+                        style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w400,),
                       ),
                     )
                   ],
                 ),
               ), 
             ),
+            Divider(height: 0, thickness: 1, indent: 0, endIndent: 0),
             Expanded(
               child: SearchWidget(geocodingCallback: _searchCallback),
             )
@@ -101,15 +91,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapScreen(),),
+              Expanded(child: MapWidget(),),
             ],),
             Positioned(
-              bottom: 20,
-              left: 20,
+              bottom: 30,
+              left: 5,
               child: Opacity(
-                opacity: 0.8,
+                opacity: 0.9,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.blueGrey,
+                  backgroundColor: Colors.purple.shade500,
                   child: Icon(Icons.search),
                   elevation: 0.0,
                   mini: true,
