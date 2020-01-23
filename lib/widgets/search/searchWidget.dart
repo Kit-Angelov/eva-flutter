@@ -39,8 +39,6 @@ class _SearchWidgetState extends State<SearchWidget> {
     GeocodingResponse response = await geocoding.searchByAddress(text);
     if (response.status == 'OK') {
       GeocodingResult result = response.results.first;
-      print(result.geometry.location.lat);
-      print(result.geometry.location.lng);
       widget.geocodingCallback(result.geometry.location.lat, result.geometry.location.lng);
     }
   }
@@ -65,7 +63,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -73,7 +71,6 @@ class _SearchWidgetState extends State<SearchWidget> {
             SizedBox(height: 15),
             Expanded(
               child: ListView.separated(
-                physics: BouncingScrollPhysics(),
                 separatorBuilder: (
                   BuildContext context, 
                   int index) => const Divider(height: 10, thickness: 1, indent: 0, endIndent: 0, color: Colors.black12),
