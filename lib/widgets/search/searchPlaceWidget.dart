@@ -6,18 +6,18 @@ import "package:google_maps_webservice/geocoding.dart";
 
 typedef void GeocodingCallback(double lat, double lng);
 
-class SearchWidget extends StatefulWidget {
-  SearchWidget({
+class SearchPlaceWidget extends StatefulWidget {
+  SearchPlaceWidget({
     Key key,
     this.geocodingCallback,
   }) : super(key: key);
 
   final GeocodingCallback geocodingCallback;
   @override
-  State<StatefulWidget> createState() => _SearchWidgetState();
+  State<StatefulWidget> createState() => _SearchPlaceWidgetState();
 }
 
-class _SearchWidgetState extends State<SearchWidget> {
+class _SearchPlaceWidgetState extends State<SearchPlaceWidget> {
   final places = new GoogleMapsPlaces(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
   final geocoding = new GoogleMapsGeocoding(apiKey: "AIzaSyD7WB7-TbriUn9g0xHopM8h2d78quMY10E");
   List<Prediction> placesList = [];
@@ -26,7 +26,6 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   Future<void> _searchPlaceByText(String text) async{
     PlacesAutocompleteResponse response = await places.autocomplete(text, sessionToken: sessionToken);
-    print(response.predictions);
     setState(() {
       placesList = response.predictions;
     });
@@ -40,6 +39,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     if (response.status == 'OK') {
       GeocodingResult result = response.results.first;
       widget.geocodingCallback(result.geometry.location.lat, result.geometry.location.lng);
+      Navigator.pop(context);
     }
   }
 
@@ -100,12 +100,12 @@ class _SearchWidgetState extends State<SearchWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  placesList[index].structuredFormatting.mainText,
+                                  placesList[index].structuredFormatting.mainText != null ? placesList[index].structuredFormatting.mainText : "",
                                   style: TextStyle(fontSize: 16),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  placesList[index].structuredFormatting.secondaryText,
+                                  placesList[index].structuredFormatting.secondaryText != null ? placesList[index].structuredFormatting.secondaryText : "",
                                   style: TextStyle(color: Colors.black38),
                                   overflow: TextOverflow.ellipsis,
                                 )

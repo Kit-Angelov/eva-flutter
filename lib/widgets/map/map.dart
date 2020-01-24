@@ -1,19 +1,20 @@
 import 'dart:core';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eva/widgets/map/marker.dart';
 
 
 class MapWidget extends StatefulWidget {
+  MapWidget({Key key}) : super(key: key);
+
   @override
-  _MapWidgetState createState() => _MapWidgetState();
+  MapWidgetState createState() => MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
-  String _mapStyle;
-  // Completer<GoogleMapController> _controller = Completer();
+class MapWidgetState extends State<MapWidget> {
+  GoogleMap _map;
+  Completer<GoogleMapController> _controller = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -21,12 +22,33 @@ class _MapWidgetState extends State<MapWidget> {
     zoom: 14.4746,
   );
 
+  Future<void> setCameraPosition() async{
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: LatLng(37.43296265331129, -122.08832357078792),
+        zoom: 14.4746,
+      )
+    ));
+  }
+
+  void _initMap() {
+    _map = GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: _kGooglePlex,
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      markers: Set<Marker>.of(markers.values),
+      mapToolbarEnabled: false,
+      compassEnabled: false
+    );
+  }
+
   @override
   initState() {
     super.initState();
-    rootBundle.loadString('assets/map_style.txt').then((string) {
-      _mapStyle = string;
-    });
+    _initMap();
     Timer(
       Duration(seconds: 5),
       () async {
@@ -41,17 +63,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          // _controller.complete(controller);
-          // controller.setMapStyle(_mapStyle);
-        },
-        markers: Set<Marker>.of(markers.values),
-        mapToolbarEnabled: false,
-        compassEnabled: false
-      )
+      body: _map,
     );
   }
 }

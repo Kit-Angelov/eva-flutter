@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:eva/widgets/map/map.dart';
-
 import 'package:eva/widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,10 +9,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
+  MapWidget map;
 
-  void _searchCallback(lat, lng) {
+  void _searchPlaceCallback(lat, lng) {
     print(lat);
     print(lng);
+    _mapWidgetState.currentState.setCameraPosition();
   }
 
   void _openPlaceSearch() {
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Divider(height: 0, thickness: 1, indent: 0, endIndent: 0),
             Expanded(
-              child: SearchWidget(geocodingCallback: _searchCallback),
+              child: SearchPlaceWidget(geocodingCallback: _searchPlaceCallback),
             )
           ],
         ),
@@ -78,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     setState(() {
+      map = MapWidget(key: _mapWidgetState);
     });
   }
 
@@ -91,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapWidget(),),
+              Expanded(child: map,),
             ],),
             Positioned(
               bottom: 30,
@@ -102,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.purple.shade500,
                   child: Icon(Icons.search),
                   elevation: 0.0,
-                  mini: true,
+                  mini: false,
                   onPressed: (){_openPlaceSearch();},
                 ),
               ),
@@ -110,20 +112,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Positioned(
               top: 30,
               left: 5,
-              child: Container(
-                width: 50,
-                height: 50,
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.purple.shade500,
-                  borderRadius: BorderRadius.all(Radius.circular(25))
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-                    fit: BoxFit.cover,
-                  )
+              child: 
+              GestureDetector(
+                onTap: (){print("to profile");},
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.shade500,
+                    borderRadius: BorderRadius.all(Radius.circular(25))
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
+                      fit: BoxFit.cover,
+                    )
+                  ),
                 ),
               ),
             )
