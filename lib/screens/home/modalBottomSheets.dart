@@ -86,13 +86,19 @@ void openPlaceSearch(context, searchPlaceCallback) {
     return Column (
       children: <Widget>[
         ListTile(
-          leading: Icon(Icons.camera_alt),
-          title: Text('make photo'),
+          leading: Icon(
+            Icons.person_pin,
+            size: 35,
+          ),
+          title: Text('people location'),
           // onTap: (){_getImageFromDevice(ImageSource.camera);},
         ),
         ListTile(
-          leading: Icon(Icons.image),
-          title: Text('choose from gallery'),
+          leading: Icon(
+            Icons.photo_library,
+            size: 30,
+          ),
+          title: Text('photos'),
           // onTap: (){_getImageFromDevice(ImageSource.gallery);},
         )
       ],

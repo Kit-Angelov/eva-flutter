@@ -171,7 +171,7 @@ class _SearchPlaceWidgetState extends State<SearchPlaceWidget> {
                     minWidth: 30,
                     child: FlatButton(
                       child: Icon(
-                        Icons.location_searching,
+                        Icons.near_me,
                         color: Colors.black54
                       ),
                       onPressed: (){_geocodingByAddress(_textController.text);},

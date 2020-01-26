@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){_moveToMyPosition();},
+                  onPressed: (){openAppsList(context);},
                 ),
               ),
             ),
