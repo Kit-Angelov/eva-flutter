@@ -120,12 +120,17 @@ class _HomeScreenState extends State<HomeScreen> {
               left: 5,
               child: Opacity(
                 opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.search),
-                  elevation: 0.0,
-                  mini: false,
-                  heroTag: null,
+                child: FlatButton.icon(
+                  shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(18.0),
+                  ),
+                  color: Colors.purple.shade500,
+                  textColor: Colors.white,
+                  icon: Icon(Icons.search),
+                  label: Text(
+                    "places".toUpperCase(),
+                    style: TextStyle(fontSize: 18),  
+                  ),
                   onPressed: (){_openPlaceSearch();},
                 ),
               ),
@@ -135,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               left: 5,
               child: 
               GestureDetector(
-                onTap: (){print("to profile");},
+                onTap: (){Navigator.pushNamed(context, '/profile');},
                 child: Container(
                   width: 50,
                   height: 50,

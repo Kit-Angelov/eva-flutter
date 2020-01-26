@@ -88,140 +88,159 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(0),
+        child: Stack(
           children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.width,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: _image == null
-                            ? Text('No image selected.')
-                            : Image.file(
-                              _image,
-                              fit: BoxFit.cover,
-                            ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    right: 20,
-                    child: Opacity(
-                      opacity: 0.8,
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.photo_camera),
-                        elevation: 0.0,
-                        mini: true,
-                        onPressed: _getImage,
+              ListView(
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(0),
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: _image == null
+                                ? Text('No image selected.')
+                                : Image.file(
+                                  _image,
+                                  fit: BoxFit.cover,
+                                ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.grey,
+                            child: Icon(Icons.photo_camera),
+                            elevation: 0.0,
+                            mini: true,
+                            onPressed: _getImage,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                  child: Column(
+                    children: <Widget>[
+                      InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username", "username"),
+                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'phone',
+                            style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Icon(FontAwesomeIcons.phoneAlt),
+                            SizedBox(width: 30),
+                            Text("+79803404209"),
+                          ],),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Expanded(
+                              child: Text("visible to other users"),
+                            ),
+                            CupertinoSwitch(
+                              value: true,
+                              onChanged: (bool value) {}
+                            ),
+                          ],),
+                        ],
+                      ),
+                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'instagram',
+                            style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Icon(FontAwesomeIcons.instagram),
+                            SizedBox(width: 30),
+                            Expanded(
+                              child: InputWithStaticTextWidget(_instagramTextController, instagramSubmit, 20, "instagram.com/", "username"),
+                            )
+                          ],),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Expanded(
+                              child: Text("visible to other users"),
+                            ),
+                            CupertinoSwitch(
+                              value: true,
+                              onChanged: (bool value) {}
+                            ),
+                          ],),
+                        ],
+                      ),
+                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'telegram',
+                            style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Icon(FontAwesomeIcons.telegramPlane),
+                            SizedBox(width: 30),
+                            Expanded(
+                              child: InputWithStaticTextWidget(_telegramTextController, telegramSubmit, 20, "t.me/", "username"),
+                            )
+                          ],),
+                          SizedBox(height: 10),
+                          Row(children: <Widget>[
+                            Expanded(
+                              child: Text("visible to other users"),
+                            ),
+                            CupertinoSwitch(
+                              value: true,
+                              onChanged: (bool value) {}
+                            ),
+                          ],),
+                        ],
+                      ),
+                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
+                      SizedBox(height: 50),
+                    ],
+                  ),
+                )
+              ]
+            ),
+            Positioned(
+              bottom: 5,
+              right: 5,
+              child: Opacity(
+                opacity: 0.9,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple.shade500,
+                  child: Icon(Icons.arrow_back),
+                  elevation: 0.0,
+                  mini: true,
+                  heroTag: null,
+                  onPressed: (){Navigator.pop(context);},
+                ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-              child: Column(
-                children: <Widget>[
-                  InputWithLabelWidget(_usernameTextController, usernameSubmit, 15, "username", "username"),
-                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'phone',
-                        style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Icon(FontAwesomeIcons.phoneAlt),
-                        SizedBox(width: 30),
-                        Text("+79803404209"),
-                      ],),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: Text("visible to other users"),
-                        ),
-                        CupertinoSwitch(
-                          value: true,
-                          onChanged: (bool value) {}
-                        ),
-                      ],),
-                    ],
-                  ),
-                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'instagram',
-                        style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Icon(FontAwesomeIcons.instagram),
-                        SizedBox(width: 30),
-                        Expanded(
-                          child: InputWithStaticTextWidget(_instagramTextController, instagramSubmit, 20, "instagram.com/", "username"),
-                        )
-                      ],),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: Text("visible to other users"),
-                        ),
-                        CupertinoSwitch(
-                          value: true,
-                          onChanged: (bool value) {}
-                        ),
-                      ],),
-                    ],
-                  ),
-                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'telegram',
-                        style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Icon(FontAwesomeIcons.telegramPlane),
-                        SizedBox(width: 30),
-                        Expanded(
-                          child: InputWithStaticTextWidget(_telegramTextController, telegramSubmit, 20, "t.me/", "username"),
-                        )
-                      ],),
-                      SizedBox(height: 10),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: Text("visible to other users"),
-                        ),
-                        CupertinoSwitch(
-                          value: true,
-                          onChanged: (bool value) {}
-                        ),
-                      ],),
-                    ],
-                  ),
-                  Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                  SizedBox(height: 50),
-                ],
-              ),
-            )
           ],
-        )
+        ),
       )
     );
   }

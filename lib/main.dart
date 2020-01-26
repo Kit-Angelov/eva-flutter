@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:async';
+import 'package:eva/screens/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
       '/authSmsCodeInput': (context) => AuthSmsCodeInputScreen(),
       '/home': (context) => HomeScreen(),
+      '/profile': (context) => ProfileScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
       ChangeNotifierProvider(builder: (context) => TestModel()),
