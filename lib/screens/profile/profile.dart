@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       isScrollControlled: true,
-      context: context, 
+      context: context,
       builder: (context) {
       return Container(
         child: _bottomSheetPhotoSource(),

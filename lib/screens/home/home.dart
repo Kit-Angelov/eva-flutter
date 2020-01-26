@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:eva/screens/home/modalBottomSheets.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -35,63 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (geolocationStatus == GeolocationStatus.granted) {
       _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
     }
-  }
-
-  void _openPlaceSearch() {
-    showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-      return Container(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
-              child: Container(
-                height: 20,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: Text(
-                          "search places",
-                          style: TextStyle(color: Colors.black54, fontSize: 18,),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: (){Navigator.pop(context);},
-                      child: Text(
-                        "close",
-                        style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w400,),
-                      ),
-                    )
-                  ],
-                ),
-              ), 
-            ),
-            Divider(height: 0, thickness: 1, indent: 0, endIndent: 0),
-            Expanded(
-              child: SearchPlaceWidget(geocodingCallback: _searchPlaceCallback),
-            )
-          ],
-        ),
-        height: MediaQuery.of(context).size.height - 50,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(10),
-            topRight: const Radius.circular(10),
-          )
-        ),
-      );
-    });
   }
 
   @override
@@ -131,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     "places".toUpperCase(),
                     style: TextStyle(fontSize: 18),  
                   ),
-                  onPressed: (){_openPlaceSearch();},
+                  onPressed: (){openPlaceSearch(context, _searchPlaceCallback);},
                 ),
               ),
             ),
@@ -167,6 +111,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: FloatingActionButton(
                   backgroundColor: Colors.purple.shade500,
                   child: Icon(Icons.my_location),
+                  elevation: 0.0,
+                  mini: true,
+                  heroTag: null,
+                  onPressed: (){_moveToMyPosition();},
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 100,
+              right: 5,
+              child: Opacity(
+                opacity: 0.9,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple.shade500,
+                  child: Icon(Icons.apps),
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
