@@ -1,7 +1,8 @@
-
+import 'package:eva/utils/geolocation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,11 +12,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
   MapWidget map;
+  GeolocationStatus geolocationStatus;
+  Position myPosition;
+
+  Future<void> _checkGeolocationPermissionStatus() async {
+    geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
+  }
 
   void _searchPlaceCallback(lat, lng) {
-    print(lat);
-    print(lng);
-    _mapWidgetState.currentState.setCameraPosition();
+    _mapWidgetState.currentState.setCameraPosition(lat, lng);
+  }
+  
+  void _updateMyLocationCallback(Position position) {
+    setState(() {
+      myPosition = position;
+    });
+  }
+
+  void _moveToMyPosition() async{
+    await getMyLocation(_updateMyLocationCallback);
+    await _checkGeolocationPermissionStatus();
+    if (geolocationStatus == GeolocationStatus.granted) {
+      _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
+    }
   }
 
   void _openPlaceSearch() {
@@ -78,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _moveToMyPosition();
     setState(() {
       map = MapWidget(key: _mapWidgetState);
     });
@@ -105,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(Icons.search),
                   elevation: 0.0,
                   mini: false,
+                  heroTag: null,
                   onPressed: (){_openPlaceSearch();},
                 ),
               ),
@@ -132,7 +153,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            )
+            ),
+            Positioned(
+              bottom: 30,
+              right: 5,
+              child: Opacity(
+                opacity: 0.9,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple.shade500,
+                  child: Icon(Icons.my_location),
+                  elevation: 0.0,
+                  mini: true,
+                  heroTag: null,
+                  onPressed: (){_moveToMyPosition();},
+                ),
+              ),
+            ),
           ],
         ),
       )
