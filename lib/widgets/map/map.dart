@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eva/widgets/map/marker.dart';
+import 'package:eva/widgets/map/circle.dart';
 
 
 class MapWidget extends StatefulWidget {
@@ -33,19 +34,14 @@ class MapWidgetState extends State<MapWidget> {
     ));
   }
 
-  Future<void> setMyPosition(lat, lng) async{
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: LatLng(lat, lng),
-        zoom: 17,
-      )
-    ));
+  void setMyPosition(lat, lng) async{
+    var newCircles = await addCircle(circles, lat, lng);
+    setState(() {
+      circles = newCircles;
+    });
   }
 
   void _initMap() {
-
-
     _map = GoogleMap(
       mapType: MapType.normal,
       initialCameraPosition: _kGooglePlex,
@@ -63,15 +59,6 @@ class MapWidgetState extends State<MapWidget> {
   initState() {
     super.initState();
     _initMap();
-    Timer(
-      Duration(seconds: 5),
-      () async {
-        var newMakres = await addMarker(markers);
-        setState(() {
-          markers = newMakres;
-        });
-      }
-    );
   }
 
   @override
