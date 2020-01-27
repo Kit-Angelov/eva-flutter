@@ -8,13 +8,12 @@ Future<void> getMyLocation(callback) async{
   try {
     myPosition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     callback(myPosition);
-    updateMyLocation(callback);
   } catch(error) {
     print(error);
   }
 }
 
-void updateMyLocation(callback) {
+StreamSubscription<Position> updateMyLocation(callback) {
     var geolocator = Geolocator();
     var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
@@ -22,4 +21,5 @@ void updateMyLocation(callback) {
         (Position position) {
             callback(position);
         });
+    return positionStream;
   }

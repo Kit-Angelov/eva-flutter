@@ -16,6 +16,7 @@ class MapWidgetState extends State<MapWidget> {
   GoogleMap _map;
   Completer<GoogleMapController> _controller = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Map<CircleId, Circle> circles = <CircleId, Circle>{}; 
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(51.67204, 39.1843),
@@ -32,7 +33,19 @@ class MapWidgetState extends State<MapWidget> {
     ));
   }
 
+  Future<void> setMyPosition(lat, lng) async{
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: LatLng(lat, lng),
+        zoom: 17,
+      )
+    ));
+  }
+
   void _initMap() {
+
+
     _map = GoogleMap(
       mapType: MapType.normal,
       initialCameraPosition: _kGooglePlex,
@@ -40,6 +53,7 @@ class MapWidgetState extends State<MapWidget> {
         _controller.complete(controller);
       },
       markers: Set<Marker>.of(markers.values),
+      circles: Set<Circle>.of(circles.values),
       mapToolbarEnabled: false,
       compassEnabled: false
     );

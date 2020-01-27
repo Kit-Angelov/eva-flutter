@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:eva/utils/geolocation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:eva/screens/home/modalBottomSheets.dart';
+import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,6 +16,18 @@ class _HomeScreenState extends State<HomeScreen> {
   MapWidget map;
   GeolocationStatus geolocationStatus;
   Position myPosition;
+  var currentAppIndex = 0;
+  Map appsIcons = {
+    0: Icons.person_pin,
+    1: Icons.photo_library
+  };
+
+  void _selectAppCallback(index) {
+    Navigator.pop(context);
+    setState(() {
+      currentAppIndex = index;
+    });
+  }
 
   Future<void> _checkGeolocationPermissionStatus() async {
     geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
@@ -23,17 +36,27 @@ class _HomeScreenState extends State<HomeScreen> {
   void _searchPlaceCallback(lat, lng) {
     _mapWidgetState.currentState.setCameraPosition(lat, lng);
   }
+
+  void _setMyPositionToMap() {
+    _mapWidgetState.currentState.setMyPosition(myPosition.latitude, myPosition.longitude);
+  }
   
   void _updateMyLocationCallback(Position position) {
     setState(() {
       myPosition = position;
+      _setMyPositionToMap();
     });
   }
 
-  void _moveToMyPosition() async{
+  void _initGettingMyPosition() async{
+    await _moveToMyPosition();
+    updateMyLocation(_updateMyLocationCallback);
+  }
+
+  Future<void> _moveToMyPosition() async{
     await getMyLocation(_updateMyLocationCallback);
     await _checkGeolocationPermissionStatus();
-    if (geolocationStatus == GeolocationStatus.granted) {
+    if (geolocationStatus == GeolocationStatus.granted && myPosition != null) {
       _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
     }
   }
@@ -41,12 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _moveToMyPosition();
+    _initGettingMyPosition();
     setState(() {
       map = MapWidget(key: _mapWidgetState);
     });
   }
 
+  bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,21 +143,53 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              bottom: 100,
+              bottom: 150,
               right: 5,
               child: Opacity(
                 opacity: 0.9,
                 child: FloatingActionButton(
                   backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.apps),
+                  child: Icon(appsIcons[currentAppIndex]),
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){openAppsList(context);},
+                  onPressed: (){openAppsList(context, _selectAppCallback);},
                 ),
               ),
             ),
-          ],
+            Positioned(
+              bottom: 220,
+              right: 5,
+              child: Opacity(
+                opacity: 0.9,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple.shade500,
+                  child: Icon(Icons.favorite_border),
+                  elevation: 0.0,
+                  mini: true,
+                  heroTag: null,
+                  onPressed: (){openAppsList(context, _selectAppCallback);},
+                ),
+              ),
+            ),
+            currentAppIndex == 1
+            ? Positioned(
+                bottom: 290,
+                right: 5,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.purple.shade500,
+                    child: Icon(Icons.camera),
+                    elevation: 0.0,
+                    mini: true,
+                    heroTag: null,
+                    // onPressed: (){openAppsList(context, _selectAppCallback);},
+                  ),
+                ),
+              )
+            : null
+          ].where(notNull).toList(),
         ),
       )
     );

@@ -60,7 +60,7 @@ void openPlaceSearch(context, searchPlaceCallback) {
   }
 
 
- void openAppsList(context) {
+ void openAppsList(context, selectAppCallback) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -69,8 +69,8 @@ void openPlaceSearch(context, searchPlaceCallback) {
       context: context,
       builder: (context) {
       return Container(
-        child: _bottomSheetAppsList(),
-        height: 120,
+        child: _bottomSheetAppsList(selectAppCallback),
+        height: 180,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -82,16 +82,39 @@ void openPlaceSearch(context, searchPlaceCallback) {
     });
   }
   
-  Column _bottomSheetAppsList() {
+  Column _bottomSheetAppsList(selectAppCallback) {
     return Column (
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 10, 15, 15),
+          child: Container(
+            height: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: Text(
+                      "Apps",
+                      style: TextStyle(color: Colors.black54, fontSize: 18,),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ), 
+        ),
         ListTile(
           leading: Icon(
             Icons.person_pin,
             size: 35,
           ),
           title: Text('people location'),
-          // onTap: (){_getImageFromDevice(ImageSource.camera);},
+          onTap: (){selectAppCallback(0);},
         ),
         ListTile(
           leading: Icon(
@@ -99,7 +122,7 @@ void openPlaceSearch(context, searchPlaceCallback) {
             size: 30,
           ),
           title: Text('photos'),
-          // onTap: (){_getImageFromDevice(ImageSource.gallery);},
+          onTap: (){selectAppCallback(1);},
         )
       ],
     ); 
