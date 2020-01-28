@@ -14,7 +14,6 @@ class MapWidget extends StatefulWidget {
 }
 
 class MapWidgetState extends State<MapWidget> {
-  GoogleMap _map;
   Completer<GoogleMapController> _controller = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Map<CircleId, Circle> circles = <CircleId, Circle>{}; 
@@ -41,30 +40,26 @@ class MapWidgetState extends State<MapWidget> {
     });
   }
 
-  void _initMap() {
-    _map = GoogleMap(
-      mapType: MapType.normal,
-      initialCameraPosition: _kGooglePlex,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-      markers: Set<Marker>.of(markers.values),
-      circles: Set<Circle>.of(circles.values),
-      mapToolbarEnabled: false,
-      compassEnabled: false
-    );
-  }
-
   @override
   initState() {
     super.initState();
-    _initMap();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: _map,
+      body: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: _kGooglePlex,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        markers: Set<Marker>.of(markers.values),
+        circles: Set<Circle>.of(circles.values),
+        mapToolbarEnabled: false,
+        compassEnabled: false
+      ),
     );
   }
 }

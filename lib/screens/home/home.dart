@@ -6,6 +6,7 @@ import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 
+
 class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -13,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
-  MapWidget map;
+
   GeolocationStatus geolocationStatus;
   Position myPosition;
   var currentAppIndex = 0;
@@ -65,9 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _initGettingMyPosition();
-    setState(() {
-      map = MapWidget(key: _mapWidgetState);
-    });
+    setState(() {});
   }
 
   bool notNull(Object o) => o != null;
@@ -81,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: map,),
+              Expanded(child: MapWidget(key: _mapWidgetState)),
             ],),
             Positioned(
               bottom: 30,
@@ -184,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     elevation: 0.0,
                     mini: true,
                     heroTag: null,
-                    // onPressed: (){openAppsList(context, _selectAppCallback);},
+                    onPressed: (){openAppsList(context, _selectAppCallback);},
                   ),
                 ),
               )

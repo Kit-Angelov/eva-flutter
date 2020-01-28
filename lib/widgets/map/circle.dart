@@ -9,13 +9,14 @@ Future<Map<CircleId, Circle>> addCircle(Map<CircleId, Circle> circles, lat, lng)
   final Circle circle = Circle(
     circleId: circleId,
     center: LatLng(lat, lng),
-    radius: 60,
+    radius: 10,
+    strokeWidth: 10,
+    strokeColor: Colors.purple.shade500,
     fillColor: Colors.red,
     onTap: () {
       _onCircleTapped(circleId);
     },
   );
-  print("circle");
   circles[circleId] = circle;
   return circles;
 }
@@ -23,3 +24,4 @@ Future<Map<CircleId, Circle>> addCircle(Map<CircleId, Circle> circles, lat, lng)
 void _onCircleTapped(circleId) {
   print(circleId);
 }
+
