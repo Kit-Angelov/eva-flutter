@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
+import 'package:eva/screens/home/modalSheets/userDetailBottomSheet.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){openAppsList(context, _selectAppCallback);},
+                  // onPressed: (){openUserDetail(context, "1");},
                 ),
               ),
             ),
@@ -187,7 +188,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               )
-            : null
+            : null,
+            DraggableScrollableSheet(
+              initialChildSize: 0.2,
+              minChildSize: 0.2,
+              maxChildSize: 0.4,
+              builder: (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  color: Colors.blue[100],
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: 25,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(title: Text('Item $index'));
+                    },
+                  )
+                );
+              }
+            )
           ].where(notNull).toList(),
         ),
       )
