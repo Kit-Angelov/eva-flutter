@@ -53,6 +53,12 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
     ),
   );
 
+  var maxiWidget = SizedBox.expand(
+    child: Container(
+      
+    )
+  );
+
   @override
   void initState() {
     super.initState();
