@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
-import 'package:eva/screens/home/modalSheets/userDetailBottomSheet.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -14,10 +13,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
   GeolocationStatus geolocationStatus;
   Position myPosition;
+
+  Widget _userDetailWidget;
+
   var currentAppIndex = 0;
   Map appsIcons = {
     0: Icons.person_pin,
@@ -168,11 +171,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  // onPressed: (){openUserDetail(context, "1");},
+                  onPressed: (){
+                    _userDetailWidget = UserDetailWidget("234");
+                    setState(() {});
+                  },
                 ),
               ),
             ),
-            currentAppIndex == 1
+            (currentAppIndex == 1)
             ? Positioned(
                 bottom: 290,
                 right: 5,
@@ -189,23 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
             : null,
-            DraggableScrollableSheet(
-              initialChildSize: 0.2,
-              minChildSize: 0.2,
-              maxChildSize: 0.4,
-              builder: (BuildContext context, ScrollController scrollController) {
-                return Container(
-                  color: Colors.blue[100],
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: 25,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(title: Text('Item $index'));
-                    },
-                  )
-                );
-              }
-            )
+            (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
           ].where(notNull).toList(),
         ),
       )
