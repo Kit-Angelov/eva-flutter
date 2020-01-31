@@ -11,7 +11,55 @@ class UserDetailWidget extends StatefulWidget {
 }
 
 class _UserDetailWidgetState extends State<UserDetailWidget> {
-  var widgetExtent;
+  double widgetExtent = 0.0;
+  Widget currentWidget;
+
+  var miniWidget = Container(
+    height: 60,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          width: 50,
+          height: 50,
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: Colors.purple.shade500,
+            borderRadius: BorderRadius.all(Radius.circular(25))
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: Image.network(
+              "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
+              fit: BoxFit.cover,
+            )
+          ),
+        ),
+        SizedBox(width: 20,),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "asdf",
+                style: TextStyle(fontSize: 20),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentWidget = miniWidget;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,44 +90,7 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                    child: Container(
-                      height: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: 50,
-                            height: 50,
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              color: Colors.purple.shade500,
-                              borderRadius: BorderRadius.all(Radius.circular(25))
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: Image.network(
-                                "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-                                fit: BoxFit.cover,
-                              )
-                            ),
-                          ),
-                          SizedBox(width: 20,),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "asdf",
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ), 
+                    child: currentWidget
                   ),
                 ]
               )

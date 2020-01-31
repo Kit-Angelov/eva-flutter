@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mini: true,
                   heroTag: null,
                   onPressed: (){
-                    _userDetailWidget = UserDetailWidget("234");
+                    _userDetailWidget = UserDetailWidget(userId: "asdf");
                     setState(() {});
                   },
                 ),
