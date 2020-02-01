@@ -19,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   GeolocationStatus geolocationStatus;
   Position myPosition;
 
+  double bottomMargin = 0;
+
   Widget _userDetailWidget;
 
   var currentAppIndex = 0;
@@ -87,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(child: MapWidget(key: _mapWidgetState)),
             ],),
             Positioned(
-              bottom: 30,
+              bottom: bottomMargin + 30,
               left: 5,
               child: Opacity(
                 opacity: 0.9,
@@ -131,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              bottom: 30,
+              bottom: bottomMargin + 30,
               right: 5,
               child: Opacity(
                 opacity: 0.9,
@@ -146,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              bottom: 150,
+              bottom: bottomMargin + 150,
               right: 5,
               child: Opacity(
                 opacity: 0.9,
@@ -161,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              bottom: 220,
+              bottom: bottomMargin + 220,
               right: 5,
               child: Opacity(
                 opacity: 0.9,
@@ -173,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   heroTag: null,
                   onPressed: (){
                     _userDetailWidget = UserDetailWidget(userId: "asdf");
+                    bottomMargin = 60;
                     setState(() {});
                   },
                 ),
@@ -180,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             (currentAppIndex == 1)
             ? Positioned(
-                bottom: 290,
+                bottom: bottomMargin + 290,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
