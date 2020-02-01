@@ -11,53 +11,88 @@ class UserDetailWidget extends StatefulWidget {
 }
 
 class _UserDetailWidgetState extends State<UserDetailWidget> {
-  double widgetExtent = 0.0;
-  Widget currentWidget;
+  var currentWidget;
 
-  var miniWidget = Container(
-    height: 60,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+  Widget miniWidget (BuildContext context, ScrollController scrollController)  {
+    return ListView(
+      padding: const EdgeInsets.all(0),
+      physics: BouncingScrollPhysics(),
+      controller: scrollController,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+          child: Container(
+            height: 60,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  width: 50,
+                  height: 50,
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.shade500,
+                    borderRadius: BorderRadius.all(Radius.circular(25))
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
+                      fit: BoxFit.cover,
+                    )
+                  ),
+                ),
+                SizedBox(width: 20,),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "asdf",
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ),
+      ]
+    );
+  }
+
+  Widget maxiWidget (BuildContext context, ScrollController scrollController) {
+    return ListView(
+      physics: BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(0),
+      controller: scrollController,
       children: <Widget>[
         Container(
-          width: 50,
-          height: 50,
-          padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: Colors.purple.shade500,
-            borderRadius: BorderRadius.all(Radius.circular(25))
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: Image.network(
-              "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-              fit: BoxFit.cover,
-            )
-          ),
-        ),
-        SizedBox(width: 20,),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          height: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
             children: <Widget>[
-              Text(
-                "asdf",
-                style: TextStyle(fontSize: 20),
-              )
-            ],
-          ),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Image.network(
+                        "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
+                        fit: BoxFit.cover,
+                      )
+                    )
+                  ],
+                ),
+              ),
+            ]
+          )
         )
-      ],
-    ),
-  );
-
-  var maxiWidget = SizedBox.expand(
-    child: Container(
-      
-    )
-  );
+      ]
+    );
+  }
 
   @override
   void initState() {
@@ -73,7 +108,13 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
     var maxHeight = 0.7;
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
-        widgetExtent = notification.extent;
+        if (notification.extent > minHeight && currentWidget != maxiWidget) {
+          currentWidget = maxiWidget;
+          setState(() {});
+        } else if((notification.extent == minHeight && currentWidget != miniWidget)){
+          currentWidget = miniWidget;
+          setState(() {});
+        }
       },
       child: DraggableScrollableSheet(
         initialChildSize: minHeight,
@@ -81,26 +122,8 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
         maxChildSize: maxHeight,
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20)
-              )
-            ),
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView(
-                controller: scrollController,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                    child: currentWidget
-                  ),
-                ]
-              )
-            )
+            color: Colors.white,
+            child: currentWidget(context, scrollController)
           );
         }
       )
