@@ -55,6 +55,11 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                       )
                     ],
                   ),
+                ),
+                SizedBox(width: 20,),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: (){print("close");},
                 )
               ],
             ),
