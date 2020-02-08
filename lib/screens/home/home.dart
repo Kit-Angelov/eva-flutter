@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
+import 'package:eva/services/geolocationSender.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -18,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   GeolocationStatus geolocationStatus;
   Position myPosition;
+
+  GeolocationSender geolocationSender;
 
   double bottomMargin = 0;
 
@@ -68,10 +71,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   @override
   void initState() {
     super.initState();
     _initGettingMyPosition();
+    geolocationSender = GeolocationSender("ws://192.168.2.232:8001");
     setState(() {});
   }
 

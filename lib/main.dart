@@ -1,7 +1,6 @@
 import 'dart:core';
 import 'dart:async';
 import 'package:eva/screens/profile/profile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +10,7 @@ import 'package:eva/screens/home/home.dart';
 import 'package:eva/models/testmodel.dart';
 import 'package:flutter/services.dart';
 import 'package:eva/utils/routingTransitions.dart';
+import 'package:eva/services/firebaseAuth.dart';
 
 
 void main() => runApp(MyApp());
@@ -53,19 +53,6 @@ class LoadPage extends StatefulWidget {
 class _LoadPageState extends State<LoadPage> {
   var text = "Load";
 
-  Future<bool> _checkAuth() async {
-    FirebaseAuth _auth = await FirebaseAuth.instance;
-    return await _auth.currentUser().then((user) {
-      if (user != null) {
-        return true;
-      } else {
-        return false;
-      }
-    }).catchError((error) {
-      return false;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -73,7 +60,7 @@ class _LoadPageState extends State<LoadPage> {
       Duration(seconds: 5),
       () {
         setState(() {
-          _checkAuth().then((state){
+          checkAuth().then((state){
             print(state);
             if (state) {
               print('Auth');
