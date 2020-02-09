@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "383436118786-iqv08femd1oggk62qu54a08dop489jni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.eva.eva",
+            "certificate_hash": "418aef073d47f9c58185c4baae2e318f44c7158e"
+          }
+        },
+        {
           "client_id": "383436118786-hmgvljduk8oealvosbnv89mu0lt2qi68.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

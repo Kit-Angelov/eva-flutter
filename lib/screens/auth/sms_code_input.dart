@@ -13,6 +13,7 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
   String verificationId;
   
   void _signInWithPhoneNumber(String smsCode) async {
+    print(smsCode);
     final AuthCredential credential = PhoneAuthProvider.getCredential(
       verificationId: verificationId,
       smsCode: smsCode,
@@ -23,10 +24,10 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
       await _auth.signInWithCredential(credential).then((user) {
         print(user.user.uid);
       }).catchError((error) {
-        print('error code');
+        print(error);
       });
     } catch(error) {
-      print('error code');
+      print(error);
     }
   }
 
