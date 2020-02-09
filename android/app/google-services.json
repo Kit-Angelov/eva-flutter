@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "383436118786-iqv08femd1oggk62qu54a08dop489jni.apps.googleusercontent.com",
+          "client_id": "383436118786-etq0v3sslhjfm4jt3q1r26m04fhuctoh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "app.eva.eva",
-            "certificate_hash": "418aef073d47f9c58185c4baae2e318f44c7158e"
-          }
-        },
-        {
-          "client_id": "383436118786-hmgvljduk8oealvosbnv89mu0lt2qi68.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "app.eva.eva",
-            "certificate_hash": "5ea7c4eca010b65c7b70c7352ee02651b19f2d10"
+            "certificate_hash": "a7ad8f3e3649d41619ddb5bcf49557e7ea4cafeb"
           }
         },
         {

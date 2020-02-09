@@ -18,17 +18,23 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
       verificationId: verificationId,
       smsCode: smsCode,
     );
-    FirebaseAuth _auth = await FirebaseAuth.instance;
+    FirebaseAuth _auth = FirebaseAuth.instance;
 
-    try {
-      await _auth.signInWithCredential(credential).then((user) {
-        print(user.user.uid);
-      }).catchError((error) {
-        print(error);
-      });
-    } catch(error) {
-      print(error);
-    }
+    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    print("signed in " + user.displayName);
+    // await _auth.signInWithCredential(credential).then((user) {
+    //   print(user.user.uid);
+    // });
+    // try {
+    //   await _auth.signInWithCredential(credential).then((user) {
+    //     print(user.user.uid);
+    //   }).catchError((error) {
+    //     print(error);
+    //     print('asdf');
+    //   });
+    // } catch(error) {
+    //   print(error);
+    // }
   }
 
   void _checkAuth() async {
