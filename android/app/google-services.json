@@ -15,11 +15,48 @@
       },
       "oauth_client": [
         {
-          "client_id": "383436118786-etq0v3sslhjfm4jt3q1r26m04fhuctoh.apps.googleusercontent.com",
+          "client_id": "383436118786-h6njdmrhmbrokd8ub28l4ar81j8noigt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "app.eva.eva",
-            "certificate_hash": "a7ad8f3e3649d41619ddb5bcf49557e7ea4cafeb"
+            "certificate_hash": "91cf7df156822c9620f7df1f6597319c94c8d3f1"
+          }
+        },
+        {
+          "client_id": "383436118786-bjocnjh6rukjbaotlmqb23h6hd7vnfi9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj3XSTp9uaWehCnBI9r4zEh2h_2Y1NSFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "383436118786-bjocnjh6rukjbaotlmqb23h6hd7vnfi9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383436118786:android:8ee0cd2a0b87210236c01b",
+        "android_client_info": {
+          "package_name": "com.example.eva"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "383436118786-p6vtr11jqlp31a8ojk5nscbtnve668fv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eva",
+            "certificate_hash": "91cf7df156822c9620f7df1f6597319c94c8d3f1"
           }
         },
         {

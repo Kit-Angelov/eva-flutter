@@ -1,44 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
 class AuthSmsCodeInputScreen extends StatefulWidget {
+  final String verificationId;
+
+  AuthSmsCodeInputScreen(this.verificationId);
 
   @override
-  _AuthPhoneInputState createState() => _AuthPhoneInputState();
+  _AuthSmsCodeInputState createState() => _AuthSmsCodeInputState();
 }
 
-class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
+class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
 
   TextEditingController _smsCodeController = TextEditingController();
-  String verificationId;
   
   void _signInWithPhoneNumber(String smsCode) async {
-    print(smsCode);
     final AuthCredential credential = PhoneAuthProvider.getCredential(
-      verificationId: verificationId,
+      verificationId: widget.verificationId,
       smsCode: smsCode,
     );
-    FirebaseAuth _auth = FirebaseAuth.instance;
-
     final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-    print("signed in " + user.displayName);
-    // await _auth.signInWithCredential(credential).then((user) {
-    //   print(user.user.uid);
-    // });
-    // try {
-    //   await _auth.signInWithCredential(credential).then((user) {
-    //     print(user.user.uid);
-    //   }).catchError((error) {
-    //     print(error);
-    //     print('asdf');
-    //   });
-    // } catch(error) {
-    //   print(error);
-    // }
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+    setState(() {
+      if (user != null) {
+        print(user.uid);
+      } else {
+        print('Sign in failed');
+      }
+    });
   }
 
   void _checkAuth() async {
-    FirebaseAuth _auth = await FirebaseAuth.instance;
     final FirebaseUser user = await _auth.currentUser().then((user) {
       print(user.uid);
     }).catchError((error) {
@@ -48,7 +43,6 @@ class _AuthPhoneInputState extends State<AuthSmsCodeInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    this.verificationId = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
       body: new Center(
         child: new Column(

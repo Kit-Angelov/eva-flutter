@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eva/screens/auth/sms_code_input.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class AuthPhoneInputScreen extends StatefulWidget {
 
   @override
-  _AuthPhoneInputState createState() => _AuthPhoneInputState();
+  State<StatefulWidget> createState() => _AuthPhoneInputState();
 }
 
 class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
@@ -30,7 +33,9 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
         (String verificationId, [int forceResendingToken]) async {
       this.verificationId = verificationId;
       print("code sent to " + _phoneNumberController.text);
-      Navigator.pushReplacementNamed(context, '/authSmsCodeInput', arguments: this.verificationId);
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => AuthSmsCodeInputScreen(this.verificationId))
+      );
     };
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
@@ -39,7 +44,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
       print("time out");
     };
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
+    await _auth.verifyPhoneNumber(
       phoneNumber: _phoneNumberController.text,
       timeout: const Duration(seconds: 5),
       verificationCompleted: verificationCompleted,
@@ -49,7 +54,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   }
 
   void _checkAuth() async {
-    FirebaseAuth _auth = await FirebaseAuth.instance;
     final FirebaseUser user = await _auth.currentUser().then((user) {
       print(user.uid);
     }).catchError((error) {

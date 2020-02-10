@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
-import 'screens/auth/sms_code_input.dart';
 import 'package:eva/screens/home/home.dart';
 import 'package:eva/models/testmodel.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +24,6 @@ class MyApp extends StatelessWidget {
     final routes = {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
-      '/authSmsCodeInput': (context) => AuthSmsCodeInputScreen(),
       '/home': (context) => HomeScreen(),
       '/profile': (context) => ProfileScreen(),
     };
