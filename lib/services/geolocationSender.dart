@@ -8,19 +8,23 @@ class GeolocationSender {
   IOWebSocketChannel channel;
   String url;
 
-  GeolocationSender(this.url) {
+  GeolocationSender(this.url);
+  
+  void connect() {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
+      print(idToken);
+      try {
+        var wsUrl = '${url}?idToken=${token}';
+        channel = IOWebSocketChannel.connect(wsUrl);
+      } catch(e) {
+        print(e);
+      }
     }).catchError((error) {
-      return;
+      // return;
+      print('asdf');
     });
-    try {
-      var wsUrl = '${url}?idToken=${token}';
-      channel = IOWebSocketChannel.connect(wsUrl);
-    } catch(e) {
-      print(e);
-    }
   }
 
   void send(Position position) {

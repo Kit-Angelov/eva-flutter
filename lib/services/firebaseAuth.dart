@@ -18,7 +18,7 @@ Future<String> getUserIdToken() async {
   FirebaseAuth _auth = await FirebaseAuth.instance;
   return await _auth.currentUser().then((user) {
     if (user != null) {
-      user.getIdToken().then((idTokenResult) {
+      return user.getIdToken().then((idTokenResult) {
         return idTokenResult.token;
       }).catchError((error) {
         return "";

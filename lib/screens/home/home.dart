@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initGettingMyPosition();
     geolocationSender = GeolocationSender("ws://192.168.2.232:8001");
+    geolocationSender.connect();
     setState(() {});
   }
 
