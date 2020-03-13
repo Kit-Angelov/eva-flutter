@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
-import 'package:eva/services/geolocationSender.dart';
+import 'package:eva/services/webSocketConnection.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   GeolocationStatus geolocationStatus;
   Position myPosition;
 
-  GeolocationSender geolocationSender;
+  WebSocketConnection geolocationSender;
+  WebSocketConnection geolocationReceiver;
 
   double bottomMargin = 0;
 
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       myPosition = position;
       _setMyPositionToMap();
+      geolocationSender.send(myPosition);
     });
   }
 
@@ -71,13 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void watchBBOX(bbox) {
+    print(bbox);
+  }
+
 
   @override
   void initState() {
     super.initState();
     _initGettingMyPosition();
-    geolocationSender = GeolocationSender("ws://192.168.2.232:8001");
+    geolocationSender = WebSocketConnection("ws://192.168.2.232:8001");
     geolocationSender.connect();
+    geolocationReceiver = WebSocketConnection("ws://192.168.2.232:8002");
+    geolocationReceiver.connect();
     setState(() {});
   }
 

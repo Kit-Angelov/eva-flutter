@@ -55,6 +55,9 @@ class MapWidgetState extends State<MapWidget> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        onCameraMove: (CameraPosition cameraPosition) {
+          print(cameraPosition.target);
+        },
         markers: Set<Marker>.of(markers.values),
         circles: Set<Circle>.of(circles.values),
         mapToolbarEnabled: false,
