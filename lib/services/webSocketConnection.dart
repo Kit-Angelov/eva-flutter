@@ -11,8 +11,10 @@ class WebSocketConnection {
   String transferredData;
   String url;
   var messageHandle;
+  Map urlParams;
+  int state = 0;
 
-  WebSocketConnection(this.url, {this.messageHandle, }) {
+  WebSocketConnection(this.url, {this.urlParams, this.messageHandle, }) {
     if (messageHandle == null) {
       messageHandle = defautlMessageHandle;
     }
@@ -20,20 +22,19 @@ class WebSocketConnection {
   }
   
   initws(wsURL) {
-    transferredData = null;
     ws = null;
     wsFuture = WebSocket
-        .connect(wsURL)
-        .timeout(new Duration(seconds: 15))
-        .then((v) {
-          ws = v;
-          // ws.pingInterval = new Duration(seconds: 240);
-          ws.handleError((e, s) {
-            timeprint("ERROR HANDLED $e");
+      .connect(wsURL)
+      .timeout(new Duration(seconds: 5))
+      .then((v) {
+        ws = v;
+        ws.handleError((e, s) {
+          timeprint("ERROR HANDLED $e");
+          ws = null;
+          state = 2;
         });
         ws.done.then((v) {
           timeprint("DONE");
-          ws = null;
         });
         ws.listen((d) {
           transferredData = d;
@@ -42,18 +43,19 @@ class WebSocketConnection {
         }, onError: (e, stack) {
           timeprint("ERROR ON LISTEN");
           ws = null;
-          reconnect();
+          state = 2;
         }, onDone: () {
           timeprint("DONE ON LISTEN");
           ws = null;
-          reconnect();
+          state = 2;
         });
       }, onError: (e, stack) {
-      timeprint("onerror $e");
-      ws = null;
-      reconnect();
-    });
+        timeprint("onerror $e");
+        ws = null;
+        state = 2;
+      });
     timeprint("inited");
+    state = 1;
   }
 
   defautlMessageHandle(data) {
@@ -64,30 +66,37 @@ class WebSocketConnection {
     print(new DateTime.now().toString() + "    " +  msg);
   }
 
-  void reconnect() {
-    Timer(
-      Duration(seconds: 5),
-      () {
-        if (ws == null) {
-          print("reconnect");
-          connect();
-        }
-      });
+  void setParams(urlParams) {
+    this.urlParams = urlParams;
+  }
+
+  close() {
+    print("CLOSE WS");
+    if (ws != null) {
+      ws.close();
+    }
+    state = 2;
   }
   
-  void connect() {
+  connect() {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      print(idToken);
       var wsURL = '${url}?idToken=${token}';
+      if (urlParams != null) {
+        for (var item in urlParams.entries){
+          print("${item.key} - ${item.value}");
+          wsURL = '${wsURL}&${item.key}=${item.value}';
+        }
+      }
+      print(wsURL);
       initws(wsURL);
     });
   }
 
-  void send(position) {
+  void send(data) {
     if (ws != null) {
-      ws.add(jsonEncode(position.toJson()));
+      ws.add(jsonEncode(data));
     }
   }
 }

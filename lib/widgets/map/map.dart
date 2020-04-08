@@ -7,7 +7,8 @@ import 'package:eva/widgets/map/circle.dart';
 
 
 class MapWidget extends StatefulWidget {
-  MapWidget({Key key}) : super(key: key);
+  var cameraMoveCallback;
+  MapWidget({Key key, this.cameraMoveCallback}) : super(key: key);
 
   @override
   MapWidgetState createState() => MapWidgetState();
@@ -15,22 +16,39 @@ class MapWidget extends StatefulWidget {
 
 class MapWidgetState extends State<MapWidget> {
   Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  Map<CircleId, Circle> circles = <CircleId, Circle>{}; 
+  Map<CircleId, Circle> circles = <CircleId, Circle>{};
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(51.67204, 39.1843),
     zoom: 14.4746,
   );
 
+  void _onMapCreated(GoogleMapController controller) async  {
+    mapController = controller;
+    _controller.complete(controller);
+  }
+
+  void _onCameraMove(CameraPosition position) async {
+    LatLngBounds latLngBounds = await mapController.getVisibleRegion();
+    widget.cameraMoveCallback(latLngBounds);
+  }
+
   Future<void> setCameraPosition(lat, lng) async{
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
+    mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         target: LatLng(lat, lng),
         zoom: 17,
       )
     ));
+  }
+
+  void addUserMarker(lat, lng, id, imgSrc) async {
+    var newMarkers = await addMarker(markers, lat, lng, id, imgSrc);
+    setState(() {
+      markers = newMarkers;
+    });
   }
 
   void setMyPosition(lat, lng) async{
@@ -52,12 +70,8 @@ class MapWidgetState extends State<MapWidget> {
       body: GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        onCameraMove: (CameraPosition cameraPosition) {
-          print(cameraPosition.target);
-        },
+        onMapCreated: _onMapCreated,
+        onCameraMove: _onCameraMove,
         markers: Set<Marker>.of(markers.values),
         circles: Set<Circle>.of(circles.values),
         mapToolbarEnabled: false,

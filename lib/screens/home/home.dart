@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:eva/utils/geolocation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 import 'package:eva/services/webSocketConnection.dart';
+import 'package:eva/services/usersLocationGetter.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Position myPosition;
 
   WebSocketConnection geolocationSender;
-  WebSocketConnection geolocationReceiver;
+  var userLocationGetter;
 
   double bottomMargin = 0;
 
@@ -55,12 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateMyLocationCallback(Position position) {
     setState(() {
       myPosition = position;
-      _setMyPositionToMap();
-      geolocationSender.send(myPosition);
+      // _setMyPositionToMap();
+      print(myPosition.latitude);
+      // geolocationSender.send(myPosition.toJson());
     });
   }
 
-  void _initGettingMyPosition() async{
+  void _initGettingMyPosition() async {
     await _moveToMyPosition();
     updateMyLocation(_updateMyLocationCallback);
   }
@@ -73,19 +76,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void watchBBOX(bbox) {
-    print(bbox);
+  void cameraMoveCallBack(bbox) {
+    print("CONSUME");
+    userLocationGetter.updateBbox(bbox);
+    print("END CONSUME");
   }
-
 
   @override
   void initState() {
     super.initState();
     _initGettingMyPosition();
-    geolocationSender = WebSocketConnection("ws://192.168.2.232:8001");
-    geolocationSender.connect();
-    geolocationReceiver = WebSocketConnection("ws://192.168.2.232:8002");
-    geolocationReceiver.connect();
+    // geolocationSender = new WebSocketConnection("ws://192.168.0.105:8001");
+    // geolocationSender.connect();
+    userLocationGetter = UsersLocationGetter(_mapWidgetState);
+    userLocationGetter.consume();
     setState(() {});
   }
 
@@ -100,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapWidget(key: _mapWidgetState)),
+              Expanded(child: MapWidget(key: _mapWidgetState, cameraMoveCallback: cameraMoveCallBack,)),
             ],),
             Positioned(
               bottom: bottomMargin + 30,
