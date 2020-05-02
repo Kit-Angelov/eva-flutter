@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:eva/utils/geolocation.dart';
+import 'package:eva/widgets/getPhotoWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double bottomMargin = 0;
 
   Widget _userDetailWidget;
+  Widget _getPhotoWidget;
 
   var currentAppIndex = 0;
   Map appsIcons = {
@@ -58,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       myPosition = position;
       // _setMyPositionToMap();
-      print(myPosition.latitude);
       // geolocationSender.send(myPosition.toJson());
     });
   }
@@ -77,9 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void cameraMoveCallBack(bbox) {
-    print("CONSUME");
-    userLocationGetter.updateBbox(bbox);
-    print("END CONSUME");
+    // userLocationGetter.updateBbox(bbox);
   }
 
   @override
@@ -88,8 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _initGettingMyPosition();
     // geolocationSender = new WebSocketConnection("ws://192.168.0.105:8001");
     // geolocationSender.connect();
-    userLocationGetter = UsersLocationGetter(_mapWidgetState);
-    userLocationGetter.consume();
+    // userLocationGetter = UsersLocationGetter(_mapWidgetState);
+    // userLocationGetter.consume();
     setState(() {});
   }
 
@@ -106,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Column(children: <Widget>[
               Expanded(child: MapWidget(key: _mapWidgetState, cameraMoveCallback: cameraMoveCallBack,)),
             ],),
-            Positioned(
+            Positioned( //search places
               bottom: bottomMargin + 30,
               left: 5,
               child: Opacity(
@@ -126,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Positioned(
+            Positioned( //user avatar
               top: 30,
               left: 5,
               child: 
@@ -150,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Positioned(
+            Positioned( // my position
               bottom: bottomMargin + 30,
               right: 5,
               child: Opacity(
@@ -165,42 +164,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: bottomMargin + 150,
-              right: 5,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(appsIcons[currentAppIndex]),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){openAppsList(context, _selectAppCallback);},
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: bottomMargin + 220,
-              right: 5,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.favorite_border),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){
-                    _userDetailWidget = UserDetailWidget(userId: "asdf");
-                    bottomMargin = 60;
-                    setState(() {});
-                  },
-                ),
-              ),
-            ),
-            (currentAppIndex == 1)
-            ? Positioned(
+            // Positioned( // app list
+            //   bottom: bottomMargin + 150,
+            //   right: 5,
+            //   child: Opacity(
+            //     opacity: 0.9,
+            //     child: FloatingActionButton(
+            //       backgroundColor: Colors.purple.shade500,
+            //       child: Icon(appsIcons[currentAppIndex]),
+            //       elevation: 0.0,
+            //       mini: true,
+            //       heroTag: null,
+            //       onPressed: (){openAppsList(context, _selectAppCallback);},
+            //     ),
+            //   ),
+            // ),
+            // Positioned( // favorits
+            //   bottom: bottomMargin + 220,
+            //   right: 5,
+            //   child: Opacity(
+            //     opacity: 0.9,
+            //     child: FloatingActionButton(
+            //       backgroundColor: Colors.purple.shade500,
+            //       child: Icon(Icons.favorite_border),
+            //       elevation: 0.0,
+            //       mini: true,
+            //       heroTag: null,
+            //       onPressed: (){
+            //         _userDetailWidget = UserDetailWidget(userId: "asdf");
+            //         bottomMargin = 60;
+            //         setState(() {});
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // (currentAppIndex == 1) ? 
+            Positioned( // camera
                 bottom: bottomMargin + 290,
                 right: 5,
                 child: Opacity(
@@ -211,12 +210,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     elevation: 0.0,
                     mini: true,
                     heroTag: null,
-                    onPressed: (){openAppsList(context, _selectAppCallback);},
+                    onPressed: (){
+                      _getPhotoWidget = GetPhotoWidget();
+                      setState(() {});
+                    },
                   ),
                 ),
-              )
-            : null,
-            (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
+              ),
+            // : null,
+            // (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
+            (_getPhotoWidget == null) ? SizedBox() : _getPhotoWidget
           ].where(notNull).toList(),
         ),
       )

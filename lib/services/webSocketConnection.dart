@@ -89,7 +89,6 @@ class WebSocketConnection {
           wsURL = '${wsURL}&${item.key}=${item.value}';
         }
       }
-      print(wsURL);
       initws(wsURL);
     });
   }
