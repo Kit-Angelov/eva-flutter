@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/models/getPhoto.dart';
+import 'package:eva/models/myCurrentLocation.dart';
 
 class GetPhotoWidget extends StatefulWidget {
   @override
@@ -14,6 +17,9 @@ class GetPhotoWidget extends StatefulWidget {
 }
 
 class _GetPhotoWidgetState extends State<GetPhotoWidget> {
+  //models
+  var getPhotoState;
+  var myCurrentLocationState;
 
   File _image;
 
@@ -24,19 +30,25 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
     });
   }
 
-  Future<void> _upload() async{
+  void _upload() {
     if (_image == null) return;
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = 'http://192.168.0.105:8005/?idToken=${token}';
-      _postImage(url, _image);
+      // var _position = myCurrentLocationState.getMyCurrentLocation();
+      var _position;
+      _postImage(url, _image, _position).then((res) {
+        print(res);
+      });
     });
   }
 
-  Future<void> _postImage(url, image) async{
+  Future<int> _postImage(url, image, _position) async{
     var request = http.MultipartRequest('POST', Uri.parse(url));
-
+    print(_position);
+    request.fields['key'] = 'value';
+    request.fields['key'] = 'value';
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
@@ -45,9 +57,8 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
       )
     );
     var res = await request.send();
-    print(res.statusCode);
+    return(res.statusCode);
   }
-
 
   @override
   void initState() {
@@ -57,6 +68,8 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
   
   @override
   Widget build(BuildContext context) {
+    getPhotoState = Provider.of<GetPhotoModel>(context);
+    // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -131,7 +144,9 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){Navigator.pop(context);},
+                  onPressed: (){
+                    getPhotoState.setWidgetOpenFlag(false);
+                  },
                 ),
               ),
             ),

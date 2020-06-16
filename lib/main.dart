@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/phone_input.dart';
 import 'package:eva/screens/home/home.dart';
-import 'package:eva/models/testmodel.dart';
+import 'package:eva/models/getPhoto.dart';
+import 'package:eva/models/myCurrentLocation.dart';
 import 'package:flutter/services.dart';
 import 'package:eva/utils/routingTransitions.dart';
 import 'package:eva/services/firebaseAuth.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       '/profile': (context) => ProfileScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
-      ChangeNotifierProvider(builder: (context) => TestModel()),
+      ChangeNotifierProvider(builder: (context) => GetPhotoModel()),
+      // ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
     ];
     return MultiProvider(
       providers: providers,

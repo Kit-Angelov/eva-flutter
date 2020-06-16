@@ -4,11 +4,14 @@ import 'package:eva/utils/geolocation.dart';
 import 'package:eva/widgets/getPhotoWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 import 'package:eva/services/webSocketConnection.dart';
 import 'package:eva/services/usersLocationGetter.dart';
+import 'package:eva/models/getPhoto.dart';
+import 'package:eva/models/myCurrentLocation.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +20,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //models
+  var getPhotoState;
+  var myCurrentLocationState;
 
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
@@ -37,15 +43,17 @@ class _HomeScreenState extends State<HomeScreen> {
     1: Icons.photo_library
   };
 
+
+  checkGeolocationPermissionStatus() async{
+    geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
+    setState(() {});
+  }
+
   void _selectAppCallback(index) {
     Navigator.pop(context);
     setState(() {
       currentAppIndex = index;
     });
-  }
-
-  Future<void> _checkGeolocationPermissionStatus() async {
-    geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
   }
 
   void _searchPlaceCallback(lat, lng) {
@@ -58,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
   void _updateMyLocationCallback(Position position) {
     setState(() {
+      // myCurrentLocationState.setMyCurrentLocation(position);
       myPosition = position;
       // _setMyPositionToMap();
       // geolocationSender.send(myPosition.toJson());
@@ -65,13 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initGettingMyPosition() async {
-    await _moveToMyPosition();
     updateMyLocation(_updateMyLocationCallback);
   }
 
   Future<void> _moveToMyPosition() async{
+    await checkGeolocationPermissionStatus();
     await getMyLocation(_updateMyLocationCallback);
-    await _checkGeolocationPermissionStatus();
     if (geolocationStatus == GeolocationStatus.granted && myPosition != null) {
       _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
     }
@@ -95,6 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
+    getPhotoState = Provider.of<GetPhotoModel>(context);
+    // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -211,15 +221,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     mini: true,
                     heroTag: null,
                     onPressed: (){
-                      _getPhotoWidget = GetPhotoWidget();
-                      setState(() {});
+                      getPhotoState.setWidgetOpenFlag(true);
+                      // getPhotoState = true;
+                      // _getPhotoWidget = GetPhotoWidget();
+                      checkGeolocationPermissionStatus();
                     },
                   ),
                 ),
               ),
             // : null,
             // (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
-            (_getPhotoWidget == null) ? SizedBox() : _getPhotoWidget
+            (getPhotoState.getWidgetOpenFlag() && geolocationStatus == GeolocationStatus.granted) ? GetPhotoWidget() : SizedBox()  
           ].where(notNull).toList(),
         ),
       )
