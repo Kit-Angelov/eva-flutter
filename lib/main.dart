@@ -1,16 +1,23 @@
 import 'dart:core';
 import 'dart:async';
-import 'package:eva/screens/profile/profile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'screens/auth/phone_input.dart';
-import 'package:eva/screens/home/home.dart';
-import 'package:eva/models/getPhoto.dart';
-import 'package:eva/models/myCurrentLocation.dart';
 import 'package:flutter/services.dart';
-import 'package:eva/utils/routingTransitions.dart';
-import 'package:eva/services/firebaseAuth.dart';
+
+//app imports
+import 'utils/routingTransitions.dart';
+import 'services/firebaseAuth.dart';
+
+//models
+import 'models/myCurrentLocation.dart';
+
+//screens
+import 'screens/auth/phone_input.dart';
+import 'screens/profile/profile.dart';
+import 'screens/home/home.dart';
+import 'screens/pubPhoto/pubPhoto.dart';
 
 
 void main() => runApp(MyApp());
@@ -27,9 +34,9 @@ class MyApp extends StatelessWidget {
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
       '/home': (context) => HomeScreen(),
       '/profile': (context) => ProfileScreen(),
+      '/pubPhoto': (context) => PubPhotoScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
-      ChangeNotifierProvider(builder: (context) => GetPhotoModel()),
       // ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
     ];
     return MultiProvider(

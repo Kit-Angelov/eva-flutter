@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:eva/utils/geolocation.dart';
-import 'package:eva/widgets/getPhotoWidget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:eva/widgets/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'package:eva/utils/geolocation.dart';
+import 'package:eva/widgets/widgets.dart';
 import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 import 'package:eva/services/webSocketConnection.dart';
 import 'package:eva/services/usersLocationGetter.dart';
-import 'package:eva/models/getPhoto.dart';
 import 'package:eva/models/myCurrentLocation.dart';
 
 
@@ -103,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
-    getPhotoState = Provider.of<GetPhotoModel>(context);
     // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -221,17 +220,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     mini: true,
                     heroTag: null,
                     onPressed: (){
-                      getPhotoState.setWidgetOpenFlag(true);
-                      // getPhotoState = true;
-                      // _getPhotoWidget = GetPhotoWidget();
                       checkGeolocationPermissionStatus();
+                      Navigator.pushNamed(context, '/pubPhoto');
                     },
                   ),
                 ),
               ),
             // : null,
             // (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
-            (getPhotoState.getWidgetOpenFlag() && geolocationStatus == GeolocationStatus.granted) ? GetPhotoWidget() : SizedBox()  
           ].where(notNull).toList(),
         ),
       )

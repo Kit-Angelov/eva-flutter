@@ -8,17 +8,15 @@ import 'package:eva/widgets/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:eva/services/firebaseAuth.dart';
-import 'package:eva/models/getPhoto.dart';
 import 'package:eva/models/myCurrentLocation.dart';
 
-class GetPhotoWidget extends StatefulWidget {
+class PubPhotoScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _GetPhotoWidgetState();
+  State<StatefulWidget> createState() => _PubPhotoScreenState();
 }
 
-class _GetPhotoWidgetState extends State<GetPhotoWidget> {
+class _PubPhotoScreenState extends State<PubPhotoScreen> {
   //models
-  var getPhotoState;
   var myCurrentLocationState;
 
   File _image;
@@ -68,7 +66,6 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
   
   @override
   Widget build(BuildContext context) {
-    getPhotoState = Provider.of<GetPhotoModel>(context);
     // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -144,9 +141,7 @@ class _GetPhotoWidgetState extends State<GetPhotoWidget> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){
-                    getPhotoState.setWidgetOpenFlag(false);
-                  },
+                  onPressed: (){Navigator.pop(context);},
                 ),
               ),
             ),
