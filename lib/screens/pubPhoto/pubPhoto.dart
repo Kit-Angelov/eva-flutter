@@ -18,6 +18,7 @@ class PubPhotoScreen extends StatefulWidget {
 class _PubPhotoScreenState extends State<PubPhotoScreen> {
   //models
   var myCurrentLocationState;
+  var position = '';
 
   File _image;
 
@@ -25,8 +26,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     var image = await ImagePicker.pickImage(source: imageSource);
     setState(() {
       _image = image;
-      var d = myCurrentLocationState.getMyCurrentLocation();
-      print(d);
+      position = myCurrentLocationState.getMyCurrentLocation();
     });
   }
 
@@ -36,7 +36,6 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = 'http://192.168.0.105:8005/?idToken=${token}';
-      // var _position = myCurrentLocationState.getMyCurrentLocation();
       var _position;
       _postImage(url, _image, _position).then((res) {
         print(res);
