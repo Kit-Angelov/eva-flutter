@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
   void _updateMyLocationCallback(Position position) {
     setState(() {
-      // myCurrentLocationState.setMyCurrentLocation(position);
+      myCurrentLocationState.setMyCurrentLocation(position);
       myPosition = position;
       // _setMyPositionToMap();
       // geolocationSender.send(myPosition.toJson());
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
-    // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
+    myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(

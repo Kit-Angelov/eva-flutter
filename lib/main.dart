@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       '/pubPhoto': (context) => PubPhotoScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
-      // ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
+      ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
     ];
     return MultiProvider(
       providers: providers,

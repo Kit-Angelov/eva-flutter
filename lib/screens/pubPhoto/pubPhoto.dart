@@ -25,6 +25,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     var image = await ImagePicker.pickImage(source: imageSource);
     setState(() {
       _image = image;
+      var d = myCurrentLocationState.getMyCurrentLocation();
+      print(d);
     });
   }
 
@@ -66,7 +68,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   
   @override
   Widget build(BuildContext context) {
-    // myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
+    myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -98,6 +100,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                     ],
                   ),
                 ),
+                // Text(myCurrentLocationState.getMyCurrentLocation())
               ]
             ),
             Positioned(
