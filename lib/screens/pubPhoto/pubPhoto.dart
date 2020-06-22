@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/models/myCurrentLocation.dart';
+import 'package:eva/widgets/widgets.dart';
 
 class PubPhotoScreen extends StatefulWidget {
   @override
@@ -18,8 +20,10 @@ class PubPhotoScreen extends StatefulWidget {
 class _PubPhotoScreenState extends State<PubPhotoScreen> {
   //models
   var myCurrentLocationState;
-  var position = '';
+  Position position;
+  var description = '';
 
+  TextEditingController _descriptionTextController;
   File _image;
 
   Future _getImageFromDevice(ImageSource imageSource) async {
@@ -43,6 +47,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     });
   }
 
+  void descriptionSubmit(String value) {}
+
   Future<int> _postImage(url, image, _position) async{
     var request = http.MultipartRequest('POST', Uri.parse(url));
     print(_position);
@@ -62,6 +68,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   @override
   void initState() {
     super.initState();
+    _descriptionTextController = TextEditingController();
     _getImageFromDevice(ImageSource.camera);
   }
   
@@ -78,7 +85,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
               padding: const EdgeInsets.all(0),
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height,
+                  height: MediaQuery.of(context).size.height - 150,
                   width: MediaQuery.of(context).size.width,
                   child: Stack(
                     children: <Widget>[
@@ -99,7 +106,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                     ],
                   ),
                 ),
-                // Text(myCurrentLocationState.getMyCurrentLocation())
+                Text(position != null ? "${position.longitude.toString()} ${position.latitude.toString()}" : 'no location'),
+                InputWithLabelWidget(_descriptionTextController, descriptionSubmit, 33, "description", ""),
               ]
             ),
             Positioned(
