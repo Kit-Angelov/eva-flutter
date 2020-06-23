@@ -21,7 +21,6 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   //models
   var myCurrentLocationState;
   Position position;
-  var description = '';
 
   TextEditingController _descriptionTextController;
   File _image;
@@ -39,9 +38,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = 'http://192.168.0.105:8005/?idToken=${token}';
-      var _position;
-      _postImage(url, _image, _position).then((res) {
+      var url = 'http://192.168.2.232:8005/?idToken=${token}';
+      _postImage(url, _image).then((res) {
         print(res);
       });
     });
@@ -49,11 +47,12 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
 
   void descriptionSubmit(String value) {}
 
-  Future<int> _postImage(url, image, _position) async{
+  Future<int> _postImage(url, image) async{
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    print(_position);
-    request.fields['key'] = 'value';
-    request.fields['key'] = 'value';
+    print(position);
+    request.fields['latitude'] = position.latitude.toString();
+    request.fields['longitude'] = position.longitude.toString();
+    request.fields['description'] = _descriptionTextController.text;
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
