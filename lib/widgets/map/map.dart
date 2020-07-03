@@ -1,73 +1,52 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
-import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eva/services/firebaseAuth.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 
-import 'package:eva/widgets/map/marker.dart';
-import 'package:eva/widgets/map/circle.dart';
 import 'package:eva/models/photoPost.dart';
 
 
 class MapWidget extends StatefulWidget {
-  var cameraMoveCallback;
-  MapWidget({Key key, this.cameraMoveCallback}) : super(key: key);
 
   @override
   MapWidgetState createState() => MapWidgetState();
 }
 
 class MapWidgetState extends State<MapWidget> {
-  Completer<GoogleMapController> _controller = Completer();
-  GoogleMapController mapController;
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  Map<CircleId, Circle> circles = <CircleId, Circle>{};
+
+  static final CameraPosition _kInitialPosition = const CameraPosition(
+    target: LatLng(-33.852, 151.211),
+    zoom: 11.0,
+  );
+
+  MapboxMapController mapController;
+  CameraPosition _position = _kInitialPosition;
+  bool _isMoving = false;
+  CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
+  MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
+  int _styleStringIndex = 0;
+  List<String> _styleStrings = [MapboxStyles.MAPBOX_STREETS, MapboxStyles.SATELLITE, "assets/style.json"];
+  List<String> _styleStringLabels = ["MAPBOX_STREETS", "SATELLITE", "LOCAL_ASSET"];
+  bool _rotateGesturesEnabled = true;
+  bool _scrollGesturesEnabled = true;
+  bool _tiltGesturesEnabled = true;
+  bool _zoomGesturesEnabled = true;
+  bool _myLocationEnabled = true;
+  bool _telemetryEnabled = true;
+  MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
+
+  LatLngBounds currentBbox;
+
+  List<Symbol> symbols;
 
   List<PhotoPost> photoPosts;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(51.67204, 39.1843),
-    zoom: 11.4746,
-  );
-
-  void _onMapCreated(GoogleMapController controller) async  {
-    mapController = controller;
-    _controller.complete(controller);
-  }
-
-  void _onCameraMove(CameraPosition position) async {
-    LatLngBounds latLngBounds = await mapController.getVisibleRegion();
-    widget.cameraMoveCallback(latLngBounds);
-    getPhotoPosts();
-  }
-
-  Future<void> setCameraPosition(lat, lng) async{
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: LatLng(lat, lng),
-        zoom: 17,
-      )
-    ));
-  }
-
-  void addUserMarker(lat, lng, id, imgSrc) async {
-    var newMarkers = await addMarker(markers, lat, lng, id, imgSrc);
-    setState(() {
-      markers = newMarkers;
-    });
-  }
-
-  void setMyPosition(lat, lng) async{
-    var newCircles = await addCircle(circles, lat, lng);
-    setState(() {
-      circles = newCircles;
-    });
-  }
-
-  Future<http.Response> _getPhotoPosts(url) async{
-    var res = await http.get(url);
+  Future<Response> _getPhotoPosts(url) async{
+    var res = await get(url);
     return res;
   }
 
@@ -85,6 +64,8 @@ class MapWidgetState extends State<MapWidget> {
     });
   }
 
+
+
   @override
   initState() {
     super.initState();
@@ -93,17 +74,106 @@ class MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final MapboxMap mapboxMap = MapboxMap(
+      onMapCreated: onMapCreated,
+      initialCameraPosition: _kInitialPosition,
+      trackCameraPosition: true,
+      compassEnabled: false,
+      cameraTargetBounds: _cameraTargetBounds,
+      minMaxZoomPreference: _minMaxZoomPreference,
+      styleString: _styleStrings[_styleStringIndex],
+      rotateGesturesEnabled: _rotateGesturesEnabled,
+      scrollGesturesEnabled: _scrollGesturesEnabled,
+      tiltGesturesEnabled: _tiltGesturesEnabled,
+      zoomGesturesEnabled: _zoomGesturesEnabled,
+      myLocationEnabled: _myLocationEnabled,
+      myLocationTrackingMode: _myLocationTrackingMode,
+      myLocationRenderMode: MyLocationRenderMode.NORMAL,
+      onCameraIdle: _onCameraIdle,
+      onMapClick: (point, latLng) async {
+        print("Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+      },
+      onMapLongClick: (point, latLng) async {
+        print("Map long press: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+      },
+      // onCameraTrackingDismissed: () {
+      //   this.setState(() {
+      //     _myLocationTrackingMode = MyLocationTrackingMode.None;
+      //   });
+      // }
+    );
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: _onMapCreated,
-        onCameraMove: _onCameraMove,
-        markers: Set<Marker>.of(markers.values),
-        circles: Set<Circle>.of(circles.values),
-        mapToolbarEnabled: false,
-        compassEnabled: false
-      ),
+      body: mapboxMap
     );
   }
+
+  void _onCameraIdle() async {
+    currentBbox = await mapController.getVisibleRegion();
+    print(currentBbox);
+  }
+
+  void _onMapChanged() {
+    setState(() {
+    });
+  }
+
+  void onMapCreated(MapboxMapController controller) async{
+    mapController = controller;
+    // mapController.addListener(_onMapChanged);
+    moveToMyPosition();
+
+    mapController.getTelemetryEnabled().then((isEnabled) =>
+        setState(() {
+          _telemetryEnabled = isEnabled;
+        }));
+  }
+
+
+  // SYMBOL API
+
+  Future<void> _addImageFromUrl(String id, String url) async {
+    var response = await get(url);
+    return mapController.addImage(id, response.bodyBytes);
+  }
+
+  SymbolOptions _getSymbolOptions(String iconImage, LatLng coordinates){
+    return SymbolOptions(
+      geometry: coordinates,
+      iconImage: iconImage,
+    );
+  }  
+
+  void _addSymbol(String iconImage, LatLng coordinates, String id) async{
+    await _addImageFromUrl(name, url)
+    Symbol symbol = await mapController.addSymbol(_getSymbolOptions(iconImage, coordinates));
+
+    setState(() {});
+  }
+
+
+
+  //PUBLIC METHODS---------
+  
+  //Set camera position
+  void setCameraPosition(LatLng position) {
+    mapController.moveCamera(CameraUpdate.newLatLng(position));
+  }
+
+  //Add symbol
+
+  //Remove symbol
+
+  //Select symbol
+
+  //Remove all symbols
+
+  //Move to symbol position
+
+  //Move to my postion
+  void moveToMyPosition() async{
+    LatLng myLocation = await mapController.requestMyLocationLatLng();
+    setCameraPosition(myLocation);
+  }
+
+  //----------------------
 }

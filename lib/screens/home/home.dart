@@ -57,11 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _searchPlaceCallback(lat, lng) {
-    _mapWidgetState.currentState.setCameraPosition(lat, lng);
+    // _mapWidgetState.currentState.setCameraPosition(lat, lng);
   }
 
   void _setMyPositionToMap() {
-    _mapWidgetState.currentState.setMyPosition(myPosition.latitude, myPosition.longitude);
+    // _mapWidgetState.currentState.setMyPosition(myPosition.latitude, myPosition.longitude);
   }
   
   void _updateMyLocationCallback(Position position) {
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await checkGeolocationPermissionStatus();
     await getMyLocation(_updateMyLocationCallback);
     if (geolocationStatus == GeolocationStatus.granted && myPosition != null) {
-      _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
+      // _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
     }
   }
 
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapWidget(key: _mapWidgetState, cameraMoveCallback: cameraMoveCallBack,)),
+              Expanded(child: MapWidget(),)
             ],),
             Positioned( //search places
               bottom: bottomMargin + 30,
