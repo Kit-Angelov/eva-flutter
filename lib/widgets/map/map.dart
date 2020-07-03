@@ -41,8 +41,6 @@ class MapWidgetState extends State<MapWidget> {
 
   LatLngBounds currentBbox;
 
-  List<Symbol> symbols;
-
   List<PhotoPost> photoPosts;
 
   Future<Response> _getPhotoPosts(url) async{
@@ -143,13 +141,11 @@ class MapWidgetState extends State<MapWidget> {
     );
   }  
 
-  void _addSymbol(String iconImage, LatLng coordinates, String id) async{
-    await _addImageFromUrl(name, url)
-    Symbol symbol = await mapController.addSymbol(_getSymbolOptions(iconImage, coordinates));
-
+  void _addSymbol(String id, String imageUrl, LatLng coordinates) async{
+    await _addImageFromUrl(id, imageUrl);
+    await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
     setState(() {});
   }
-
 
 
   //PUBLIC METHODS---------
