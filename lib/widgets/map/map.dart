@@ -64,8 +64,6 @@ class MapWidgetState extends State<MapWidget> {
     });
   }
 
-
-
   @override
   initState() {
     super.initState();
@@ -126,6 +124,7 @@ class MapWidgetState extends State<MapWidget> {
         setState(() {
           _telemetryEnabled = isEnabled;
         }));
+    getPhotoPosts();
   }
 
 
