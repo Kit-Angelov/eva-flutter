@@ -41,6 +41,8 @@ class MapWidgetState extends State<MapWidget> {
 
   LatLngBounds currentBbox;
 
+  Symbol _selectedSymbol;
+
   List<PhotoPost> photoPosts;
 
   Future<Response> _getPhotoPosts(url) async{
@@ -139,33 +141,57 @@ class MapWidgetState extends State<MapWidget> {
       geometry: coordinates,
       iconImage: iconImage,
     );
-  }  
+  }
 
-  void _addSymbol(String id, String imageUrl, LatLng coordinates) async{
+  //--------------
+
+  //PUBLIC METHODS---------
+
+  void addSymbol(String id, String imageUrl, LatLng coordinates) async{
     await _addImageFromUrl(id, imageUrl);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
     setState(() {});
   }
 
+  void updateSelectedSymbol(SymbolOptions changes) {
+    mapController.updateSymbol(_selectedSymbol, changes);
+  }
 
-  //PUBLIC METHODS---------
+  void onSymbolTapped(Symbol symbol) {
+    if (_selectedSymbol != null) {
+      updateSelectedSymbol(
+        const SymbolOptions(iconSize: 1.0),
+      );
+    }
+    setState(() {
+      _selectedSymbol = symbol;
+    });
+    updateSelectedSymbol(
+      SymbolOptions(
+        iconSize: 1.4,
+      ),
+    );
+  }
+
+  void removeSymbol() {
+    mapController.removeSymbol(_selectedSymbol);
+    setState(() {
+      _selectedSymbol = null;
+    });
+  }
+
+  void removeAllSymbols() {
+    mapController.removeSymbols(mapController.symbols);
+    setState(() {
+      _selectedSymbol = null;
+    });
+  }
   
   //Set camera position
   void setCameraPosition(LatLng position) {
     mapController.moveCamera(CameraUpdate.newLatLng(position));
   }
 
-  //Add symbol
-
-  //Remove symbol
-
-  //Select symbol
-
-  //Remove all symbols
-
-  //Move to symbol position
-
-  //Move to my postion
   void moveToMyPosition() async{
     LatLng myLocation = await mapController.requestMyLocationLatLng();
     setCameraPosition(myLocation);
