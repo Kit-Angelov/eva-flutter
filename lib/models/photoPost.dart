@@ -1,7 +1,7 @@
 import "package:eva/models/geoJson.dart";
 
 class PhotoPost {
-  final int id;
+  final String id;
   final String imagesPaths;
   final Geometry location;
   final String description;
