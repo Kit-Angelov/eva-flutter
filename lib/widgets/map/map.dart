@@ -20,7 +20,7 @@ class MapWidgetState extends State<MapWidget> {
 
   static final CameraPosition _kInitialPosition = const CameraPosition(
     target: LatLng(59.852, 39.211),
-    zoom: 11.0,
+    zoom: 9.0,
   );
 
   MapboxMapController mapController;
@@ -38,10 +38,13 @@ class MapWidgetState extends State<MapWidget> {
   bool _myLocationEnabled = false;
   bool _telemetryEnabled = true;
   MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
+  List<Object> _featureQueryFilter;
 
   LatLngBounds currentBbox;
 
+  Circle _backgroundCircle;
   Symbol _selectedSymbol;
+  Symbol _prevSelectedSymbol;
 
   @override
   initState() {
@@ -74,10 +77,15 @@ class MapWidgetState extends State<MapWidget> {
       myLocationRenderMode: MyLocationRenderMode.NORMAL,
       onCameraIdle: _onCameraIdle,
       onMapClick: (point, latLng) async {
-        print("Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+        // print("Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+        // print("Filter $_featureQueryFilter");
+        // List features = await mapController.queryRenderedFeatures(point, [], _featureQueryFilter);
+        // if (features.length>0) {
+        //   print(features[0]);
+        // }
       },
       onMapLongClick: (point, latLng) async {
-        print("Map long press: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+        // print("Map long press: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
       },
       // onCameraTrackingDismissed: () {
       //   this.setState(() {
@@ -113,6 +121,21 @@ class MapWidgetState extends State<MapWidget> {
     getPhotoPosts();
   }
 
+  // CIRCLE API
+
+  void _addCircle(CircleOptions options) async {
+    _backgroundCircle = await mapController.addCircle(
+      options
+    );
+    setState((){});
+  }
+
+  void _removeCircle(Circle circle) {
+    mapController.removeCircle(circle);
+    setState(() {
+      _backgroundCircle = null;
+    });
+  }
 
   // SYMBOL API
 
@@ -133,6 +156,7 @@ class MapWidgetState extends State<MapWidget> {
   //PUBLIC METHODS---------
 
   void addSymbol(String id, String imageUrl, LatLng coordinates) async{
+    print('ADD');
     await _addImageFromUrl(id, imageUrl);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
     setState(() {});
@@ -144,22 +168,33 @@ class MapWidgetState extends State<MapWidget> {
 
   void onSymbolTapped(Symbol symbol) {
     if (_selectedSymbol != null) {
-      updateSelectedSymbol(
-        const SymbolOptions(iconSize: 1.0),
-      );
+        updateSelectedSymbol(
+          const SymbolOptions(zIndex: 1),
+        );
     }
     setState(() {
       _selectedSymbol = symbol;
+      updateSelectedSymbol(
+        const SymbolOptions(zIndex: 12),
+      );
     });
-    updateSelectedSymbol(
-      SymbolOptions(
-        iconSize: 1.4,
-      ),
+    if (_backgroundCircle != null) {
+      _removeCircle(_backgroundCircle);
+    }
+    CircleOptions circleOptions = new CircleOptions(
+      geometry: symbol.options.geometry,
+      circleColor: "white",
+      circleRadius: 25,
+      circleOpacity: 0,
+      circleStrokeWidth: 4,
+      circleStrokeColor: "blue",
+      circleStrokeOpacity: 1
     );
+    _addCircle(circleOptions);
   }
 
   void removeSymbol() {
-    mapController.removeSymbol(_selectedSymbol);
+    mapController.removeSymbols(mapController.symbols);
     setState(() {
       _selectedSymbol = null;
     });
@@ -204,7 +239,9 @@ class MapWidgetState extends State<MapWidget> {
       _getPhotoPosts(url).then((res) {
         if (res.body != null) {
           photoPosts =(json.decode(res.body) as List).map((i) => PhotoPost.fromJson(i)).toList();
-          addPhotoPostToMap(photoPosts[0]);
+          for (var i in photoPosts) {
+            addPhotoPostToMap(i);
+          }
         }
       });
     });
@@ -212,8 +249,8 @@ class MapWidgetState extends State<MapWidget> {
 
   void addPhotoPostToMap(PhotoPost photoPost) {
     LatLng coords = LatLng(photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
-    print(photoPost.location.coordinates[1]);
-    addSymbol(photoPost.id, photoPost.imagesPaths + '/100.jpg', coords);
+    // addSymbol(photoPost.id, photoPost.imagesPaths + '/100circle.png', coords);
+    addSymbol(photoPost.id, "https://storage.googleapis.com/pubphoto/2oB7ZukDeCVPBPSdkSYZxgH0Dj03/10d9b68c-ec46-4970-a139-e05f3ce359e1/100circle.png", coords);
   }
   //
 }
