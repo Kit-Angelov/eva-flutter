@@ -44,7 +44,6 @@ class MapWidgetState extends State<MapWidget> {
 
   Circle _backgroundCircle;
   Symbol _selectedSymbol;
-  Symbol _prevSelectedSymbol;
 
   @override
   initState() {
@@ -100,7 +99,9 @@ class MapWidgetState extends State<MapWidget> {
 
   void _onCameraIdle() async {
     currentBbox = await mapController.getVisibleRegion();
-    print(currentBbox);
+    removeAllSymbols();
+    _removeCircle(_backgroundCircle);
+    getPhotoPosts();
   }
 
   void _onMapChanged() {
@@ -118,7 +119,6 @@ class MapWidgetState extends State<MapWidget> {
         setState(() {
           _telemetryEnabled = isEnabled;
         }));
-    getPhotoPosts();
   }
 
   // CIRCLE API
@@ -131,10 +131,12 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   void _removeCircle(Circle circle) {
-    mapController.removeCircle(circle);
-    setState(() {
-      _backgroundCircle = null;
-    });
+    if (_backgroundCircle != null) {
+      mapController.removeCircle(circle);
+      setState(() {
+        _backgroundCircle = null;
+      });
+    }
   }
 
   // SYMBOL API
@@ -156,7 +158,6 @@ class MapWidgetState extends State<MapWidget> {
   //PUBLIC METHODS---------
 
   void addSymbol(String id, String imageUrl, LatLng coordinates) async{
-    print('ADD');
     await _addImageFromUrl(id, imageUrl);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
     setState(() {});
@@ -201,7 +202,9 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   void removeAllSymbols() {
-    mapController.removeSymbols(mapController.symbols);
+    if (mapController.symbols.length > 0) {
+      mapController.removeSymbols(mapController.symbols);
+    }
     setState(() {
       _selectedSymbol = null;
     });
@@ -237,7 +240,7 @@ class MapWidgetState extends State<MapWidget> {
       token = idToken;
       var url = 'http://192.168.2.232:8006/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
       _getPhotoPosts(url).then((res) {
-        if (res.body != null) {
+        if (res.body != null && res.body !='null') {
           photoPosts =(json.decode(res.body) as List).map((i) => PhotoPost.fromJson(i)).toList();
           for (var i in photoPosts) {
             addPhotoPostToMap(i);
@@ -249,8 +252,7 @@ class MapWidgetState extends State<MapWidget> {
 
   void addPhotoPostToMap(PhotoPost photoPost) {
     LatLng coords = LatLng(photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
-    // addSymbol(photoPost.id, photoPost.imagesPaths + '/100circle.png', coords);
-    addSymbol(photoPost.id, "https://storage.googleapis.com/pubphoto/2oB7ZukDeCVPBPSdkSYZxgH0Dj03/10d9b68c-ec46-4970-a139-e05f3ce359e1/100circle.png", coords);
+    addSymbol(photoPost.id, photoPost.imagesPaths + "/100circle.png", coords);
   }
   //
 }
