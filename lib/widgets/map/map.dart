@@ -111,8 +111,8 @@ class MapWidgetState extends State<MapWidget> {
       Duration(seconds: 1), 
       () {
         if (currentBbox != null){
-          deltaLat = ((newBbox.northeast.latitude - currentBbox.northeast.latitude) / (currentBbox.northeast.latitude - newBbox.southwest.latitude)).abs();
-          deltaLng = ((newBbox.northeast.longitude - currentBbox.northeast.longitude) / (currentBbox.northeast.longitude - newBbox.southwest.longitude)).abs();
+          deltaLat = ((newBbox.northeast.latitude - currentBbox.northeast.latitude) / (currentBbox.northeast.latitude - currentBbox.southwest.latitude)).abs();
+          deltaLng = ((newBbox.northeast.longitude - currentBbox.northeast.longitude) / (currentBbox.northeast.longitude - currentBbox.southwest.longitude)).abs();
         }
         currentBbox = newBbox;
         if (deltaLat >= 0.2 || deltaLng >= 0.3) {
