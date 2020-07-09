@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 
 import 'package:eva/utils/geolocation.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -26,11 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
-  GeolocationStatus geolocationStatus;
-  Position myPosition;
-
-  WebSocketConnection geolocationSender;
-  var userLocationGetter;
+  // WebSocketConnection geolocationSender;
+  // var userLocationGetter;
 
   double bottomMargin = 0;
 
@@ -44,55 +41,40 @@ class _HomeScreenState extends State<HomeScreen> {
   };
 
 
-  checkGeolocationPermissionStatus() async{
-    geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
-    setState(() {});
-  }
-
-  void _selectAppCallback(index) {
-    Navigator.pop(context);
-    setState(() {
-      currentAppIndex = index;
-    });
-  }
+  // checkGeolocationPermissionStatus() async{
+  //   geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
+  //   setState(() {});
+  // }
 
   void _searchPlaceCallback(lat, lng) {
     // _mapWidgetState.currentState.setCameraPosition(lat, lng);
   }
-
-  void _setMyPositionToMap() {
-    // _mapWidgetState.currentState.setMyPosition(myPosition.latitude, myPosition.longitude);
-  }
   
-  void _updateMyLocationCallback(Position position) {
-    setState(() {
-      myCurrentLocationState.setMyCurrentLocation(position);
-      myPosition = position;
-      // _setMyPositionToMap();
-      // geolocationSender.send(myPosition.toJson());
-    });
+  // void _updateMyLocationCallback(Position position) {
+  //   setState(() {
+  //     myCurrentLocationState.setMyCurrentLocation(position);
+  //     myPosition = position;
+  //     // _setMyPositionToMap();
+  //     // geolocationSender.send(myPosition.toJson());
+  //   });
+  // }
+
+  // void _initGettingMyPosition() async {
+  //   updateMyLocation(_updateMyLocationCallback);
+  // }
+
+  void _moveToMyPosition() async{
+    
+    _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
   }
 
-  void _initGettingMyPosition() async {
-    updateMyLocation(_updateMyLocationCallback);
-  }
-
-  Future<void> _moveToMyPosition() async{
-    await checkGeolocationPermissionStatus();
-    await getMyLocation(_updateMyLocationCallback);
-    if (geolocationStatus == GeolocationStatus.granted && myPosition != null) {
-      // _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
-    }
-  }
-
-  void cameraMoveCallBack(bbox) {
-    // userLocationGetter.updateBbox(bbox);
-  }
+  // void cameraMoveCallBack(bbox) {
+  //   // userLocationGetter.updateBbox(bbox);
+  // }
 
   @override
   void initState() {
     super.initState();
-    _initGettingMyPosition();
     // geolocationSender = new WebSocketConnection("ws://192.168.0.105:8001");
     // geolocationSender.connect();
     // userLocationGetter = UsersLocationGetter(_mapWidgetState);
@@ -173,21 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            // Positioned( // app list
-            //   bottom: bottomMargin + 150,
-            //   right: 5,
-            //   child: Opacity(
-            //     opacity: 0.9,
-            //     child: FloatingActionButton(
-            //       backgroundColor: Colors.purple.shade500,
-            //       child: Icon(appsIcons[currentAppIndex]),
-            //       elevation: 0.0,
-            //       mini: true,
-            //       heroTag: null,
-            //       onPressed: (){openAppsList(context, _selectAppCallback);},
-            //     ),
-            //   ),
-            // ),
             // Positioned( // favorits
             //   bottom: bottomMargin + 220,
             //   right: 5,
@@ -226,8 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            // : null,
-            // (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
+            (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
           ].where(notNull).toList(),
         ),
       )

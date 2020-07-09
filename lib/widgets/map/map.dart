@@ -37,7 +37,7 @@ class MapWidgetState extends State<MapWidget> {
   bool _tiltGesturesEnabled = true;
   bool _zoomGesturesEnabled = true;
   bool _myLocationEnabled = false;
-  bool _telemetryEnabled = true;
+  bool _telemetryEnabled = false;
   MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
   List<Object> _featureQueryFilter;
 
@@ -117,7 +117,7 @@ class MapWidgetState extends State<MapWidget> {
         currentBbox = newBbox;
         if (deltaLat >= 0.2 || deltaLng >= 0.3) {
           removeAllSymbols();
-          getPhotoPosts();
+          Timer(Duration(milliseconds: 200), () {getPhotoPosts();});
         }
       });
   }
@@ -129,14 +129,11 @@ class MapWidgetState extends State<MapWidget> {
 
   void onMapCreated(MapboxMapController controller) async{
     mapController = controller;
+    mapController.setTelemetryEnabled(false);
     // mapController.addListener(_onMapChanged);
     await moveToMyPosition();
     mapController.onSymbolTapped.add(onSymbolTapped);
-
-    mapController.getTelemetryEnabled().then((isEnabled) =>
-        setState(() {
-          _telemetryEnabled = isEnabled;
-        }));
+    getPhotoPosts();
   }
 
   // CIRCLE API
@@ -176,10 +173,8 @@ class MapWidgetState extends State<MapWidget> {
   //PUBLIC METHODS---------
 
   void addSymbol(String id, String imageUrl, LatLng coordinates) async{
-    print('ADD');
     await _addImageFromUrl(id, imageUrl);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
-    setState(() {});
   }
 
   void updateSelectedSymbol(SymbolOptions changes) {
