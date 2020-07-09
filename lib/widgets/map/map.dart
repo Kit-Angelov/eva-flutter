@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
+import 'dart:ffi';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:eva/services/firebaseAuth.dart';
@@ -31,7 +32,7 @@ class MapWidgetState extends State<MapWidget> {
   int _styleStringIndex = 0;
   List<String> _styleStrings = [MapboxStyles.MAPBOX_STREETS, MapboxStyles.SATELLITE, "assets/style.json"];
   List<String> _styleStringLabels = ["MAPBOX_STREETS", "SATELLITE", "LOCAL_ASSET"];
-  bool _rotateGesturesEnabled = true;
+  bool _rotateGesturesEnabled = false;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
   bool _zoomGesturesEnabled = true;
@@ -42,8 +43,12 @@ class MapWidgetState extends State<MapWidget> {
 
   LatLngBounds currentBbox;
 
-  Circle _backgroundCircle;
   Symbol _selectedSymbol;
+
+  double deltaLat = 1.0;
+  double deltaLng = 1.0;
+
+  Timer _timer;
 
   @override
   initState() {
@@ -98,10 +103,23 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   void _onCameraIdle() async {
-    currentBbox = await mapController.getVisibleRegion();
-    removeAllSymbols();
-    _removeCircle(_backgroundCircle);
-    getPhotoPosts();
+    LatLngBounds newBbox = await mapController.getVisibleRegion();
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    _timer = Timer(
+      Duration(seconds: 1), 
+      () {
+        if (currentBbox != null){
+          deltaLat = ((newBbox.northeast.latitude - currentBbox.northeast.latitude) / (currentBbox.northeast.latitude - newBbox.southwest.latitude)).abs();
+          deltaLng = ((newBbox.northeast.longitude - currentBbox.northeast.longitude) / (currentBbox.northeast.longitude - newBbox.southwest.longitude)).abs();
+        }
+        currentBbox = newBbox;
+        if (deltaLat >= 0.2 || deltaLng >= 0.3) {
+          removeAllSymbols();
+          getPhotoPosts();
+        }
+      });
   }
 
   void _onMapChanged() {
@@ -123,21 +141,21 @@ class MapWidgetState extends State<MapWidget> {
 
   // CIRCLE API
 
-  void _addCircle(CircleOptions options) async {
-    _backgroundCircle = await mapController.addCircle(
-      options
-    );
-    setState((){});
-  }
+  // void _addCircle(CircleOptions options) async {
+  //   _backgroundCircle = await mapController.addCircle(
+  //     options
+  //   );
+  //   setState((){});
+  // }
 
-  void _removeCircle(Circle circle) {
-    if (_backgroundCircle != null) {
-      mapController.removeCircle(circle);
-      setState(() {
-        _backgroundCircle = null;
-      });
-    }
-  }
+  // void _removeCircle(Circle circle) {
+  //   if (_backgroundCircle != null) {
+  //     mapController.removeCircle(circle);
+  //     setState(() {
+  //       _backgroundCircle = null;
+  //     });
+  //   }
+  // }
 
   // SYMBOL API
 
@@ -158,6 +176,7 @@ class MapWidgetState extends State<MapWidget> {
   //PUBLIC METHODS---------
 
   void addSymbol(String id, String imageUrl, LatLng coordinates) async{
+    print('ADD');
     await _addImageFromUrl(id, imageUrl);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
     setState(() {});
@@ -170,28 +189,15 @@ class MapWidgetState extends State<MapWidget> {
   void onSymbolTapped(Symbol symbol) {
     if (_selectedSymbol != null) {
         updateSelectedSymbol(
-          const SymbolOptions(zIndex: 1),
+          const SymbolOptions(zIndex: 1, iconSize: 1),
         );
     }
     setState(() {
       _selectedSymbol = symbol;
       updateSelectedSymbol(
-        const SymbolOptions(zIndex: 12),
+        const SymbolOptions(zIndex: 12, iconSize: 1.4),
       );
     });
-    if (_backgroundCircle != null) {
-      _removeCircle(_backgroundCircle);
-    }
-    CircleOptions circleOptions = new CircleOptions(
-      geometry: symbol.options.geometry,
-      circleColor: "white",
-      circleRadius: 25,
-      circleOpacity: 0,
-      circleStrokeWidth: 4,
-      circleStrokeColor: "blue",
-      circleStrokeOpacity: 1
-    );
-    _addCircle(circleOptions);
   }
 
   void removeSymbol() {
@@ -236,6 +242,8 @@ class MapWidgetState extends State<MapWidget> {
   void getPhotoPosts() async{
     String token;
     LatLngBounds latLngBounds = await mapController.getVisibleRegion();
+    print("GET");
+    print(latLngBounds);
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = 'http://192.168.2.232:8006/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
