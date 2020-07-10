@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 
@@ -34,11 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _userDetailWidget;
   Widget _getPhotoWidget;
 
-  var currentAppIndex = 0;
-  Map appsIcons = {
-    0: Icons.person_pin,
-    1: Icons.photo_library
-  };
+  Location location = new Location();
 
 
   // checkGeolocationPermissionStatus() async{
@@ -62,11 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // void _initGettingMyPosition() async {
   //   updateMyLocation(_updateMyLocationCallback);
   // }
-
-  void _moveToMyPosition() async{
-    
-    _mapWidgetState.currentState.setCameraPosition(myPosition.latitude, myPosition.longitude);
-  }
 
   // void cameraMoveCallBack(bbox) {
   //   // userLocationGetter.updateBbox(bbox);
@@ -94,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapWidget(),)
+              Expanded(child: MapWidget(key: _mapWidgetState)),
             ],),
             Positioned( //search places
               bottom: bottomMargin + 30,
@@ -151,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 0.0,
                   mini: true,
                   heroTag: null,
-                  onPressed: (){_moveToMyPosition();},
+                  onPressed: (){_mapWidgetState.currentState.moveToMyPosition();},
                 ),
               ),
             ),
@@ -187,13 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     mini: true,
                     heroTag: null,
                     onPressed: (){
-                      checkGeolocationPermissionStatus();
+                      // checkGeolocationPermissionStatus();
                       Navigator.pushNamed(context, '/pubPhoto');
                     },
                   ),
                 ),
               ),
-            (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
+            // (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
           ].where(notNull).toList(),
         ),
       )

@@ -6,12 +6,13 @@ import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:eva/models/photoPost.dart';
 
 
 class MapWidget extends StatefulWidget {
+  MapWidget({Key key}) : super(key: key);
 
   @override
   MapWidgetState createState() => MapWidgetState();
@@ -21,7 +22,7 @@ class MapWidgetState extends State<MapWidget> {
 
   static final CameraPosition _kInitialPosition = const CameraPosition(
     target: LatLng(59.852, 39.211),
-    zoom: 9.0,
+    zoom: 13.0,
   );
 
   MapboxMapController mapController;
@@ -45,6 +46,9 @@ class MapWidgetState extends State<MapWidget> {
 
   Symbol _selectedSymbol;
 
+  Position myLocation;
+  StreamSubscription<Position> positionStream;
+
   double deltaLat = 1.0;
   double deltaLng = 1.0;
 
@@ -59,6 +63,7 @@ class MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     mapController?.onSymbolTapped?.remove(onSymbolTapped);
+    _stopListen();
     super.dispose();
   }
 
@@ -108,7 +113,7 @@ class MapWidgetState extends State<MapWidget> {
       _timer.cancel();
     }
     _timer = Timer(
-      Duration(seconds: 1), 
+      Duration(seconds: 1),
       () {
         if (currentBbox != null){
           deltaLat = ((newBbox.northeast.latitude - currentBbox.northeast.latitude) / (currentBbox.northeast.latitude - currentBbox.southwest.latitude)).abs();
@@ -131,8 +136,9 @@ class MapWidgetState extends State<MapWidget> {
     mapController = controller;
     mapController.setTelemetryEnabled(false);
     // mapController.addListener(_onMapChanged);
-    await moveToMyPosition();
     mapController.onSymbolTapped.add(onSymbolTapped);
+    _listenLocation();
+    moveToLastKnownLocation();
     getPhotoPosts();
   }
 
@@ -169,6 +175,26 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   //--------------
+
+  // Location 
+
+  void _listenLocation() async {
+    var geolocator = Geolocator();
+    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+
+    positionStream = geolocator.getPositionStream(locationOptions).listen(
+        (Position position) {
+            setState(() {
+              myLocation = position;
+            });
+        });
+  }
+
+  Future<void> _stopListen() async {
+    positionStream.cancel();
+  }
+
+  // ------------------
 
   //PUBLIC METHODS---------
 
@@ -212,15 +238,27 @@ class MapWidgetState extends State<MapWidget> {
   }
   
   //Set camera position
-  void setCameraPosition(LatLng position) {
+  void moveCameraPosition(LatLng position) {
     mapController.moveCamera(CameraUpdate.newLatLng(position));
   }
 
-  Future<void> moveToMyPosition() async{
-    Location location = new Location();
-    LocationData myLocation = await location.getLocation();
-    LatLng latlng = LatLng(myLocation.latitude, myLocation.longitude);
-    setCameraPosition(latlng);
+  void animateCameraPosition(LatLng position) {
+    mapController.animateCamera(CameraUpdate.newLatLng(position));
+  }
+  
+  void moveToLastKnownLocation() async{
+    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    if (position != null) {
+      LatLng latlng = LatLng(position.latitude, position.longitude);
+      animateCameraPosition(latlng);
+    }
+  }
+
+  void moveToMyPosition() async{
+    if (myLocation != null) {
+      LatLng latlng = LatLng(myLocation.latitude, myLocation.longitude);
+      animateCameraPosition(latlng);
+    }
   }
 
   //----------------------
