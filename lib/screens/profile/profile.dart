@@ -1,10 +1,19 @@
 
 import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eva/widgets/widgets.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:eva/config.dart';
+import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/widgets/widgets.dart';
+import 'package:eva/models/profile.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -17,6 +26,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _telegramTextController;
 
   File _image;
+  Image imageWidget;
+
+  Profile profileData;
 
   void usernameSubmit(String value) {
     print(value);
@@ -33,7 +45,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var image = await ImagePicker.pickImage(source: imageSource);
     setState(() {
       _image = image;
+      imageWidget = Image.file(
+        _image,
+        fit: BoxFit.cover,
+      );
+      _upload();
     });
+  }
+
+  void _upload() {
+    if (_image == null) return;
+    String token;
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['profilePhoto'] + '/?idToken=${token}';
+      print(url);
+      _postImage(url, _image).then((res) {
+        print(res);
+      });
+    });
+  }
+
+  Future<int> _postImage(url, image) async{
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        _image.readAsBytesSync(),
+        filename: _image.path.split("/").last
+      )
+    );
+    var res = await request.send();
+    return(res.statusCode);
   }
 
   void _getImage() {
@@ -75,9 +118,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ); 
   }
 
+  Future<http.Response> _getProfileData(url) async{
+    var res = await http.get(url);
+    return res;
+  }
+
+  void getProfileData() async{
+    String token;
+    print("GET");
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['profile'] + '/?idToken=${token}';
+      _getProfileData(url).then((res) {
+        if (res.body != null && res.body !='null') {
+          print(res.body);
+          profileData = Profile.fromJson(json.decode(res.body));
+          if (profileData.photo != null) {
+            setState(() {
+              if (profileData.photo != '') {
+                imageWidget = Image.network(
+                  profileData.photo + '/300.jpg',
+                  fit: BoxFit.cover,
+                );
+              }
+            });
+          }
+        }
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getProfileData();
     _usernameTextController = TextEditingController(text: 'initial text');
     _instagramTextController = TextEditingController(text: 'balexander64');
     _telegramTextController = TextEditingController(text: 'blinkcast');
@@ -103,12 +177,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: _image == null
+                              child: imageWidget == null
                                 ? Text('No image selected.')
-                                : Image.file(
-                                  _image,
-                                  fit: BoxFit.cover,
-                                ),
+                                : imageWidget,
                             )
                           ],
                         ),

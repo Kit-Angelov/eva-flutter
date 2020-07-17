@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart';
 
 import 'package:eva/utils/geolocation.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -13,6 +14,10 @@ import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
 import 'package:eva/services/webSocketConnection.dart';
 import 'package:eva/services/usersLocationGetter.dart';
 import 'package:eva/models/myCurrentLocation.dart';
+import 'package:eva/screens/home/modalSheets/pubPhotoDetailWidget.dart';
+import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/config.dart';
+import 'package:eva/models/profile.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -34,8 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _userDetailWidget;
   Widget _getPhotoWidget;
+  Widget _photoDetailWidget;
 
   Location location = new Location();
+
+  Profile profileData;
 
 
   // checkGeolocationPermissionStatus() async{
@@ -71,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // geolocationSender.connect();
     // userLocationGetter = UsersLocationGetter(_mapWidgetState);
     // userLocationGetter.consume();
+    getProfileData();
     setState(() {});
   }
 
@@ -86,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: <Widget>[
             Column(children: <Widget>[
-              Expanded(child: MapWidget(key: _mapWidgetState)),
+              Expanded(child: MapWidget(key: _mapWidgetState, symbolClickCallBack: symbolClickCallBack)),
             ],),
             Positioned( //search places
               bottom: bottomMargin + 30,
@@ -124,10 +133,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25),
-                    child: Image.network(
-                      "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-                      fit: BoxFit.cover,
-                    )
+                    child: profileData.photo != '' 
+                      ? Image.network(
+                        profileData.photo + '/300.jpg',
+                        fit: BoxFit.cover,
+                      )
+                      : Image.network(
+                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
+                        fit: BoxFit.cover,
+                      )
                   ),
                 ),
               ),
@@ -185,10 +199,41 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            // (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
+            (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
           ].where(notNull).toList(),
         ),
       )
     );
+  }
+
+  void symbolClickCallBack(symbolData) async{
+    setState(() {
+      _photoDetailWidget = PubPhotoDetailWidget(photoData: symbolData);
+    });
+  }
+
+  // Profile
+  Future<Response> _getProfileData(url) async{
+    var res = await get(url);
+    return res;
+  }
+
+  void getProfileData() async{
+    String token;
+    print("GET");
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['profile'] + '/?idToken=${token}';
+      _getProfileData(url).then((res) {
+        if (res.body != null && res.body !='null') {
+          print(res.body);
+          profileData = Profile.fromJson(json.decode(res.body));
+          if (profileData.photo != null) {
+            setState(() {
+            });
+          }
+        }
+      });
+    });
   }
 }

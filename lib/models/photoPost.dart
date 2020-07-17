@@ -6,8 +6,9 @@ class PhotoPost {
   final Geometry location;
   final String description;
   final String userId;
+  final Map favorites;
 
-  PhotoPost({this.id, this.imagesPaths, this.location, this.description, this.userId});
+  PhotoPost({this.id, this.imagesPaths, this.location, this.description, this.userId, this.favorites});
 
   factory PhotoPost.fromJson(Map<String, dynamic> json) {
     return PhotoPost(
@@ -15,7 +16,8 @@ class PhotoPost {
       id: json['_id'],
       description: json['description'],
       imagesPaths: json['imagesPaths'],
-      location: Geometry.fromJson(json['location'])
+      location: Geometry.fromJson(json['location']),
+      favorites: json['favorites']
     );
   }
 }

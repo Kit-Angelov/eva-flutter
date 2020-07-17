@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:eva/services/webSocketConnection.dart';
+
 import 'package:mapbox_gl/mapbox_gl.dart';
+
+import 'package:eva/config.dart';
+import 'package:eva/services/webSocketConnection.dart';
 
 
 class UsersLocationGetter {
@@ -55,7 +58,7 @@ class UsersLocationGetter {
 
   Future<void> connect() async {
     geolocationReceiver = WebSocketConnection(
-      "ws://192.168.0.105:8002",
+      config.urls['userLocationGetter'],
       urlParams: bbox,
       messageHandle: messageHandle);
     geolocationReceiver.connect();

@@ -4,15 +4,17 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
-import 'package:eva/services/firebaseAuth.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'package:eva/config.dart';
+import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/models/photoPost.dart';
 
 
 class MapWidget extends StatefulWidget {
-  MapWidget({Key key}) : super(key: key);
+  final symbolClickCallBack;
+  MapWidget({Key key, this.symbolClickCallBack}) : super(key: key);
 
   @override
   MapWidgetState createState() => MapWidgetState();
@@ -198,9 +200,10 @@ class MapWidgetState extends State<MapWidget> {
 
   //PUBLIC METHODS---------
 
-  void addSymbol(String id, String imageUrl, LatLng coordinates) async{
+  void addSymbol(String id, String imageUrl, LatLng coordinates, Map data) async{
     await _addImageFromUrl(id, imageUrl);
-    await mapController.addSymbol(_getSymbolOptions(id, coordinates), {'id': id});
+    print(data);
+    await mapController.addSymbol(_getSymbolOptions(id, coordinates), data);
   }
 
   void updateSelectedSymbol(SymbolOptions changes) {
@@ -208,6 +211,7 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   void onSymbolTapped(Symbol symbol) {
+    widget.symbolClickCallBack(symbol.data);
     if (_selectedSymbol != null) {
         updateSelectedSymbol(
           const SymbolOptions(zIndex: 1, iconSize: 1),
@@ -250,7 +254,7 @@ class MapWidgetState extends State<MapWidget> {
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
     if (position != null) {
       LatLng latlng = LatLng(position.latitude, position.longitude);
-      animateCameraPosition(latlng);
+      moveCameraPosition(latlng);
     }
   }
 
@@ -279,7 +283,7 @@ class MapWidgetState extends State<MapWidget> {
     print(latLngBounds);
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = 'http://192.168.2.232:8006/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
+      var url = config.urls['getPhoto'] + '/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
       _getPhotoPosts(url).then((res) {
         if (res.body != null && res.body !='null') {
           photoPosts =(json.decode(res.body) as List).map((i) => PhotoPost.fromJson(i)).toList();
@@ -293,7 +297,13 @@ class MapWidgetState extends State<MapWidget> {
 
   void addPhotoPostToMap(PhotoPost photoPost) {
     LatLng coords = LatLng(photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
-    addSymbol(photoPost.id, photoPost.imagesPaths + "/100circle.png", coords);
+    var data = {
+      'id': photoPost.id,
+      'imagesPaths': photoPost.imagesPaths,
+      'description': photoPost.description,
+      'userId': photoPost.userId,
+      'favorites': photoPost.favorites
+    };
+    addSymbol(photoPost.id, photoPost.imagesPaths + "/100circle.png", coords, data);
   }
-  //
 }

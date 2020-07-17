@@ -1,13 +1,13 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:eva/widgets/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:eva/config.dart';
+import 'package:eva/widgets/widgets.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/models/myCurrentLocation.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -38,7 +38,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = 'http://192.168.2.232:8005/?idToken=${token}';
+      var url = config.urls['pubPhoto'] + '/?idToken=${token}';
       _postImage(url, _image).then((res) {
         print(res);
       });
