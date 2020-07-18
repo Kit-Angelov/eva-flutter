@@ -5,6 +5,7 @@ class DevHome {
     'userLocationGetter': 'ws://192.168.0.102:8002',
     'profilePhoto': 'http://192.168.0.102:8003/photo',
     'profile': 'http://192.168.0.102:8003',
+    'user': 'http://192.168.0.102:8004',
   };
 }
 
@@ -15,6 +16,7 @@ class DevWork {
     'userLocationGetter': 'ws://192.168.0.105:8002',
     'profilePhoto': 'http://192.168.2.232:8003/photo',
     'profile': 'http://192.168.2.232:8003',
+    'user': 'http://192.168.2.232:8004',
   };
 }
 
@@ -25,6 +27,7 @@ class Prod {
     'userLocationGetter': 'ws://192.168.0.105:8002',
     'profilePhoto': 'http://192.168.2.232:8003/photo',
     'profile': 'http://192.168.2.232:8003',
+    'user': 'http://192.168.2.232:8004',
   };
 }
 

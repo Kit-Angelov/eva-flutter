@@ -200,9 +200,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void photoDetailWidgetClose() {
+    setState(() {
+      _photoDetailWidget = null;
+    });
+  }
+
   void symbolClickCallBack(symbolData) async{
     setState(() {
-      _photoDetailWidget = PubPhotoDetailWidget(photoData: symbolData);
+      _photoDetailWidget = new PubPhotoDetailWidget(photoData: symbolData, closeCallback: photoDetailWidgetClose);
     });
   }
 

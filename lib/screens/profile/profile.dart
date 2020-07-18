@@ -213,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // get profile data
 
-    Future<http.Response> _getProfileData(url) async{
+  Future<http.Response> _getProfileData(url) async{
     var res = await http.get(url);
     return res;
   }
