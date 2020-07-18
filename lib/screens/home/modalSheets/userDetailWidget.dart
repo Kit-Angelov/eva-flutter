@@ -1,10 +1,18 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/config.dart';
+import 'package:eva/models/profile.dart';
 
 class UserDetailWidget extends StatefulWidget {
   final String userId;
+  final closeCallback;
 
-  UserDetailWidget({Key key, this.userId}) : super(key: key);
+  UserDetailWidget({Key key, this.userId, this.closeCallback}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _UserDetailWidgetState();
@@ -37,10 +45,9 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25),
-                    child: Image.network(
-                      "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-                      fit: BoxFit.cover,
-                    )
+                    child: userData != null 
+                        ? userData.photo != '' ? Image.network(userData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+                        : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
                   ),
                 ),
                 SizedBox(width: 20,),
@@ -50,7 +57,7 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "asdf",
+                        userData != null ? userData.username : "username",
                         style: TextStyle(fontSize: 20),
                       )
                     ],
@@ -59,7 +66,7 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                 SizedBox(width: 20,),
                 IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: (){print("close");},
+                  onPressed: (){print("close"); widget.closeCallback();},
                 )
               ],
             ),
@@ -84,10 +91,9 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Image.network(
-                        "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
-                        fit: BoxFit.cover,
-                      )
+                      child: userData != null 
+                        ? userData.photo != '' ? Image.network(userData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+                        : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
                     )
                   ],
                 ),
@@ -102,9 +108,16 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
   @override
   void initState() {
     super.initState();
+    getUserData();
     setState(() {
       currentWidget = miniWidget;
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant UserDetailWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    getUserData();
   }
 
   @override
@@ -133,5 +146,29 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
         }
       )
     );
+  }
+
+  Profile userData;
+
+  Future<http.Response> _getUserData(url) async{
+    var res = await http.get(url);
+    return res;
+  }
+
+  void getUserData() async{
+    String token;
+    print("GET");
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['user'] + '/?idToken=${token}&userId=${widget.userId}';
+      _getUserData(url).then((res) {
+        if (res.body != null && res.body !='null') {
+          print(res.body);
+          setState(() {
+            userData = Profile.fromJson(json.decode(res.body));
+          });
+        }
+      });
+    });
   }
 }

@@ -12,8 +12,9 @@ import 'package:eva/models/profile.dart';
 class PubPhotoDetailWidget extends StatefulWidget {
   final Map photoData;
   final closeCallback;
+  final showUserDetailCallback;
 
-  PubPhotoDetailWidget({Key key, this.photoData, this.closeCallback}) : super(key: key);
+  PubPhotoDetailWidget({Key key, this.photoData, this.closeCallback, this.showUserDetailCallback}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PubPhotoDetailWidgetState();
@@ -116,11 +117,14 @@ class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
                 color: Colors.purple.shade500,
                 borderRadius: BorderRadius.all(Radius.circular(25))
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: userData != null 
-                      ? userData.photo != '' ? Image.network(userData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
-                      : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+              child: GestureDetector(
+                onTap: userData != null ? (){widget.showUserDetailCallback(userData.userId);} : (){},
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: userData != null 
+                        ? userData.photo != '' ? Image.network(userData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+                        : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+                ),
               ),
             ),
             SizedBox(width: 20,),

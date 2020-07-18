@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:eva/screens/home/modalSheets/userDetailWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
@@ -193,24 +194,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget
+            (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget,
+            (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
           ].where(notNull).toList(),
         ),
       )
     );
   }
 
+  // PubPhotoDetail
+
   void photoDetailWidgetClose() {
     setState(() {
-      _photoDetailWidget = null;
+      _userDetailWidget = null;
     });
   }
 
   void symbolClickCallBack(symbolData) async{
     setState(() {
-      _photoDetailWidget = new PubPhotoDetailWidget(photoData: symbolData, closeCallback: photoDetailWidgetClose);
+      _photoDetailWidget = new PubPhotoDetailWidget(photoData: symbolData, closeCallback: photoDetailWidgetClose, showUserDetailCallback: showUserDetailWidget);
     });
   }
+
+  // -----------
+
+  // UserDetail
+
+  void userDetailWidgetClose() {
+    setState(() {
+      _photoDetailWidget = null;
+    });
+  }
+
+  void showUserDetailWidget(userId) {
+    setState(() {
+      _userDetailWidget = new UserDetailWidget(userId: userId, closeCallback: userDetailWidgetClose);
+    });
+  }
+
+  // -----------
 
   // Profile
   Future<Response> _getProfileData(url) async{
@@ -236,4 +258,5 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+  // -----------------
 }
