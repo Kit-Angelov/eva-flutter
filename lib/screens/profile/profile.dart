@@ -21,9 +21,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _usernameTextController;
-  TextEditingController _instagramTextController;
-  TextEditingController _telegramTextController;
+  TextEditingController _usernameTextController = TextEditingController(text: 'initial text');
+  TextEditingController _instagramTextController = TextEditingController(text: 'balexander64');
+  TextEditingController _telegramTextController = TextEditingController(text: 'blinkcast');
+  String phone = '';
 
   File _image;
   Image imageWidget;
@@ -133,28 +134,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (res.body != null && res.body !='null') {
           print(res.body);
           profileData = Profile.fromJson(json.decode(res.body));
-          if (profileData.photo != null) {
-            setState(() {
-              if (profileData.photo != '') {
-                imageWidget = Image.network(
-                  profileData.photo + '/300.jpg',
-                  fit: BoxFit.cover,
-                );
-              }
-            });
-          }
+          fillProfileFields();
         }
       });
     });
+  }
+
+  void fillProfileFields() {
+    if (profileData != null) {
+      setState(() {
+        if (profileData.photo != '') {
+          imageWidget = Image.network(
+            profileData.photo + '/300.jpg',
+            fit: BoxFit.cover,
+          );
+        }
+        if (profileData.username != '') {
+          _usernameTextController.text = profileData.username;
+        }
+        if (profileData.phone != null) {
+          if (profileData.phone.entity != '') {
+            phone = profileData.phone.entity;
+          }
+        }
+        if (profileData.social != null) {
+          if (profileData.social.insta != null) {
+            profileData.social.insta.entity != '' ? _instagramTextController.text = profileData.social.insta.entity : (){}();
+          }
+          if (profileData.social.tgrm != null) {
+            profileData.social.tgrm.entity != '' ? _telegramTextController.text = profileData.social.tgrm.entity : (){}();
+          }
+        }
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getProfileData();
-    _usernameTextController = TextEditingController(text: 'initial text');
-    _instagramTextController = TextEditingController(text: 'balexander64');
-    _telegramTextController = TextEditingController(text: 'blinkcast');
   }
   
   @override
@@ -178,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: <Widget>[
                             Expanded(
                               child: imageWidget == null
-                                ? Text('No image selected.')
+                                ? Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
                                 : imageWidget,
                             )
                           ],
@@ -218,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(children: <Widget>[
                             Icon(FontAwesomeIcons.phoneAlt),
                             SizedBox(width: 30),
-                            Text("+79803404209"),
+                            Text(phone),
                           ],),
                           SizedBox(height: 10),
                           Row(children: <Widget>[

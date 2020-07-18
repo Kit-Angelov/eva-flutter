@@ -133,15 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25),
-                    child: profileData.photo != '' 
-                      ? Image.network(
-                        profileData.photo + '/300.jpg',
-                        fit: BoxFit.cover,
-                      )
-                      : Image.network(
-                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                        fit: BoxFit.cover,
-                      )
+                    child: profileData != null 
+                      ? profileData.photo != '' ? Image.network(profileData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
+                      : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
                   ),
                 ),
               ),
