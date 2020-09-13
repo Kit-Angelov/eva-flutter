@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
-import 'dart:ffi';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
@@ -26,8 +25,6 @@ class MapWidgetState extends State<MapWidget> {
   );
 
   MapboxMapController mapController;
-  CameraPosition _position = _kInitialPosition;
-  bool _isMoving = false;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
   int _styleStringIndex = 0;
@@ -36,20 +33,12 @@ class MapWidgetState extends State<MapWidget> {
     MapboxStyles.SATELLITE,
     "assets/style.json"
   ];
-  List<String> _styleStringLabels = [
-    "MAPBOX_STREETS",
-    "SATELLITE",
-    "LOCAL_ASSET"
-  ];
   bool _rotateGesturesEnabled = false;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
   bool _zoomGesturesEnabled = true;
   bool _myLocationEnabled = false;
-  bool _telemetryEnabled = false;
   MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
-  List<Object> _featureQueryFilter;
-
   LatLngBounds currentBbox;
 
   Symbol _selectedSymbol;
@@ -127,16 +116,11 @@ class MapWidgetState extends State<MapWidget> {
     });
   }
 
-  void _onMapChanged() {
-    setState(() {});
-  }
-
   void onMapCreated(MapboxMapController controller) async {
     mapController = controller;
     mapController.setTelemetryEnabled(false);
     // mapController.addListener(_onMapChanged);
     mapController.onSymbolTapped.add(onSymbolTapped);
-    _listenLocation();
     getPhotoPosts();
   }
 
@@ -147,24 +131,6 @@ class MapWidgetState extends State<MapWidget> {
 
   SymbolOptions _getSymbolOptions(String iconImage, LatLng coordinates) {
     return SymbolOptions(geometry: coordinates, iconImage: iconImage);
-  }
-
-  //--------------
-
-  // Location
-
-  void _listenLocation() async {
-    var geolocator = Geolocator();
-    var locationOptions =
-        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
-
-    positionStream = geolocator
-        .getPositionStream(locationOptions)
-        .listen((Position position) {
-      setState(() {
-        myLocation = position;
-      });
-    });
   }
 
   // ------------------
