@@ -11,7 +11,6 @@ import 'package:eva/config.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/models/photoPost.dart';
 
-
 class MapWidget extends StatefulWidget {
   final symbolClickCallBack;
   MapWidget({Key key, this.symbolClickCallBack}) : super(key: key);
@@ -21,9 +20,8 @@ class MapWidget extends StatefulWidget {
 }
 
 class MapWidgetState extends State<MapWidget> {
-
   static final CameraPosition _kInitialPosition = const CameraPosition(
-    target: LatLng(59.852, 39.211),
+    target: LatLng(51.852, 39.211),
     zoom: 13.0,
   );
 
@@ -33,8 +31,16 @@ class MapWidgetState extends State<MapWidget> {
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
   int _styleStringIndex = 0;
-  List<String> _styleStrings = [MapboxStyles.MAPBOX_STREETS, MapboxStyles.SATELLITE, "assets/style.json"];
-  List<String> _styleStringLabels = ["MAPBOX_STREETS", "SATELLITE", "LOCAL_ASSET"];
+  List<String> _styleStrings = [
+    MapboxStyles.MAPBOX_STREETS,
+    MapboxStyles.SATELLITE,
+    "assets/style.json"
+  ];
+  List<String> _styleStringLabels = [
+    "MAPBOX_STREETS",
+    "SATELLITE",
+    "LOCAL_ASSET"
+  ];
   bool _rotateGesturesEnabled = false;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
@@ -65,7 +71,7 @@ class MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     mapController?.onSymbolTapped?.remove(onSymbolTapped);
-    _stopListen();
+    positionStream.cancel();
     super.dispose();
   }
 
@@ -87,26 +93,10 @@ class MapWidgetState extends State<MapWidget> {
       myLocationTrackingMode: _myLocationTrackingMode,
       myLocationRenderMode: MyLocationRenderMode.NORMAL,
       onCameraIdle: _onCameraIdle,
-      onMapClick: (point, latLng) async {
-        // print("Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
-        // print("Filter $_featureQueryFilter");
-        // List features = await mapController.queryRenderedFeatures(point, [], _featureQueryFilter);
-        // if (features.length>0) {
-        //   print(features[0]);
-        // }
-      },
-      onMapLongClick: (point, latLng) async {
-        // print("Map long press: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
-      },
-      // onCameraTrackingDismissed: () {
-      //   this.setState(() {
-      //     _myLocationTrackingMode = MyLocationTrackingMode.None;
-      //   });
-      // }
+      onMapClick: (point, latLng) async {},
+      onMapLongClick: (point, latLng) async {},
     );
-    return new Scaffold(
-      body: mapboxMap
-    );
+    return new Scaffold(body: mapboxMap);
   }
 
   void _onCameraIdle() async {
@@ -114,93 +104,75 @@ class MapWidgetState extends State<MapWidget> {
     if (_timer != null) {
       _timer.cancel();
     }
-    _timer = Timer(
-      Duration(seconds: 1),
-      () {
-        if (currentBbox != null){
-          deltaLat = ((newBbox.northeast.latitude - currentBbox.northeast.latitude) / (currentBbox.northeast.latitude - currentBbox.southwest.latitude)).abs();
-          deltaLng = ((newBbox.northeast.longitude - currentBbox.northeast.longitude) / (currentBbox.northeast.longitude - currentBbox.southwest.longitude)).abs();
-        }
-        currentBbox = newBbox;
-        if (deltaLat >= 0.2 || deltaLng >= 0.3) {
-          removeAllSymbols();
-          Timer(Duration(milliseconds: 200), () {getPhotoPosts();});
-        }
-      });
-  }
-
-  void _onMapChanged() {
-    setState(() {
+    _timer = Timer(Duration(seconds: 1), () {
+      if (currentBbox != null) {
+        deltaLat =
+            ((newBbox.northeast.latitude - currentBbox.northeast.latitude) /
+                    (currentBbox.northeast.latitude -
+                        currentBbox.southwest.latitude))
+                .abs();
+        deltaLng =
+            ((newBbox.northeast.longitude - currentBbox.northeast.longitude) /
+                    (currentBbox.northeast.longitude -
+                        currentBbox.southwest.longitude))
+                .abs();
+      }
+      currentBbox = newBbox;
+      if (deltaLat >= 0.2 || deltaLng >= 0.3) {
+        removeAllSymbols();
+        Timer(Duration(milliseconds: 200), () {
+          getPhotoPosts();
+        });
+      }
     });
   }
 
-  void onMapCreated(MapboxMapController controller) async{
+  void _onMapChanged() {
+    setState(() {});
+  }
+
+  void onMapCreated(MapboxMapController controller) async {
     mapController = controller;
     mapController.setTelemetryEnabled(false);
     // mapController.addListener(_onMapChanged);
     mapController.onSymbolTapped.add(onSymbolTapped);
     _listenLocation();
-    moveToLastKnownLocation();
     getPhotoPosts();
   }
-
-  // CIRCLE API
-
-  // void _addCircle(CircleOptions options) async {
-  //   _backgroundCircle = await mapController.addCircle(
-  //     options
-  //   );
-  //   setState((){});
-  // }
-
-  // void _removeCircle(Circle circle) {
-  //   if (_backgroundCircle != null) {
-  //     mapController.removeCircle(circle);
-  //     setState(() {
-  //       _backgroundCircle = null;
-  //     });
-  //   }
-  // }
-
-  // SYMBOL API
 
   Future<void> _addImageFromUrl(String id, String url) async {
     var response = await get(url);
     return mapController.addImage(id, response.bodyBytes);
   }
 
-  SymbolOptions _getSymbolOptions(String iconImage, LatLng coordinates){
-    return SymbolOptions(
-      geometry: coordinates,
-      iconImage: iconImage
-    );
+  SymbolOptions _getSymbolOptions(String iconImage, LatLng coordinates) {
+    return SymbolOptions(geometry: coordinates, iconImage: iconImage);
   }
 
   //--------------
 
-  // Location 
+  // Location
 
   void _listenLocation() async {
     var geolocator = Geolocator();
-    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+    var locationOptions =
+        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
-    positionStream = geolocator.getPositionStream(locationOptions).listen(
-        (Position position) {
-            setState(() {
-              myLocation = position;
-            });
-        });
-  }
-
-  Future<void> _stopListen() async {
-    positionStream.cancel();
+    positionStream = geolocator
+        .getPositionStream(locationOptions)
+        .listen((Position position) {
+      setState(() {
+        myLocation = position;
+      });
+    });
   }
 
   // ------------------
 
   //PUBLIC METHODS---------
 
-  void addSymbol(String id, String imageUrl, LatLng coordinates, Map data) async{
+  void addSymbol(
+      String id, String imageUrl, LatLng coordinates, Map data) async {
     await _addImageFromUrl(id, imageUrl);
     print(data);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), data);
@@ -213,9 +185,9 @@ class MapWidgetState extends State<MapWidget> {
   void onSymbolTapped(Symbol symbol) {
     widget.symbolClickCallBack(symbol.data);
     if (_selectedSymbol != null) {
-        updateSelectedSymbol(
-          const SymbolOptions(zIndex: 1, iconSize: 1),
-        );
+      updateSelectedSymbol(
+        const SymbolOptions(zIndex: 1, iconSize: 1),
+      );
     }
     setState(() {
       _selectedSymbol = symbol;
@@ -240,7 +212,7 @@ class MapWidgetState extends State<MapWidget> {
       _selectedSymbol = null;
     });
   }
-  
+
   //Set camera position
   void moveCameraPosition(LatLng position) {
     mapController.moveCamera(CameraUpdate.newLatLng(position));
@@ -249,16 +221,17 @@ class MapWidgetState extends State<MapWidget> {
   void animateCameraPosition(LatLng position) {
     mapController.animateCamera(CameraUpdate.newLatLng(position));
   }
-  
-  void moveToLastKnownLocation() async{
-    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+
+  void moveToLastKnownLocation() async {
+    Position position = await Geolocator()
+        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
     if (position != null) {
       LatLng latlng = LatLng(position.latitude, position.longitude);
       moveCameraPosition(latlng);
     }
   }
 
-  void moveToMyPosition() async{
+  void moveToMyPosition() async {
     if (myLocation != null) {
       LatLng latlng = LatLng(myLocation.latitude, myLocation.longitude);
       animateCameraPosition(latlng);
@@ -271,22 +244,25 @@ class MapWidgetState extends State<MapWidget> {
 
   List<PhotoPost> photoPosts;
 
-  Future<Response> _getPhotoPosts(url) async{
+  Future<Response> _getPhotoPosts(url) async {
     var res = await get(url);
     return res;
   }
 
-  void getPhotoPosts() async{
+  void getPhotoPosts() async {
     String token;
     LatLngBounds latLngBounds = await mapController.getVisibleRegion();
     print("GET");
     print(latLngBounds);
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['getPhoto'] + '/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
+      var url = config.urls['getPhoto'] +
+          '/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
       _getPhotoPosts(url).then((res) {
-        if (res.body != null && res.body !='null') {
-          photoPosts =(json.decode(res.body) as List).map((i) => PhotoPost.fromJson(i)).toList();
+        if (res.body != null && res.body != 'null') {
+          photoPosts = (json.decode(res.body) as List)
+              .map((i) => PhotoPost.fromJson(i))
+              .toList();
           for (var i in photoPosts) {
             addPhotoPostToMap(i);
           }
@@ -296,7 +272,8 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   void addPhotoPostToMap(PhotoPost photoPost) {
-    LatLng coords = LatLng(photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
+    LatLng coords = LatLng(
+        photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
     var data = {
       'id': photoPost.id,
       'imagesPaths': photoPost.imagesPaths,
@@ -304,6 +281,7 @@ class MapWidgetState extends State<MapWidget> {
       'userId': photoPost.userId,
       'favorites': photoPost.favorites
     };
-    addSymbol(photoPost.id, photoPost.imagesPaths + "/100circle.png", coords, data);
+    addSymbol(
+        photoPost.id, photoPost.imagesPaths + "/100circle.png", coords, data);
   }
 }

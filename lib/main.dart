@@ -14,11 +14,10 @@ import 'services/firebaseAuth.dart';
 import 'models/myCurrentLocation.dart';
 
 //screens
-import 'screens/auth/phone_input.dart';
+import 'screens/auth/phone_auth.dart';
 import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -26,8 +25,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
     final routes = {
       '/': (context) => LoadPage(),
@@ -40,19 +39,17 @@ class MyApp extends StatelessWidget {
       ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
     ];
     return MultiProvider(
-      providers: providers,
-      child: MaterialApp(
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          return SlideRightRoute(page: routes[settings.name](context));
-        },
-    ));
+        providers: providers,
+        child: MaterialApp(
+          initialRoute: '/',
+          onGenerateRoute: (settings) {
+            return SlideRightRoute(page: routes[settings.name](context));
+          },
+        ));
   }
 }
 
-
 class LoadPage extends StatefulWidget {
-  
   @override
   State<StatefulWidget> createState() => _LoadPageState();
 }
@@ -63,25 +60,22 @@ class _LoadPageState extends State<LoadPage> {
   @override
   void initState() {
     super.initState();
-    Timer(
-      Duration(seconds: 5),
-      () {
-        setState(() {
-          checkAuth().then((state){
-            print(state);
-            if (state) {
-              print('Auth');
-              Navigator.pushReplacementNamed(context, '/home');
-            } else {
-              print('No Auth');
-              Navigator.pushReplacementNamed(context, '/authPhoneInput');
-            }
-          }).catchError((error) {
-            print(error);
-          });
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        checkAuth().then((state) {
+          print(state);
+          if (state) {
+            print('Auth');
+            Navigator.pushReplacementNamed(context, '/home');
+          } else {
+            print('No Auth');
+            Navigator.pushReplacementNamed(context, '/authPhoneInput');
+          }
+        }).catchError((error) {
+          print(error);
         });
-      }
-    );
+      });
+    });
   }
 
   @override
