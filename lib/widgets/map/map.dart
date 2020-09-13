@@ -237,19 +237,6 @@ class MapWidgetState extends State<MapWidget> {
     }
   }
 
-  void moveToMyPosition() async {
-    if (myLocation != null) {
-      LatLng latlng = LatLng(myLocation.latitude, myLocation.longitude);
-      animateCameraPosition(latlng);
-    } else {
-      Geolocator geolocator = Geolocator();
-      Position position = await geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      LatLng latlng = LatLng(position.latitude, position.longitude);
-      animateCameraPosition(latlng);
-    }
-  }
-
   //----------------------
 
   //PhotoPosts

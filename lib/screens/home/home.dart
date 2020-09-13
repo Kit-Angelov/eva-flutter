@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mini: true,
                     heroTag: null,
                     onPressed: () {
-                      _mapWidgetState.currentState.moveToMyPosition();
+                      _mapWidgetState.currentState.moveToLastKnownLocation();
                     },
                   ),
                 ),
