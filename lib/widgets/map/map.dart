@@ -228,6 +228,12 @@ class MapWidgetState extends State<MapWidget> {
     if (position != null) {
       LatLng latlng = LatLng(position.latitude, position.longitude);
       moveCameraPosition(latlng);
+    } else {
+      Geolocator geolocator = Geolocator();
+      Position position = await geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      LatLng latlng = LatLng(position.latitude, position.longitude);
+      moveCameraPosition(latlng);
     }
   }
 
