@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:convert';
 
@@ -14,20 +13,18 @@ import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/models/profile.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _usernameTextController = TextEditingController(text: 'initial text');
-  TextEditingController _instagramTextController = TextEditingController(text: 'balexander64');
-  TextEditingController _telegramTextController = TextEditingController(text: 'blinkcast');
-  String phone = '';
+  TextEditingController _usernameTextController =
+      TextEditingController(text: '');
+  TextEditingController _instagramTextController =
+      TextEditingController(text: '');
 
-  bool tgrmPublic = false;
-  bool instaPublic = false;
+  String phone = '';
 
   File _image;
   Image imageWidget;
@@ -35,25 +32,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Profile profileData;
 
   void textSubmit(String value) {
-    print(value);
     updateProfileData();
   }
-  
+
   Column _bottomSheetPhotoSource() {
-    return Column (
+    return Column(
       children: <Widget>[
         ListTile(
           leading: Icon(Icons.camera_alt),
           title: Text('make photo'),
-          onTap: (){_getImageFromDevice(ImageSource.camera);},
+          onTap: () {
+            _getImageFromDevice(ImageSource.camera);
+          },
         ),
         ListTile(
           leading: Icon(Icons.image),
           title: Text('choose from gallery'),
-          onTap: (){_getImageFromDevice(ImageSource.gallery);},
+          onTap: () {
+            _getImageFromDevice(ImageSource.gallery);
+          },
         )
       ],
-    ); 
+    );
   }
 
   @override
@@ -61,171 +61,150 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     getProfileData();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Stack(
-          children: <Widget>[
-              ListView(
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(0),
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.width,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: imageWidget == null
-                                ? Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
-                                : imageWidget,
-                            )
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 20,
-                        right: 20,
-                        child: Opacity(
-                          opacity: 0.8,
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.grey,
-                            child: Icon(Icons.photo_camera),
-                            elevation: 0.0,
-                            mini: true,
-                            onPressed: _getImage,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                  child: Column(
-                    children: <Widget>[
-                      InputWithLabelWidget(_usernameTextController, textSubmit, 15, "username", "username"),
-                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'phone',
-                            style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          SizedBox(height: 10),
-                          Row(children: <Widget>[
-                            Icon(FontAwesomeIcons.phoneAlt),
-                            SizedBox(width: 30),
-                            Text(phone),
-                          ],),
-                        ],
-                      ),
-                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'instagram',
-                            style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          SizedBox(height: 10),
-                          Row(children: <Widget>[
-                            Icon(FontAwesomeIcons.instagram),
-                            SizedBox(width: 30),
-                            Expanded(
-                              child: InputWithStaticTextWidget(_instagramTextController, textSubmit, 20, "instagram.com/", "username"),
-                            )
-                          ],),
-                          SizedBox(height: 10),
-                          Row(children: <Widget>[
-                            Expanded(
-                              child: Text("visible to other users"),
-                            ),
-                            CupertinoSwitch(
-                              value: instaPublic,
-                              onChanged: (bool value) {setState((){instaPublic = value;}); updateProfileData();}
-                            ),
-                          ],),
-                        ],
-                      ),
-                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'telegram',
-                            style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          SizedBox(height: 10),
-                          Row(children: <Widget>[
-                            Icon(FontAwesomeIcons.telegramPlane),
-                            SizedBox(width: 30),
-                            Expanded(
-                              child: InputWithStaticTextWidget(_telegramTextController, textSubmit, 20, "t.me/", "username"),
-                            )
-                          ],),
-                          SizedBox(height: 10),
-                          Row(children: <Widget>[
-                            Expanded(
-                              child: Text("visible to other users"),
-                            ),
-                            CupertinoSwitch(
-                              value: tgrmPublic,
-                              onChanged: (bool value) {setState((){tgrmPublic = value;}); updateProfileData();}
-                            ),
-                          ],),
-                        ],
-                      ),
-                      Divider(height: 30, thickness: 1, indent: 0, endIndent: 0),
-                      SizedBox(height: 50),
-                    ],
-                  ),
-                )
-              ]
-            ),
-            Positioned(
-              bottom: 5,
-              right: 5,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.arrow_back),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){Navigator.pop(context);},
-                ),
+        appBar: AppBar(
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: Color.fromRGBO(44, 62, 80, 1),
+            title: const Text('Profile'),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.exit_to_app),
+                onPressed: () {
+                  print('EXIT');
+                },
               ),
-            ),
-          ],
-        ),
-      )
-    );
+            ]),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Stack(
+            children: <Widget>[
+              ListView(
+                  // physics: BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
+                  children: <Widget>[
+                    Container(
+                      color: Color.fromRGBO(44, 62, 80, 1),
+                      height: MediaQuery.of(context).size.width - 5,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                              margin: const EdgeInsets.fromLTRB(
+                                  50.0, 10.0, 50.0, 20.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(9999.0),
+                                child: imageWidget == null
+                                    ? Image.network(
+                                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
+                                        fit: BoxFit.cover,
+                                        height:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                      )
+                                    : imageWidget,
+                              )),
+                          Positioned(
+                            bottom: 40,
+                            right: 40,
+                            child: FloatingActionButton(
+                              backgroundColor: Color.fromRGBO(52, 73, 94, 1),
+                              child: Icon(Icons.photo_camera),
+                              mini: true,
+                              onPressed: _getImage,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                      child: Column(
+                        children: <Widget>[
+                          InputWithLabelWidget(_usernameTextController,
+                              textSubmit, 15, "username", "username"),
+                          Divider(
+                              height: 30,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('phone',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Icon(Icons.phone),
+                                  SizedBox(width: 30),
+                                  Text(phone),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(
+                              height: 30,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('instagram',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Icon(FontAwesomeIcons.instagram),
+                                  SizedBox(width: 30),
+                                  Expanded(
+                                    child: InputWithStaticTextWidget(
+                                        _instagramTextController,
+                                        textSubmit,
+                                        20,
+                                        "instagram.com/",
+                                        "username"),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 50),
+                        ],
+                      ),
+                    )
+                  ]),
+            ],
+          ),
+        ));
   }
 
   // get profile data
 
-  Future<http.Response> _getProfileData(url) async{
+  Future<http.Response> _getProfileData(url) async {
     var res = await http.get(url);
     return res;
   }
 
-  void getProfileData() async{
+  void getProfileData() async {
     String token;
     print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['profile'] + '/?idToken=${token}';
       _getProfileData(url).then((res) {
-        if (res.body != null && res.body !='null') {
+        if (res.body != null && res.body != 'null') {
           print(res.body);
           profileData = Profile.fromJson(json.decode(res.body));
           fillProfileFields();
@@ -241,26 +220,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           imageWidget = Image.network(
             profileData.photo + '/300.jpg',
             fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.width - 100.0,
+            width: MediaQuery.of(context).size.width - 100.0,
           );
         }
-        if (profileData.username != '') {
-          _usernameTextController.text = profileData.username;
-        }
-        if (profileData.phone != null) {
-          if (profileData.phone.entity != '') {
-            phone = profileData.phone.entity;
-          }
-        }
-        if (profileData.social != null) {
-          if (profileData.social.insta != null) {
-            profileData.social.insta.entity != '' ? _instagramTextController.text = profileData.social.insta.entity : (){}();
-            instaPublic = profileData.social.insta.public;
-          }
-          if (profileData.social.tgrm != null) {
-            profileData.social.tgrm.entity != '' ? _telegramTextController.text = profileData.social.tgrm.entity : (){}();
-            tgrmPublic = profileData.social.tgrm.public;
-          }
-        }
+        profileData.username != ''
+            ? _usernameTextController.text = profileData.username
+            : () {}();
+
+        profileData.phone != null ? phone = profileData.phone : () {}();
+
+        profileData.insta != ''
+            ? _instagramTextController.text = profileData.insta
+            : () {}();
       });
     }
   }
@@ -269,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // get and post new image
 
-    Future _getImageFromDevice(ImageSource imageSource) async {
+  Future _getImageFromDevice(ImageSource imageSource) async {
     Navigator.pop(context);
     var image = await ImagePicker.pickImage(source: imageSource);
     setState(() {
@@ -277,6 +249,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       imageWidget = Image.file(
         _image,
         fit: BoxFit.cover,
+        height: MediaQuery.of(context).size.width - 100.0,
+        width: MediaQuery.of(context).size.width - 100.0,
       );
       _upload();
     });
@@ -295,50 +269,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Future<int> _postImage(url, image) async{
+  Future<int> _postImage(url, image) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(
-      http.MultipartFile.fromBytes(
-        'file',
-        _image.readAsBytesSync(),
-        filename: _image.path.split("/").last
-      )
-    );
+    request.files.add(http.MultipartFile.fromBytes(
+        'file', _image.readAsBytesSync(),
+        filename: _image.path.split("/").last));
     var res = await request.send();
-    return(res.statusCode);
+    return (res.statusCode);
   }
 
   void _getImage() {
     showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-      return Container(
-        child: _bottomSheetPhotoSource(),
-        height: 120,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(10),
-            topRight: const Radius.circular(10),
-          )
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      );
-    });
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            child: _bottomSheetPhotoSource(),
+            height: 120,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                )),
+          );
+        });
   }
 
   // -------------
 
   // update profile data
 
-  Future<int> _postProfileData(String url, String body) async{
+  Future<int> _postProfileData(String url, String body) async {
     try {
       var response = await http.post(url, body: body);
       print("Response status: ${response.statusCode}");
-      return(response.statusCode);
+      return (response.statusCode);
     } catch (error) {
       print(error);
       return 500;
@@ -353,16 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print(url);
       var data = {
         'username': _usernameTextController.text,
-        'social': {
-          'tgrm': {
-            'entity': _telegramTextController.text,
-            'public': tgrmPublic
-          },
-          'insta': {
-            'entity': _instagramTextController.text,
-            'public': instaPublic
-          }
-        }
+        'insta': _instagramTextController.text
       };
       _postProfileData(url, jsonEncode(data)).then((res) {
         print(res);
