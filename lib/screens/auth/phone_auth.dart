@@ -65,7 +65,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.yellow,
+      backgroundColor: Colors.indigo[900],
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
         child: new Center(
@@ -75,18 +75,14 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
             children: <Widget>[
               Text(
                 "Sign in",
-                style: TextStyle(
-                  fontSize: 66,
-                ),
+                style: TextStyle(fontSize: 66, color: Colors.white),
               ),
               SizedBox(
                 height: 50,
               ),
               Text(
                 "Enter your phone number",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               SizedBox(
                 height: 20,
@@ -94,20 +90,21 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
               TextField(
                 controller: _phoneNumberController,
                 maxLength: 20,
-                style: TextStyle(
-                  fontSize: 19,
-                ),
+                style: TextStyle(fontSize: 19, color: Colors.white),
                 decoration: InputDecoration(
                     prefixText: "+",
-                    prefixStyle: TextStyle(color: Colors.black, fontSize: 19),
+                    prefixStyle: TextStyle(color: Colors.white, fontSize: 19),
                     hintText: "",
                     counterText: "",
                     border: new OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.black)),
+                        borderSide: new BorderSide(color: Colors.white)),
+                    enabledBorder: new OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        borderSide: new BorderSide(color: Colors.white)),
                     focusedBorder: new OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.black)),
+                        borderSide: new BorderSide(color: Colors.white)),
                     labelText: "",
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 0, horizontal: 20)),
@@ -130,9 +127,9 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
                   FlatButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.black)),
-                    color: Colors.yellow,
-                    textColor: Colors.black,
+                        side: BorderSide(color: Colors.white)),
+                    color: Colors.indigo[900],
+                    textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
                       _sendCodeToPhoneNumber();
@@ -203,7 +200,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.yellow,
+      backgroundColor: Colors.indigo[900],
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
         child: new Center(
@@ -213,18 +210,14 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
             children: <Widget>[
               Text(
                 "Sign in",
-                style: TextStyle(
-                  fontSize: 66,
-                ),
+                style: TextStyle(fontSize: 66, color: Colors.white),
               ),
               SizedBox(
                 height: 50,
               ),
               Text(
                 "Enter sms code",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               SizedBox(
                 height: 20,
@@ -233,18 +226,19 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
                 textAlign: TextAlign.center,
                 controller: _smsCodeController,
                 maxLength: 20,
-                style: TextStyle(
-                  fontSize: 19,
-                ),
+                style: TextStyle(fontSize: 19, color: Colors.white),
                 decoration: InputDecoration(
                     hintText: "",
                     counterText: "",
                     border: new OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.black)),
+                        borderSide: new BorderSide(color: Colors.white)),
+                    enabledBorder: new OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        borderSide: new BorderSide(color: Colors.white)),
                     focusedBorder: new OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.black)),
+                        borderSide: new BorderSide(color: Colors.white)),
                     labelText: "",
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 0, horizontal: 20)),
@@ -267,18 +261,16 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
                   FlatButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.black)),
-                    color: Colors.yellow,
-                    textColor: Colors.black,
+                        side: BorderSide(color: Colors.white)),
+                    color: Colors.indigo[900],
+                    textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
                       _signInWithPhoneNumber(_smsCodeController.text);
                     },
                     child: Text(
                       "Confirm",
-                      style: TextStyle(
-                        fontSize: 19.0,
-                      ),
+                      style: TextStyle(fontSize: 19.0, color: Colors.white),
                     ),
                   ),
                 ],
@@ -292,9 +284,9 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
                   FlatButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.black)),
-                    color: Colors.yellow,
-                    textColor: Colors.black,
+                        side: BorderSide(color: Colors.white)),
+                    color: Colors.indigo[900],
+                    textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
                       Navigator.pop(context);
