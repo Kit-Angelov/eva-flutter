@@ -74,27 +74,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 left: 5,
                 child: Opacity(
                   opacity: 0.9,
-                  child: FlatButton.icon(
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Color.fromRGBO(44, 62, 80, 1), width: 1),
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
                     ),
-                    color: Colors.purple.shade500,
-                    textColor: Colors.white,
-                    icon: Icon(Icons.search),
-                    label: Text(
-                      "places".toUpperCase(),
-                      style: TextStyle(fontSize: 18),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                      ),
+                      onPressed: () {
+                        openPlaceSearch(context, _searchPlaceCallback);
+                      },
                     ),
-                    onPressed: () {
-                      openPlaceSearch(context, _searchPlaceCallback);
-                    },
                   ),
                 ),
               ),
               Positioned(
                 //user avatar
                 top: 30,
-                left: 5,
+                right: 5,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, '/profile');
@@ -104,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 50,
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                        color: Colors.purple.shade500,
+                        color: Color.fromRGBO(44, 62, 80, 1),
                         borderRadius: BorderRadius.all(Radius.circular(25))),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(25),
@@ -126,20 +130,54 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Positioned(
+                // profile
+                top: 30,
+                left: 5,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/profile');
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
                 // my position
                 bottom: bottomMargin + 30,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.purple.shade500,
-                    child: Icon(Icons.my_location),
-                    elevation: 0.0,
-                    mini: true,
-                    heroTag: null,
-                    onPressed: () {
-                      _mapWidgetState.currentState.moveToLastKnownLocation();
-                    },
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Color.fromRGBO(44, 62, 80, 1), width: 1),
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.my_location,
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                      ),
+                      onPressed: () {
+                        _mapWidgetState.currentState.moveToLastKnownLocation();
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -149,15 +187,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.purple.shade500,
-                    child: Icon(Icons.camera),
-                    elevation: 0.0,
-                    mini: true,
-                    heroTag: null,
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/pubPhoto');
-                    },
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.pink.shade900, width: 1),
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.camera,
+                        color: Colors.pink.shade900,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/pubPhoto');
+                      },
+                    ),
                   ),
                 ),
               ),

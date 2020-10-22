@@ -65,7 +65,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.indigo[900],
+      backgroundColor: Color.fromRGBO(44, 62, 80, 1),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
         child: new Center(
@@ -128,7 +128,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Colors.white)),
-                    color: Colors.indigo[900],
+                    color: Color.fromRGBO(44, 62, 80, 1),
                     textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
@@ -200,7 +200,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.indigo[900],
+      backgroundColor: Color.fromRGBO(44, 62, 80, 1),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
         child: new Center(
@@ -262,7 +262,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Colors.white)),
-                    color: Colors.indigo[900],
+                    color: Color.fromRGBO(44, 62, 80, 1),
                     textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
@@ -285,7 +285,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Colors.white)),
-                    color: Colors.indigo[900],
+                    color: Color.fromRGBO(44, 62, 80, 1),
                     textColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                     onPressed: () {
