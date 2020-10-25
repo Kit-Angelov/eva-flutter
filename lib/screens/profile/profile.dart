@@ -68,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
             centerTitle: true,
             // elevation: 0,
-            backgroundColor: Colors.indigo[900],
+            backgroundColor: Color.fromRGBO(44, 62, 80, 1),
             title: const Text('Profile'),
             actions: <Widget>[
               IconButton(
@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: <Widget>[
                     Container(
                       decoration: new BoxDecoration(
-                          color: Colors.indigo[900],
+                          color: Color.fromRGBO(44, 62, 80, 1),
                           borderRadius: new BorderRadius.only(
                             bottomLeft: const Radius.circular(20.0),
                             bottomRight: const Radius.circular(20.0),
@@ -98,18 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Stack(
                         children: <Widget>[
                           Positioned(
-                            top: 16,
-                            left: 46,
-                            child: Container(
-                                height:
-                                    MediaQuery.of(context).size.width - 92.0,
-                                width: MediaQuery.of(context).size.width - 92.0,
-                                decoration: new BoxDecoration(
-                                  color: Colors.pink[900],
-                                  borderRadius: BorderRadius.circular(9999.0),
-                                )),
-                          ),
-                          Positioned(
                             top: 18,
                             left: 48,
                             child: Container(
@@ -117,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     MediaQuery.of(context).size.width - 96.0,
                                 width: MediaQuery.of(context).size.width - 96.0,
                                 decoration: new BoxDecoration(
-                                  color: Colors.indigo[900],
+                                  color: Color.fromRGBO(44, 62, 80, 1),
                                   borderRadius: BorderRadius.circular(9999.0),
                                 )),
                           ),
@@ -142,11 +130,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Positioned(
                             bottom: 20,
                             right: 20,
-                            child: FloatingActionButton(
-                              backgroundColor: Colors.pink[600],
-                              child: Icon(Icons.photo_camera),
-                              mini: true,
-                              onPressed: _getImage,
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.pink[600], width: 1),
+                                color: Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.photo_camera,
+                                  color: Colors.pink[600],
+                                ),
+                                onPressed: _getImage,
+                              ),
                             ),
                           ),
                         ],

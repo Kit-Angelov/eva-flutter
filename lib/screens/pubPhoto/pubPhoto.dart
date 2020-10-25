@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,17 +20,29 @@ class PubPhotoScreen extends StatefulWidget {
 
 class _PubPhotoScreenState extends State<PubPhotoScreen> {
   //models
-  var myCurrentLocationState;
-  Position position;
+  LatLng latlng;
 
   TextEditingController _descriptionTextController;
   File _image;
 
+  Future<LatLng> getLastKnownLocation() async {
+    Position position = await Geolocator()
+        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    if (position != null) {
+      return LatLng(position.latitude, position.longitude);
+    } else {
+      Geolocator geolocator = Geolocator();
+      Position position = await geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      return LatLng(position.latitude, position.longitude);
+    }
+  }
+
   Future _getImageFromDevice(ImageSource imageSource) async {
     var image = await ImagePicker.pickImage(source: imageSource);
+    latlng = await getLastKnownLocation();
     setState(() {
       _image = image;
-      position = myCurrentLocationState.getMyCurrentLocation();
     });
   }
 
@@ -38,30 +51,28 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['pubPhoto'] + '/?idToken=${token}';
+      var url = config.urls['pubPhoto'] + '?idToken=${token}';
       _postImage(url, _image).then((res) {
         print(res);
+      }).catchError((error) {
+        print(error);
       });
     });
   }
 
   void descriptionSubmit(String value) {}
 
-  Future<int> _postImage(url, image) async{
+  Future<int> _postImage(url, image) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    print(position);
-    request.fields['latitude'] = position.latitude.toString();
-    request.fields['longitude'] = position.longitude.toString();
+    print(latlng);
+    request.fields['latitude'] = latlng.latitude.toString();
+    request.fields['longitude'] = latlng.longitude.toString();
     request.fields['description'] = _descriptionTextController.text;
-    request.files.add(
-      http.MultipartFile.fromBytes(
-        'file',
-        _image.readAsBytesSync(),
-        filename: _image.path.split("/").last
-      )
-    );
+    request.files.add(http.MultipartFile.fromBytes(
+        'file', _image.readAsBytesSync(),
+        filename: _image.path.split("/").last));
     var res = await request.send();
-    return(res.statusCode);
+    return (res.statusCode);
   }
 
   @override
@@ -70,93 +81,99 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     _descriptionTextController = TextEditingController();
     _getImageFromDevice(ImageSource.camera);
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Stack(
-          children: <Widget>[
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Stack(
+            children: <Widget>[
               ListView(
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(0),
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height - 150,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: _image == null
-                                ? Text('No image selected.')
-                                : Image.file(
-                                  _image,
-                                  fit: BoxFit.cover,
-                                ),
-                            )
-                          ],
-                        ),
+                  physics: BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
+                  children: <Widget>[
+                    Container(
+                      height: MediaQuery.of(context).size.height - 150,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: _image == null
+                                      ? Text('No image selected.')
+                                      : Image.file(
+                                          _image,
+                                          fit: BoxFit.cover,
+                                        ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                    Text(latlng != null
+                        ? "${latlng.longitude.toString()} ${latlng.latitude.toString()}"
+                        : 'no location'),
+                    InputWithLabelWidget(_descriptionTextController,
+                        descriptionSubmit, 33, "description", ""),
+                  ]),
+              Positioned(
+                bottom: 5,
+                right: 5,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.purple.shade500,
+                    child: Icon(Icons.save),
+                    elevation: 0.0,
+                    mini: true,
+                    heroTag: null,
+                    onPressed: () {
+                      _upload();
+                    },
                   ),
                 ),
-                Text(position != null ? "${position.longitude.toString()} ${position.latitude.toString()}" : 'no location'),
-                InputWithLabelWidget(_descriptionTextController, descriptionSubmit, 33, "description", ""),
-              ]
-            ),
-            Positioned(
-              bottom: 5,
-              right: 5,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.save),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){_upload();},
+              ),
+              Positioned(
+                bottom: 5,
+                left: 150,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.purple.shade500,
+                    child: Icon(Icons.refresh),
+                    elevation: 0.0,
+                    mini: true,
+                    heroTag: null,
+                    onPressed: () {
+                      _getImageFromDevice(ImageSource.camera);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 5,
-              left: 150,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.refresh),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){_getImageFromDevice(ImageSource.camera);},
+              Positioned(
+                bottom: 5,
+                left: 5,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.purple.shade500,
+                    child: Icon(Icons.arrow_back),
+                    elevation: 0.0,
+                    mini: true,
+                    heroTag: null,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 5,
-              left: 5,
-              child: Opacity(
-                opacity: 0.9,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple.shade500,
-                  child: Icon(Icons.arrow_back),
-                  elevation: 0.0,
-                  mini: true,
-                  heroTag: null,
-                  onPressed: (){Navigator.pop(context);},
-                ),
-              ),
-            ),
-          ],
-        ),
-      )
-    );
+            ],
+          ),
+        ));
   }
 }

@@ -176,6 +176,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
       setState(() {
         if (user != null) {
           print(user.uid);
+          Navigator.pushReplacementNamed(context, '/home');
         } else {
           verificationFiledText = "sign in failed";
           print('Sign in failed');

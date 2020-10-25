@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class SlideRightRoute extends PageRouteBuilder {
+class SlideBottomRoute extends PageRouteBuilder {
   final Widget page;
-  SlideRightRoute({this.page})
+  SlideBottomRoute({this.page})
       : super(
           pageBuilder: (
             BuildContext context,
@@ -10,7 +10,7 @@ class SlideRightRoute extends PageRouteBuilder {
             Animation<double> secondaryAnimation,
           ) =>
               page,
-          transitionDuration: Duration(seconds: 1),
+          transitionDuration: Duration(milliseconds: 200),
           transitionsBuilder: (
             BuildContext context,
             Animation<double> animation,
@@ -18,11 +18,11 @@ class SlideRightRoute extends PageRouteBuilder {
             Widget child,
           ) =>
               SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
         );
 }

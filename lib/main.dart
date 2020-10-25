@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           initialRoute: '/',
           onGenerateRoute: (settings) {
-            return SlideRightRoute(page: routes[settings.name](context));
+            return SlideBottomRoute(page: routes[settings.name](context));
           },
         ));
   }

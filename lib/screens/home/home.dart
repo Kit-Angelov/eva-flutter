@@ -9,7 +9,7 @@ import 'package:location/location.dart';
 import 'package:http/http.dart';
 
 import 'package:eva/widgets/widgets.dart';
-import 'package:eva/screens/home/modalSheets/modalBottomSheets.dart';
+import 'package:eva/screens/home/modalSheets/placeSearchWidget.dart';
 import 'package:eva/models/myCurrentLocation.dart';
 import 'package:eva/screens/home/modalSheets/pubPhotoDetailWidget.dart';
 import 'package:eva/services/firebaseAuth.dart';
@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //models
   var getPhotoState;
-  var myCurrentLocationState;
 
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
@@ -52,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
-    myCurrentLocationState = Provider.of<MyCurrentLocationModel>(context);
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -191,14 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.pink.shade900, width: 1),
+                      border: Border.all(color: Colors.pink.shade600, width: 1),
                       color: Colors.transparent,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: Icon(
                         Icons.camera,
-                        color: Colors.pink.shade900,
+                        color: Colors.pink.shade600,
                       ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/pubPhoto');

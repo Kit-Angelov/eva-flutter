@@ -31,7 +31,6 @@ class MapWidgetState extends State<MapWidget> {
   List<String> _styleStrings = [
     MapboxStyles.MAPBOX_STREETS,
     MapboxStyles.SATELLITE,
-    "assets/style.json"
   ];
   bool _rotateGesturesEnabled = false;
   bool _scrollGesturesEnabled = true;
@@ -43,7 +42,6 @@ class MapWidgetState extends State<MapWidget> {
 
   Symbol _selectedSymbol;
 
-  Position myLocation;
   StreamSubscription<Position> positionStream;
 
   double deltaLat = 1.0;
@@ -222,8 +220,10 @@ class MapWidgetState extends State<MapWidget> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['getPhoto'] +
-          '/?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
+          '?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
+      print(url);
       _getPhotoPosts(url).then((res) {
+        print(res.body);
         if (res.body != null && res.body != 'null') {
           photoPosts = (json.decode(res.body) as List)
               .map((i) => PhotoPost.fromJson(i))
@@ -232,6 +232,9 @@ class MapWidgetState extends State<MapWidget> {
             addPhotoPostToMap(i);
           }
         }
+      }).catchError((error) {
+        print("NOT OK");
+        print(error);
       });
     });
   }
@@ -246,7 +249,11 @@ class MapWidgetState extends State<MapWidget> {
       'userId': photoPost.userId,
       'favorites': photoPost.favorites
     };
+    print(config.urls['media'] + photoPost.imagesPaths + "/100circle.png");
     addSymbol(
-        photoPost.id, photoPost.imagesPaths + "/100circle.png", coords, data);
+        photoPost.id,
+        config.urls['media'] + photoPost.imagesPaths + "/100circle.png",
+        coords,
+        data);
   }
 }
