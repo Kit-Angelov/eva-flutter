@@ -8,13 +8,17 @@ import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/config.dart';
 import 'package:eva/models/profile.dart';
 
-
 class PubPhotoDetailWidget extends StatefulWidget {
   final Map photoData;
   final closeCallback;
   final showUserDetailCallback;
 
-  PubPhotoDetailWidget({Key key, this.photoData, this.closeCallback, this.showUserDetailCallback}) : super(key: key);
+  PubPhotoDetailWidget(
+      {Key key,
+      this.photoData,
+      this.closeCallback,
+      this.showUserDetailCallback})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PubPhotoDetailWidgetState();
@@ -23,127 +27,140 @@ class PubPhotoDetailWidget extends StatefulWidget {
 class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
   var currentWidget;
 
-  Widget miniWidget (BuildContext context, ScrollController scrollController)  {
+  Widget miniWidget(BuildContext context, ScrollController scrollController) {
     return ListView(
-      padding: const EdgeInsets.all(0),
-      physics: BouncingScrollPhysics(),
-      controller: scrollController,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-          child: Container(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 50,
-                  height: 50,
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Colors.purple.shade500,
-                    borderRadius: BorderRadius.all(Radius.circular(25))
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: Image.network(
-                      widget.photoData['imagesPaths'] + '/100.jpg',
-                      fit: BoxFit.cover,
+        padding: const EdgeInsets.all(0),
+        physics: BouncingScrollPhysics(),
+        controller: scrollController,
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: Container(
+                height: 200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 180,
+                      height: 180,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            config.urls['media'] +
+                                widget.photoData['imagesPaths'] +
+                                '/300.jpg',
+                            fit: BoxFit.cover,
+                          )),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "asdf",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        print("close");
+                        widget.closeCallback();
+                      },
                     )
-                  ),
+                  ],
                 ),
-                SizedBox(width: 20,),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              )),
+        ]);
+  }
+
+  Widget maxiWidget(BuildContext context, ScrollController scrollController) {
+    return ListView(
+        physics: BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        controller: scrollController,
+        children: <Widget>[
+          Container(
+              height: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(children: <Widget>[
+                Container(
+                  child: Row(
                     children: <Widget>[
-                      Text(
-                        "asdf",
-                        style: TextStyle(fontSize: 20),
-                      )
+                      Expanded(
+                          child: Image.network(
+                        config.urls['media'] +
+                            widget.photoData['imagesPaths'] +
+                            '/640.jpg',
+                        fit: BoxFit.cover,
+                      )),
                     ],
                   ),
                 ),
-                SizedBox(width: 20,),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: (){print("close"); widget.closeCallback();},
-                )
-              ],
-            ),
-          )
-        ),
-      ]
-    );
-  }
-
-  Widget maxiWidget (BuildContext context, ScrollController scrollController) {
-    return ListView(
-      physics: BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(0),
-      controller: scrollController,
-      children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.width,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
+              ])),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: Row(
+                width: 50,
+                height: 50,
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    color: Colors.purple.shade500,
+                    borderRadius: BorderRadius.all(Radius.circular(25))),
+                child: GestureDetector(
+                  onTap: userData != null
+                      ? () {
+                          widget.showUserDetailCallback(userData.userId);
+                        }
+                      : () {},
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: userData != null
+                          ? userData.photo != ''
+                              ? Image.network(
+                                  userData.photo + '/300.jpg',
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
+                                  fit: BoxFit.cover,
+                                )
+                          : Image.network(
+                              'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
+                              fit: BoxFit.cover,
+                            )),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                      child: Image.network(
-                        widget.photoData['imagesPaths'] + '/300.jpg',
-                        fit: BoxFit.cover,
-                      )
-                    ),
+                    Text(
+                      userData != null ? userData.username : "username",
+                      style: TextStyle(fontSize: 20),
+                    )
                   ],
                 ),
-              ),
-            ]
-          )
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 50,
-              height: 50,
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: Colors.purple.shade500,
-                borderRadius: BorderRadius.all(Radius.circular(25))
-              ),
-              child: GestureDetector(
-                onTap: userData != null ? (){widget.showUserDetailCallback(userData.userId);} : (){},
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: userData != null 
-                        ? userData.photo != '' ? Image.network(userData.photo + '/300.jpg', fit: BoxFit.cover,) : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
-                        : Image.network('https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg', fit: BoxFit.cover,)
-                ),
-              ),
-            ),
-            SizedBox(width: 20,),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    userData != null ? userData.username : "username",
-                    style: TextStyle(fontSize: 20),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ]
-    );
+              )
+            ],
+          ),
+        ]);
   }
 
   @override
@@ -163,47 +180,51 @@ class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var minHeight = 60 / MediaQuery.of(context).size.height;
+    var minHeight = 200 / MediaQuery.of(context).size.height;
     var maxHeight = 0.7;
     return NotificationListener<DraggableScrollableNotification>(
-      onNotification: (notification) {
-        if (notification.extent > minHeight && currentWidget != maxiWidget) {
-          currentWidget = maxiWidget;
-          setState(() {});
-        } else if((notification.extent == minHeight && currentWidget != miniWidget)){
-          currentWidget = miniWidget;
-          setState(() {});
-        }
-      },
-      child: DraggableScrollableSheet(
-        initialChildSize: minHeight,
-        minChildSize: minHeight,
-        maxChildSize: maxHeight,
-        builder: (BuildContext context, ScrollController scrollController) {
-          return Container(
-            color: Colors.white,
-            child: currentWidget(context, scrollController)
-          );
-        }
-      )
-    );
+        onNotification: (notification) {
+          if (notification.extent > minHeight + 0.1 &&
+              currentWidget != maxiWidget) {
+            currentWidget = maxiWidget;
+            setState(() {});
+          } else if ((notification.extent == minHeight &&
+              currentWidget != miniWidget)) {
+            currentWidget = miniWidget;
+            setState(() {});
+          }
+        },
+        child: DraggableScrollableSheet(
+            initialChildSize: minHeight,
+            minChildSize: minHeight,
+            maxChildSize: maxHeight,
+            builder: (BuildContext context, ScrollController scrollController) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10))),
+                  child: currentWidget(context, scrollController));
+            }));
   }
 
   Profile userData;
 
-  Future<http.Response> _getUserData(url) async{
+  Future<http.Response> _getUserData(url) async {
     var res = await http.get(url);
     return res;
   }
 
-  void getUserData() async{
+  void getUserData() async {
     String token;
     print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['user'] + '/?idToken=${token}&userId=${widget.photoData['userId']}';
+      var url = config.urls['user'] +
+          '/?idToken=${token}&userId=${widget.photoData['userId']}';
       _getUserData(url).then((res) {
-        if (res.body != null && res.body !='null') {
+        if (res.body != null && res.body != 'null') {
           print(res.body);
           setState(() {
             userData = Profile.fromJson(json.decode(res.body));

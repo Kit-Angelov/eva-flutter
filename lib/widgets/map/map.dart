@@ -119,6 +119,7 @@ class MapWidgetState extends State<MapWidget> {
     mapController.setTelemetryEnabled(false);
     // mapController.addListener(_onMapChanged);
     mapController.onSymbolTapped.add(onSymbolTapped);
+    moveToLastKnownLocation();
     getPhotoPosts();
   }
 
