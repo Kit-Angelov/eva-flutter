@@ -11,7 +11,7 @@ import 'package:http/http.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/screens/home/modalSheets/placeSearchWidget.dart';
 import 'package:eva/models/myCurrentLocation.dart';
-import 'package:eva/screens/home/modalSheets/pubPhotoDetailWidget.dart';
+import 'package:eva/screens/home/modalSheets/minPubWidget.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/config.dart';
 import 'package:eva/models/profile.dart';
@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _userDetailWidget;
   Widget _getPhotoWidget;
-  Widget _photoDetailWidget;
+  Widget _minPubWidget;
 
   Location location = new Location();
 
@@ -68,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Positioned(
                 //search places
-                bottom: bottomMargin + 30,
-                left: 5,
+                bottom: bottomMargin + 165,
+                right: 5,
                 child: Opacity(
                   opacity: 0.9,
                   child: Container(
@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Positioned(
                 // my position
-                bottom: bottomMargin + 30,
+                bottom: bottomMargin + 110,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
@@ -205,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              (_photoDetailWidget == null) ? SizedBox() : _photoDetailWidget,
+              (_minPubWidget == null) ? SizedBox() : _minPubWidget,
               (_userDetailWidget == null) ? SizedBox() : _userDetailWidget
             ].where(notNull).toList(),
           ),
@@ -214,17 +214,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // PubPhotoDetail
 
-  void photoDetailWidgetClose() {
+  void minPubWidgetClose() {
     setState(() {
-      _userDetailWidget = null;
+      _minPubWidget = null;
     });
   }
 
   void symbolClickCallBack(symbolData) async {
     setState(() {
-      _photoDetailWidget = new PubPhotoDetailWidget(
+      _minPubWidget = new MinPubWidget(
           photoData: symbolData,
-          closeCallback: photoDetailWidgetClose,
+          closeCallback: minPubWidgetClose,
           showUserDetailCallback: showUserDetailWidget);
     });
   }
@@ -235,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void userDetailWidgetClose() {
     setState(() {
-      _photoDetailWidget = null;
+      _minPubWidget = null;
     });
   }
 

@@ -139,7 +139,6 @@ class MapWidgetState extends State<MapWidget> {
   void addSymbol(
       String id, String imageUrl, LatLng coordinates, Map data) async {
     await _addImageFromUrl(id, imageUrl);
-    print(data);
     await mapController.addSymbol(_getSymbolOptions(id, coordinates), data);
   }
 
@@ -250,7 +249,6 @@ class MapWidgetState extends State<MapWidget> {
       'userId': photoPost.userId,
       'favorites': photoPost.favorites
     };
-    print(config.urls['media'] + photoPost.imagesPaths + "/100circle.png");
     addSymbol(
         photoPost.id,
         config.urls['media'] + photoPost.imagesPaths + "/100circle.png",

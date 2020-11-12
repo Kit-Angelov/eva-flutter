@@ -37,9 +37,7 @@ class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
               padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
               child: Container(
                 height: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Stack(
                   children: <Widget>[
                     Container(
                       width: 180,
@@ -53,31 +51,13 @@ class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
                             fit: BoxFit.cover,
                           )),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "asdf",
-                            style: TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
                     IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
                         print("close");
                         widget.closeCallback();
                       },
-                    )
+                    ),
                   ],
                 ),
               )),
@@ -200,8 +180,9 @@ class PubPhotoDetailWidgetState extends State<PubPhotoDetailWidget> {
             maxChildSize: maxHeight,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
+                  width: 100,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.transparent,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10))),

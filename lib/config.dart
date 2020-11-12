@@ -6,7 +6,7 @@ class DevHome {
     'profilePhoto': 'http://192.168.0.105:8000/profile/update-photo',
     'profile': 'http://192.168.0.105:8000/profile',
     'user': 'http://192.168.0.105:8000/user',
-    'media': 'http://192.168.0.105/',
+    'media': 'http://192.168.0.105:8001/',
   };
 }
 
