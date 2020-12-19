@@ -242,13 +242,7 @@ class MapWidgetState extends State<MapWidget> {
   void addPhotoPostToMap(PhotoPost photoPost) {
     LatLng coords = LatLng(
         photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
-    var data = {
-      'id': photoPost.id,
-      'imagesPaths': photoPost.imagesPaths,
-      'description': photoPost.description,
-      'userId': photoPost.userId,
-      'favorites': photoPost.favorites
-    };
+    var data = photoPost.toJson();
     addSymbol(
         photoPost.id,
         config.urls['media'] + photoPost.imagesPaths + "/100circle.png",

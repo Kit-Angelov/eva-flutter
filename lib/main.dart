@@ -12,12 +12,14 @@ import 'services/firebaseAuth.dart';
 
 //models
 import 'models/myCurrentLocation.dart';
+import 'models/photoData.dart';
 
 //screens
 import 'screens/auth/phone_auth.dart';
 import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
+import 'screens/home/pubPhotoDetail.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,11 +34,13 @@ class MyApp extends StatelessWidget {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
       '/home': (context) => HomeScreen(),
+      '/detailPubPhoto': (context) => PubPhotoDetailScreen(),
       '/profile': (context) => ProfileScreen(),
       '/pubPhoto': (context) => PubPhotoScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
       ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),
+      ChangeNotifierProvider(builder: (context) => PhotoDataModel()),
     ];
     return MultiProvider(
         providers: providers,

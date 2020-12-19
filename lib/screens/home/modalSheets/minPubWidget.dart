@@ -2,23 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:eva/models/photoData.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/config.dart';
 import 'package:eva/models/profile.dart';
 
 class MinPubWidget extends StatefulWidget {
-  final Map photoData;
   final closeCallback;
-  final showUserDetailCallback;
 
-  MinPubWidget(
-      {Key key,
-      this.photoData,
-      this.closeCallback,
-      this.showUserDetailCallback})
-      : super(key: key);
+  MinPubWidget({Key key, this.closeCallback}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MinPubWidgetState();
@@ -27,37 +22,43 @@ class MinPubWidget extends StatefulWidget {
 class MinPubWidgetState extends State<MinPubWidget> {
   var currentWidget;
 
+  var photoData;
+
   @override
   void initState() {
     super.initState();
-    getUserData();
     setState(() {});
   }
 
   @override
   void didUpdateWidget(covariant MinPubWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
+    photoData = Provider.of<PhotoDataModel>(context).getPhotoData();
     return Positioned(
       bottom: 5,
       left: 5,
       child: Stack(
         children: <Widget>[
-          Container(
-            height: 200,
-            width: 200,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  config.urls['media'] +
-                      widget.photoData['imagesPaths'] +
-                      '/300.jpg',
-                  fit: BoxFit.cover,
-                )),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/detailPubPhoto');
+            },
+            child: Container(
+              height: 200,
+              width: 200,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    config.urls['media'] +
+                        photoData['imagesPaths'] +
+                        '/300.jpg',
+                    fit: BoxFit.cover,
+                  )),
+            ),
           ),
           Positioned(
             top: 5,
@@ -99,7 +100,7 @@ class MinPubWidgetState extends State<MinPubWidget> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['user'] +
-          '/?idToken=${token}&userId=${widget.photoData['userId']}';
+          '/?idToken=${token}&userId=${photoData['userId']}';
       _getUserData(url).then((res) {
         if (res.body != null && res.body != 'null') {
           print(res.body);

@@ -10,7 +10,8 @@ import 'package:http/http.dart';
 
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/screens/home/modalSheets/placeSearchWidget.dart';
-import 'package:eva/models/myCurrentLocation.dart';
+import 'package:eva/models/photoData.dart';
+import 'package:eva/models/photoPost.dart';
 import 'package:eva/screens/home/modalSheets/minPubWidget.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/config.dart';
@@ -22,6 +23,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  BuildContext currentContext;
+
   //models
   var getPhotoState;
 
@@ -51,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool notNull(Object o) => o != null;
   @override
   Widget build(BuildContext context) {
+    currentContext = context;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -222,10 +226,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void symbolClickCallBack(symbolData) async {
     setState(() {
-      _minPubWidget = new MinPubWidget(
-          photoData: symbolData,
-          closeCallback: minPubWidgetClose,
-          showUserDetailCallback: showUserDetailWidget);
+      Provider.of<PhotoDataModel>(currentContext)
+          .setPhotoData(PhotoPost.fromJson(symbolData));
+      _minPubWidget = new MinPubWidget(closeCallback: minPubWidgetClose);
     });
   }
 
