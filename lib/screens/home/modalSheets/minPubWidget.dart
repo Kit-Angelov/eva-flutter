@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:eva/models/photoPost.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,7 @@ class MinPubWidget extends StatefulWidget {
 class MinPubWidgetState extends State<MinPubWidget> {
   var currentWidget;
 
-  var photoData;
+  PhotoPost photoData;
 
   @override
   void initState() {
@@ -53,9 +54,7 @@ class MinPubWidgetState extends State<MinPubWidget> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(
-                    config.urls['media'] +
-                        photoData['imagesPaths'] +
-                        '/300.jpg',
+                    config.urls['media'] + photoData.imagesPaths + '/300.jpg',
                     fit: BoxFit.cover,
                   )),
             ),
@@ -99,8 +98,8 @@ class MinPubWidgetState extends State<MinPubWidget> {
     print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['user'] +
-          '/?idToken=${token}&userId=${photoData['userId']}';
+      var url =
+          config.urls['user'] + '/?idToken=${token}&userId=${photoData.userId}';
       _getUserData(url).then((res) {
         if (res.body != null && res.body != 'null') {
           print(res.body);

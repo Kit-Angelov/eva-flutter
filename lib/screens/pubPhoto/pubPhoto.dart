@@ -4,13 +4,11 @@ import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:eva/config.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/services/firebaseAuth.dart';
-import 'package:eva/models/myCurrentLocation.dart';
 import 'package:eva/widgets/widgets.dart';
 
 class PubPhotoScreen extends StatefulWidget {
@@ -19,10 +17,12 @@ class PubPhotoScreen extends StatefulWidget {
 }
 
 class _PubPhotoScreenState extends State<PubPhotoScreen> {
-  //models
+  TextEditingController _photoTitleTextController =
+      TextEditingController(text: '');
+  TextEditingController _photoDescriptionTextController =
+      TextEditingController(text: '');
   LatLng latlng;
 
-  TextEditingController _descriptionTextController;
   File _image;
 
   Future<LatLng> getLastKnownLocation() async {
@@ -40,13 +40,16 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
 
   Future _getImageFromDevice(ImageSource imageSource) async {
     var image = await ImagePicker.pickImage(source: imageSource);
+    if (image == null) {
+      Navigator.pop(context);
+    }
     latlng = await getLastKnownLocation();
     setState(() {
       _image = image;
     });
   }
 
-  void _upload() {
+  void _upload(BuildContext context) {
     if (_image == null) return;
     String token;
     getUserIdToken().then((idToken) {
@@ -54,8 +57,10 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
       var url = config.urls['pubPhoto'] + '?idToken=${token}';
       _postImage(url, _image).then((res) {
         print(res);
+        showAlertDialog(context, 'Success', 'Photo is publish', 'ok');
       }).catchError((error) {
         print(error);
+        showAlertDialog(context, 'Fault', "Photo is't publish", 'ok');
       });
     });
   }
@@ -64,10 +69,10 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
 
   Future<int> _postImage(url, image) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    print(latlng);
     request.fields['latitude'] = latlng.latitude.toString();
     request.fields['longitude'] = latlng.longitude.toString();
-    request.fields['description'] = _descriptionTextController.text;
+    request.fields['description'] = _photoDescriptionTextController.text;
+    request.fields['title'] = _photoTitleTextController.text;
     request.files.add(http.MultipartFile.fromBytes(
         'file', _image.readAsBytesSync(),
         filename: _image.path.split("/").last));
@@ -78,7 +83,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   @override
   void initState() {
     super.initState();
-    _descriptionTextController = TextEditingController();
+    _photoTitleTextController = TextEditingController();
+    _photoDescriptionTextController = TextEditingController();
     _getImageFromDevice(ImageSource.camera);
   }
 
@@ -86,94 +92,128 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Center(
-          child: Stack(
-            children: <Widget>[
-              ListView(
-                  physics: BouncingScrollPhysics(),
+        body: _image == null
+            ? SizedBox()
+            : Center(
+                child: ListView(
                   padding: const EdgeInsets.all(0),
-                  children: <Widget>[
+                  children: [
                     Container(
-                      height: MediaQuery.of(context).size.height - 150,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.width,
+                                child: ClipRRect(
+                                  borderRadius: new BorderRadius.only(
+                                    bottomLeft: const Radius.circular(20.0),
+                                    bottomRight: const Radius.circular(20.0),
+                                  ),
                                   child: _image == null
                                       ? Text('No image selected.')
                                       : Image.file(
                                           _image,
                                           fit: BoxFit.cover,
                                         ),
-                                )
-                              ],
+                                )),
+                            Positioned(
+                              bottom: 20,
+                              right: 20,
+                              child: Container(
+                                width: 42,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color.fromRGBO(44, 62, 80, 1),
+                                      width: 1),
+                                  color: Colors.transparent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.refresh,
+                                    color: Color.fromRGBO(44, 62, 80, 1),
+                                  ),
+                                  onPressed: () {
+                                    _getImageFromDevice(ImageSource.camera);
+                                  },
+                                ),
+                              ),
                             ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                        child: Column(children: <Widget>[
+                          SizedBox(
+                            height: 10,
                           ),
-                        ],
-                      ),
-                    ),
-                    Text(latlng != null
-                        ? "${latlng.longitude.toString()} ${latlng.latitude.toString()}"
-                        : 'no location'),
-                    InputWithLabelWidget(_descriptionTextController,
-                        descriptionSubmit, 33, "description", ""),
-                  ]),
-              Positioned(
-                bottom: 5,
-                right: 5,
-                child: Opacity(
-                  opacity: 0.9,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.purple.shade500,
-                    child: Icon(Icons.save),
-                    elevation: 0.0,
-                    mini: true,
-                    heroTag: null,
-                    onPressed: () {
-                      _upload();
-                    },
-                  ),
+                          InputWithLabelWidget(_photoTitleTextController,
+                              (e) => {}, 15, "Title", "Enter title"),
+                          Divider(
+                              height: 20,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          InputWithLabelMultilineWidget(
+                              _photoDescriptionTextController,
+                              (e) => {},
+                              2000,
+                              "Description",
+                              "Enter description"),
+                          Divider(
+                              height: 20,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          OutlineButton(
+                              onPressed: () {
+                                _upload(context);
+                              },
+                              child: const Text('Publish',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color.fromRGBO(44, 62, 80, 1))),
+                              borderSide: BorderSide(
+                                  width: 1.0,
+                                  color: Color.fromRGBO(44, 62, 80, 1)),
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                              )),
+                        ]))
+                  ],
                 ),
-              ),
-              Positioned(
-                bottom: 5,
-                left: 150,
-                child: Opacity(
-                  opacity: 0.9,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.purple.shade500,
-                    child: Icon(Icons.refresh),
-                    elevation: 0.0,
-                    mini: true,
-                    heroTag: null,
-                    onPressed: () {
-                      _getImageFromDevice(ImageSource.camera);
-                    },
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 5,
-                left: 5,
-                child: Opacity(
-                  opacity: 0.9,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.purple.shade500,
-                    child: Icon(Icons.arrow_back),
-                    elevation: 0.0,
-                    mini: true,
-                    heroTag: null,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ));
+              ));
+  }
+
+  showAlertDialog(
+      BuildContext context, String title, String content, String buttonText) {
+    Widget ok = FlatButton(
+      child: Text(buttonText),
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+    );
+    CupertinoAlertDialog alert = CupertinoAlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        ok,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

@@ -19,7 +19,7 @@ import 'screens/auth/phone_auth.dart';
 import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
-import 'screens/home/pubPhotoDetail.dart';
+import 'screens/pubPhotoDetail/pubPhotoDetail.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,7 +67,6 @@ class _LoadPageState extends State<LoadPage> {
     Timer(Duration(seconds: 5), () {
       setState(() {
         checkAuth().then((state) {
-          print(state);
           if (state) {
             print('Auth');
             Navigator.pushReplacementNamed(context, '/home');

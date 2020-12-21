@@ -6,22 +6,20 @@ import 'package:provider/provider.dart';
 
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/models/photoData.dart';
-import 'package:eva/models/photoPost.dart';
+import 'package:eva/models/profile.dart';
 import 'package:eva/config.dart';
 
 class PubPhotoDetailScreen extends StatefulWidget {
-  final Map photoData;
   final closeCallback;
 
-  PubPhotoDetailScreen({Key key, this.photoData, this.closeCallback})
-      : super(key: key);
+  PubPhotoDetailScreen({Key key, this.closeCallback}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _PubPhotoDetailScreenState();
 }
 
 class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   var photoData;
-  PhotoPost authorData;
+  Profile authorData;
 
   @override
   void initState() {
@@ -34,7 +32,6 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   @override
   Widget build(BuildContext context) {
     photoData = Provider.of<PhotoDataModel>(context).getPhotoData();
-    print(photoData);
     return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -56,7 +53,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                             ),
                             child: Image.network(
                               config.urls['media'] +
-                                  photoData['imagesPaths'] +
+                                  photoData.imagesPaths +
                                   '/640.jpg',
                               fit: BoxFit.cover,
                             ),
@@ -90,7 +87,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                     Container(
                       child: Row(
                         children: [
-                          Text('11.03.2021'),
+                          Text(getDateString()),
                           Expanded(child: SizedBox()),
                           Icon(Icons.favorite),
                           Text('10234'),
@@ -109,7 +106,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                         child: Row(
                       children: [
                         Text(
-                          'Title of the photo',
+                          photoData.title,
                           textAlign: TextAlign.start,
                         ),
                       ],
@@ -128,20 +125,6 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                                   BorderRadius.all(Radius.circular(25))),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
-                            // child: profileData != null
-                            //     ? profileData.photo != ''
-                            //         ? Image.network(
-                            //             profileData.photo + '/300.jpg',
-                            //             fit: BoxFit.cover,
-                            //           )
-                            //         : Image.network(
-                            //             'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                            //             fit: BoxFit.cover,
-                            //           )
-                            //     : Image.network(
-                            //         'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                            //         fit: BoxFit.cover,
-                            //       )
                           ),
                         ),
                         SizedBox(
@@ -153,11 +136,11 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                     Divider(height: 20, thickness: 1, indent: 0, endIndent: 0),
                     Container(
                       child: Column(
-                        children: [
-                          Text(
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.')
-                        ],
+                        children: [Text(photoData.description)],
                       ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     )
                   ]))
             ],
@@ -168,6 +151,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
 
   Future<http.Response> _getAuthorData(url) async {
     var res = await http.get(url);
+    print(res.body);
     return res;
   }
 
@@ -176,14 +160,24 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['user'] +
-          '/?idToken=${token}' +
+          '?idToken=${token}' +
           '&userId=${photoData.userId}';
       _getAuthorData(url).then((res) {
         if (res.body != null && res.body != 'null') {
           print(res.body);
-          authorData = PhotoPost.fromJson(json.decode(res.body));
+          authorData = Profile.fromJson(json.decode(res.body));
         }
+      }).catchError((e) {
+        print(e);
       });
     });
+  }
+
+  getDateString() {
+    if (photoData.date == null) {
+      return "no date";
+    }
+    var date = DateTime.fromMicrosecondsSinceEpoch(photoData.date);
+    return "${date.hour.toString()}:${date.minute.toString()} ${date.day.toString()}/${date.month.toString()}/${date.year.toString()}";
   }
 }

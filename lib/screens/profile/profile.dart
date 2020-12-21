@@ -230,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['profile'] + '/?idToken=${token}';
+      var url = config.urls['profile'] + '?idToken=${token}';
       _getProfileData(url).then((res) {
         if (res.body != null && res.body != 'null') {
           print(res.body);

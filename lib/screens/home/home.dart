@@ -225,9 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void symbolClickCallBack(symbolData) async {
+    print(symbolData['userId']);
     setState(() {
       Provider.of<PhotoDataModel>(currentContext)
-          .setPhotoData(PhotoPost.fromJson(symbolData));
+          .setPhotoData(PhotoPost.fromSymbolData(symbolData));
       _minPubWidget = new MinPubWidget(closeCallback: minPubWidgetClose);
     });
   }
@@ -259,18 +260,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void getProfileData() async {
     String token;
-    print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['profile'] + '/?idToken=${token}';
+      var url = config.urls['profile'] + '?idToken=${token}';
       _getProfileData(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          print(res.body);
           profileData = Profile.fromJson(json.decode(res.body));
           if (profileData.photo != null) {
             setState(() {});
           }
         }
+      }).catchError((e) {
+        print(e);
       });
     });
   }
