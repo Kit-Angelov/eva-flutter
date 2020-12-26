@@ -25,7 +25,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   void initState() {
     super.initState();
     setState(() {
-      getAuthorData();
+      getAuthor();
     });
   }
 
@@ -83,89 +83,85 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                   )),
               Padding(
                   padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                  child: Column(children: <Widget>[
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(getDateString()),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.favorite),
-                          Text('10234'),
-                          SizedBox(
-                            width: 10,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          child: Row(
+                            children: [
+                              Text(getDateString()),
+                              Expanded(child: SizedBox()),
+                              Icon(Icons.favorite),
+                              Text(photoData.favorites?.length.toString()),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(Icons.remove_red_eye),
+                              Text(photoData.views.toString())
+                            ],
                           ),
-                          Icon(Icons.remove_red_eye),
-                          Text('234')
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        child: Row(
-                      children: [
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           photoData.title,
                           textAlign: TextAlign.start,
                         ),
-                      ],
-                    )),
-                    Divider(height: 20, thickness: 1, indent: 0, endIndent: 0),
-                    Container(
-                        child: Row(
-                      children: [
+                        Divider(
+                            height: 20, thickness: 1, indent: 0, endIndent: 0),
                         Container(
-                          width: 50,
-                          height: 50,
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              color: Color.fromRGBO(44, 62, 80, 1),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25))),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
+                            child: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                  color: Color.fromRGBO(44, 62, 80, 1),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(authorData == null ? '' : authorData.username)
+                          ],
+                        )),
+                        Divider(
+                            height: 20, thickness: 1, indent: 0, endIndent: 0),
+                        Text(photoData.description),
                         SizedBox(
-                          width: 20,
-                        ),
-                        Text("Author Username")
-                      ],
-                    )),
-                    Divider(height: 20, thickness: 1, indent: 0, endIndent: 0),
-                    Container(
-                      child: Column(
-                        children: [Text(photoData.description)],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    )
-                  ]))
+                          height: 20,
+                        )
+                      ]))
             ],
           ),
         ));
   }
   // get profile data
 
-  Future<http.Response> _getAuthorData(url) async {
+  Future<http.Response> _getAuthor(url) async {
     var res = await http.get(url);
     print(res.body);
     return res;
   }
 
-  void getAuthorData() async {
+  void getAuthor() async {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['user'] +
           '?idToken=${token}' +
           '&userId=${photoData.userId}';
-      _getAuthorData(url).then((res) {
+      _getAuthor(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          print(res.body);
-          authorData = Profile.fromJson(json.decode(res.body));
+          setState(() {
+            authorData = Profile.fromJson(json.decode(res.body));
+          });
         }
       }).catchError((e) {
         print(e);
@@ -177,7 +173,11 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
     if (photoData.date == null) {
       return "no date";
     }
-    var date = DateTime.fromMicrosecondsSinceEpoch(photoData.date);
-    return "${date.hour.toString()}:${date.minute.toString()} ${date.day.toString()}/${date.month.toString()}/${date.year.toString()}";
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(photoData.date * 1000);
+    var dateTimeUTC = DateTime.utc(dateTime.year, dateTime.month, dateTime.day,
+        dateTime.hour, dateTime.minute);
+    print(dateTimeUTC.isUtc);
+    var dateTimeLocal = dateTimeUTC.toLocal();
+    return "${dateTimeLocal.hour.toString()}:${dateTimeLocal.minute.toString()} ${dateTimeLocal.day.toString()}/${dateTimeLocal.month.toString()}/${dateTimeLocal.year.toString()}";
   }
 }

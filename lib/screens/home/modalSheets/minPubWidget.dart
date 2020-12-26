@@ -51,6 +51,10 @@ class MinPubWidgetState extends State<MinPubWidget> {
             child: Container(
               height: 200,
               width: 200,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(44, 62, 80, 0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(

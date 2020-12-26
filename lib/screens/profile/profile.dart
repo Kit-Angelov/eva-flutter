@@ -65,19 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            // elevation: 0,
-            backgroundColor: Color.fromRGBO(44, 62, 80, 1),
-            title: const Text('Profile'),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.exit_to_app),
-                onPressed: () {
-                  print('EXIT');
-                },
-              ),
-            ]),
         backgroundColor: Colors.white,
         body: Center(
           child: Stack(
@@ -93,12 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             bottomLeft: const Radius.circular(20.0),
                             bottomRight: const Radius.circular(20.0),
                           )),
-                      height: MediaQuery.of(context).size.width - 55,
+                      height: MediaQuery.of(context).size.width - 35,
                       width: MediaQuery.of(context).size.width,
                       child: Stack(
                         children: <Widget>[
                           Positioned(
-                            top: 18,
+                            top: 38,
                             left: 48,
                             child: Container(
                                 height:
@@ -111,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Container(
                               margin: const EdgeInsets.fromLTRB(
-                                  50.0, 20.0, 50.0, 25.0),
+                                  50.0, 40.0, 50.0, 25.0),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(9999.0),
                                 child: imageWidget == null

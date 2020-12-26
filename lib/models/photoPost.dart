@@ -1,15 +1,15 @@
 import "package:eva/models/geoJson.dart";
 
 class PhotoPost {
-  final String id;
-  final String imagesPaths;
-  final Geometry location;
-  final String title;
-  final String description;
-  final String userId;
-  final Map favorites;
-  final int views;
-  final int date;
+  String id;
+  String imagesPaths;
+  Geometry location;
+  String title;
+  String description;
+  String userId;
+  List favorites;
+  int views;
+  int date;
 
   PhotoPost(
       {this.id,
@@ -20,7 +20,20 @@ class PhotoPost {
       this.userId,
       this.favorites,
       this.views,
-      this.date});
+      this.date}) {
+    if (this.views == null) {
+      this.views = 0;
+    }
+    if (this.favorites == null) {
+      this.favorites = [];
+    }
+    if (this.description == null) {
+      this.description = '';
+    }
+    if (this.title == null) {
+      this.title = '';
+    }
+  }
 
   factory PhotoPost.fromJson(Map<String, dynamic> json) {
     return PhotoPost(
