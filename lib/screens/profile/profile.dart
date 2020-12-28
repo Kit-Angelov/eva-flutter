@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:eva/screens/auth/enterUsername.dart';
 import 'package:eva/config.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -19,11 +20,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _usernameTextController =
-      TextEditingController(text: '');
   TextEditingController _instagramTextController =
       TextEditingController(text: '');
 
+  String username = '';
   String phone = '';
 
   File _image;
@@ -54,6 +54,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         )
       ],
     );
+  }
+
+  logout() async {
+    await signOut();
+    Navigator.pushNamedAndRemoveUntil(context, '/', ModalRoute.withName('/'));
   }
 
   @override
@@ -142,8 +147,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
                       child: Column(
                         children: <Widget>[
-                          InputWithLabelWidget(_usernameTextController,
-                              textSubmit, 15, "username", "username"),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('username',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Text(username),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  SizedBox(
+                                    height: 18.0,
+                                    width: 18.0,
+                                    child: new IconButton(
+                                        padding: new EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.edit, size: 18.0),
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EnterUsernameScreen(
+                                                currentUsername: username,
+                                                successPushName: '/profile',
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                           Divider(
                               height: 30,
                               thickness: 1,
@@ -178,7 +218,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Text('instagram',
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12)),
-                              SizedBox(height: 10),
                               Row(
                                 children: <Widget>[
                                   Icon(FontAwesomeIcons.instagram),
@@ -195,6 +234,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 20),
+                          OutlineButton(
+                              onPressed: () {
+                                logout();
+                              },
+                              child: const Text('Log out',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color.fromRGBO(44, 62, 80, 1))),
+                              borderSide: BorderSide(
+                                  width: 1.0,
+                                  color: Color.fromRGBO(44, 62, 80, 1)),
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                              )),
                           SizedBox(height: 50),
                         ],
                       ),
@@ -220,8 +274,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       var url = config.urls['profile'] + '?idToken=${token}';
       _getProfileData(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          print(res.body);
-          profileData = Profile.fromJson(json.decode(res.body));
+          profileData =
+              Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));
           fillProfileFields();
         }
       });
@@ -239,8 +293,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             width: MediaQuery.of(context).size.width - 100.0,
           );
         }
-        profileData.username != ''
-            ? _usernameTextController.text = profileData.username
+        profileData.username != null
+            ? username = profileData.username
             : () {}();
 
         profileData.phone != null ? phone = profileData.phone : () {}();
@@ -335,10 +389,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       token = idToken;
       var url = config.urls['profile'] + '/?idToken=${token}';
       print(url);
-      var data = {
-        'username': _usernameTextController.text,
-        'insta': _instagramTextController.text
-      };
+      var data = {'username': username, 'insta': _instagramTextController.text};
       _postProfileData(url, jsonEncode(data)).then((res) {
         print(res);
       });

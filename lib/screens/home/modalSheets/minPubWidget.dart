@@ -108,7 +108,8 @@ class MinPubWidgetState extends State<MinPubWidget> {
         if (res.body != null && res.body != 'null') {
           print(res.body);
           setState(() {
-            userData = Profile.fromJson(json.decode(res.body));
+            userData =
+                Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));
           });
         }
       });

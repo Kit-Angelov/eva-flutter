@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 Future<bool> checkAuth() async {
   FirebaseAuth _auth = await FirebaseAuth.instance;
   return await _auth.currentUser().then((user) {
@@ -29,4 +28,9 @@ Future<String> getUserIdToken() async {
   }).catchError((error) {
     return "";
   });
+}
+
+Future<void> signOut() async {
+  FirebaseAuth _auth = await FirebaseAuth.instance;
+  await _auth.signOut();
 }

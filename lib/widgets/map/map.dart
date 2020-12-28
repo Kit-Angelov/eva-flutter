@@ -42,7 +42,7 @@ class MapWidgetState extends State<MapWidget> {
 
   Symbol _selectedSymbol;
 
-  StreamSubscription<Position> positionStream;
+  // StreamSubscription<Position> positionStream;
 
   double deltaLat = 1.0;
   double deltaLng = 1.0;
@@ -58,7 +58,7 @@ class MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     mapController?.onSymbolTapped?.remove(onSymbolTapped);
-    positionStream.cancel();
+    // positionStream.cancel();
     super.dispose();
   }
 

@@ -160,7 +160,8 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
       _getAuthor(url).then((res) {
         if (res.body != null && res.body != 'null') {
           setState(() {
-            authorData = Profile.fromJson(json.decode(res.body));
+            authorData =
+                Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));
           });
         }
       }).catchError((e) {

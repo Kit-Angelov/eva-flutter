@@ -7,19 +7,26 @@ import 'package:eva/config.dart';
 import 'package:eva/services/firebaseAuth.dart';
 
 class EnterUsernameScreen extends StatefulWidget {
+  final currentUsername;
+  final successPushName;
+
+  EnterUsernameScreen({Key key, this.currentUsername, this.successPushName})
+      : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _EnterUsernameScreenState();
 }
 
 class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
   TextEditingController _usernameController = TextEditingController();
+
   String validationFiledText = '';
 
   Future<int> _postProfileData(String url, String body) async {
     try {
       var response = await http.post(url, body: body);
       print("Response status: ${response.statusCode}");
-      Navigator.pushReplacementNamed(context, '/username');
+      Navigator.pushReplacementNamed(context, widget.successPushName);
     } catch (error) {
       setState(() {
         validationFiledText = 'invalid username';
@@ -31,10 +38,14 @@ class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
     setState(() {
       validationFiledText = '';
     });
+    var valid = validationUsername();
+    if (!valid) {
+      return;
+    }
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['profile'] + '/?idToken=${token}';
+      var url = config.urls['profile'] + '?idToken=${token}';
       print(url);
       var data = {
         'username': _usernameController.text,
@@ -42,6 +53,24 @@ class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
       _postProfileData(url, jsonEncode(data)).then((res) {
         print(res);
       });
+    });
+  }
+
+  bool validationUsername() {
+    if (_usernameController.text.length < 3) {
+      setState(() {
+        validationFiledText = 'at least 3 characters';
+      });
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _usernameController.text = widget.currentUsername;
     });
   }
 
@@ -95,7 +124,10 @@ class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(validationFiledText),
+                    Text(
+                      validationFiledText,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ]),
               SizedBox(
                 height: 15,
@@ -114,7 +146,7 @@ class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
                       _sendUsername();
                     },
                     child: Text(
-                      "continue",
+                      "save",
                       style: TextStyle(
                         fontSize: 19.0,
                       ),

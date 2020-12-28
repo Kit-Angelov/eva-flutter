@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:eva/screens/home/modalSheets/userDetailWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart';
 
+import 'package:eva/screens/auth/enterUsername.dart';
+import 'package:eva/screens/home/modalSheets/userDetailWidget.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/screens/home/modalSheets/placeSearchWidget.dart';
 import 'package:eva/models/photoData.dart';
@@ -265,7 +266,20 @@ class _HomeScreenState extends State<HomeScreen> {
       var url = config.urls['profile'] + '?idToken=${token}';
       _getProfileData(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          profileData = Profile.fromJson(json.decode(res.body));
+          profileData =
+              Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));
+          var username = profileData.username;
+          if (username == null || username == '' || username == ' ') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EnterUsernameScreen(
+                  currentUsername: '',
+                  successPushName: '/',
+                ),
+              ),
+            );
+          }
           if (profileData.photo != null) {
             setState(() {});
           }
