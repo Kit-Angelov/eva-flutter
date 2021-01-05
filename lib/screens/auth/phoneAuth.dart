@@ -65,89 +65,99 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Color.fromRGBO(44, 62, 80, 1),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
-        child: new Center(
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                "Sign in",
-                style: TextStyle(fontSize: 66, color: Colors.white),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Text(
-                "Enter your phone number",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: _phoneNumberController,
-                maxLength: 20,
-                style: TextStyle(fontSize: 19, color: Colors.white),
-                decoration: InputDecoration(
-                    prefixText: "+",
-                    prefixStyle: TextStyle(color: Colors.white, fontSize: 19),
-                    hintText: "",
-                    counterText: "",
-                    border: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    enabledBorder: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    focusedBorder: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    labelText: "",
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 0, horizontal: 20)),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(verificationFiledText),
-                  ]),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.white)),
-                    color: Color.fromRGBO(44, 62, 80, 1),
-                    textColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    onPressed: () {
-                      _sendCodeToPhoneNumber();
-                    },
-                    child: Text(
-                      "Get sms code",
-                      style: TextStyle(
-                        fontSize: 19.0,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
+        backgroundColor: Color.fromRGBO(44, 62, 80, 1),
+        body: ListView(children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
           ),
-        ),
-      ),
-    );
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
+            child: new Center(
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "Sign in",
+                    style: TextStyle(fontSize: 66, color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    "Enter your phone number",
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: _phoneNumberController,
+                    maxLength: 20,
+                    style: TextStyle(fontSize: 19, color: Colors.white),
+                    decoration: InputDecoration(
+                        prefixText: "+",
+                        prefixStyle:
+                            TextStyle(color: Colors.white, fontSize: 19),
+                        hintText: "",
+                        counterText: "",
+                        border: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        enabledBorder: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        focusedBorder: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        labelText: "",
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 20)),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(verificationFiledText),
+                      ]),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)),
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                        textColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                        onPressed: () {
+                          _sendCodeToPhoneNumber();
+                        },
+                        child: Text(
+                          "Get sms code",
+                          style: TextStyle(
+                            fontSize: 19.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ]));
   }
 }
 
@@ -201,110 +211,120 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Color.fromRGBO(44, 62, 80, 1),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
-        child: new Center(
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                "Sign in",
-                style: TextStyle(fontSize: 66, color: Colors.white),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Text(
-                "Enter sms code",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                textAlign: TextAlign.center,
-                controller: _smsCodeController,
-                maxLength: 20,
-                style: TextStyle(fontSize: 19, color: Colors.white),
-                decoration: InputDecoration(
-                    hintText: "",
-                    counterText: "",
-                    border: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    enabledBorder: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    focusedBorder: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        borderSide: new BorderSide(color: Colors.white)),
-                    labelText: "",
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 0, horizontal: 20)),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(verificationFiledText),
-                  ]),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.white)),
-                    color: Color.fromRGBO(44, 62, 80, 1),
-                    textColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    onPressed: () {
-                      _signInWithPhoneNumber(_smsCodeController.text);
-                    },
-                    child: Text(
-                      "Confirm",
-                      style: TextStyle(fontSize: 19.0, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.white)),
-                    color: Color.fromRGBO(44, 62, 80, 1),
-                    textColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "Back",
-                      style: TextStyle(
-                        fontSize: 19.0,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
+        backgroundColor: Color.fromRGBO(44, 62, 80, 1),
+        body: ListView(children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
           ),
-        ),
-      ),
-    );
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
+            child: new Center(
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "Sign in",
+                    style: TextStyle(fontSize: 66, color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    "Enter sms code",
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    textAlign: TextAlign.center,
+                    controller: _smsCodeController,
+                    maxLength: 20,
+                    style: TextStyle(fontSize: 19, color: Colors.white),
+                    decoration: InputDecoration(
+                        hintText: "",
+                        counterText: "",
+                        border: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        enabledBorder: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        focusedBorder: new OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            borderSide: new BorderSide(color: Colors.white)),
+                        labelText: "",
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 20)),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(verificationFiledText),
+                      ]),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)),
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                        textColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                        onPressed: () {
+                          _signInWithPhoneNumber(_smsCodeController.text);
+                        },
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(fontSize: 19.0, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)),
+                        color: Color.fromRGBO(44, 62, 80, 1),
+                        textColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Back",
+                          style: TextStyle(
+                            fontSize: 19.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ]));
   }
 }

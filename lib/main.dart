@@ -20,7 +20,7 @@ import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
 import 'screens/pubPhotoDetail/pubPhotoDetail.dart';
-import 'package:eva/screens/auth/enterUsername.dart';
+import 'package:eva/screens/profile/enterUsername.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
       '/detailPubPhoto': (context) => PubPhotoDetailScreen(),
       '/profile': (context) => ProfileScreen(),
       '/pubPhoto': (context) => PubPhotoScreen(),
-      '/enterUsername': (context) => EnterUsernameScreen(),
     };
     List<SingleChildCloneableWidget> providers = [
       ChangeNotifierProvider(builder: (context) => MyCurrentLocationModel()),

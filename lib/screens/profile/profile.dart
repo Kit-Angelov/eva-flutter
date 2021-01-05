@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:eva/screens/auth/enterUsername.dart';
+import 'package:eva/screens/profile/enterUsername.dart';
+import 'package:eva/screens/profile/enterInsta.dart';
 import 'package:eva/config.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/widgets/widgets.dart';
@@ -20,20 +21,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _instagramTextController =
-      TextEditingController(text: '');
-
   String username = '';
+  String instagram = '';
   String phone = '';
 
   File _image;
-  Image imageWidget;
+  Image profilePhoto;
 
   Profile profileData;
-
-  void textSubmit(String value) {
-    updateProfileData();
-  }
 
   Column _bottomSheetPhotoSource() {
     return Column(
@@ -106,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   50.0, 40.0, 50.0, 25.0),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(9999.0),
-                                child: imageWidget == null
+                                child: profilePhoto == null
                                     ? Image.network(
                                         'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
                                         fit: BoxFit.cover,
@@ -117,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             MediaQuery.of(context).size.width -
                                                 100.0,
                                       )
-                                    : imageWidget,
+                                    : profilePhoto,
                               )),
                           Positioned(
                             bottom: 20,
@@ -162,11 +157,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: SizedBox(),
                                   ),
                                   SizedBox(
-                                    height: 18.0,
-                                    width: 18.0,
+                                    height: 20.0,
+                                    width: 20.0,
                                     child: new IconButton(
                                         padding: new EdgeInsets.all(0.0),
-                                        icon: new Icon(Icons.edit, size: 18.0),
+                                        icon: new Icon(Icons.edit, size: 20.0),
                                         onPressed: () {
                                           Navigator.pushReplacement(
                                             context,
@@ -174,6 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               builder: (context) =>
                                                   EnterUsernameScreen(
                                                 currentUsername: username,
+                                                currentInsta: instagram,
                                                 successPushName: '/profile',
                                               ),
                                             ),
@@ -200,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Row(
                                 children: <Widget>[
                                   Icon(Icons.phone),
-                                  SizedBox(width: 30),
+                                  SizedBox(width: 20),
                                   Text(phone),
                                 ],
                               ),
@@ -218,17 +214,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Text('instagram',
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
                               Row(
                                 children: <Widget>[
                                   Icon(FontAwesomeIcons.instagram),
-                                  SizedBox(width: 30),
+                                  SizedBox(width: 20),
+                                  Text("instagram.com/" + instagram),
                                   Expanded(
-                                    child: InputWithStaticTextWidget(
-                                        _instagramTextController,
-                                        textSubmit,
-                                        20,
-                                        "instagram.com/",
-                                        "username"),
+                                    child: SizedBox(),
+                                  ),
+                                  SizedBox(
+                                    height: 20.0,
+                                    width: 20.0,
+                                    child: new IconButton(
+                                        padding: new EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.edit, size: 20.0),
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EnterInstaScreen(
+                                                currentUsername: username,
+                                                currentInsta: instagram,
+                                                successPushInsta: '/profile',
+                                              ),
+                                            ),
+                                          );
+                                        }),
                                   )
                                 ],
                               ),
@@ -286,8 +299,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (profileData != null) {
       setState(() {
         if (profileData.photo != '') {
-          imageWidget = Image.network(
-            profileData.photo + '/300.jpg',
+          profilePhoto = Image.network(
+            config.urls['media'] + profileData.photo + '/300.jpg',
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.width - 100.0,
             width: MediaQuery.of(context).size.width - 100.0,
@@ -299,9 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         profileData.phone != null ? phone = profileData.phone : () {}();
 
-        profileData.insta != ''
-            ? _instagramTextController.text = profileData.insta
-            : () {}();
+        profileData.insta != '' ? instagram = profileData.insta : () {}();
       });
     }
   }
@@ -315,7 +326,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var image = await ImagePicker.pickImage(source: imageSource);
     setState(() {
       _image = image;
-      imageWidget = Image.file(
+      profilePhoto = Image.file(
         _image,
         fit: BoxFit.cover,
         height: MediaQuery.of(context).size.width - 100.0,
@@ -330,7 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
-      var url = config.urls['profilePhoto'] + '/?idToken=${token}';
+      var url = config.urls['profilePhoto'] + '?idToken=${token}';
       print(url);
       _postImage(url, _image).then((res) {
         print(res);
@@ -369,30 +380,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // -------------
-
-  // update profile data
-
-  Future<int> _postProfileData(String url, String body) async {
-    try {
-      var response = await http.post(url, body: body);
-      print("Response status: ${response.statusCode}");
-      return (response.statusCode);
-    } catch (error) {
-      print(error);
-      return 500;
-    }
-  }
-
-  void updateProfileData() async {
-    String token;
-    getUserIdToken().then((idToken) {
-      token = idToken;
-      var url = config.urls['profile'] + '/?idToken=${token}';
-      print(url);
-      var data = {'username': username, 'insta': _instagramTextController.text};
-      _postProfileData(url, jsonEncode(data)).then((res) {
-        print(res);
-      });
-    });
-  }
 }

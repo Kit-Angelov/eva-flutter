@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart';
 
-import 'package:eva/screens/auth/enterUsername.dart';
+import 'package:eva/screens/profile/enterUsername.dart';
 import 'package:eva/screens/home/modalSheets/userDetailWidget.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/screens/home/modalSheets/placeSearchWidget.dart';
@@ -118,7 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: profileData != null
                             ? profileData.photo != ''
                                 ? Image.network(
-                                    profileData.photo + '/300.jpg',
+                                    config.urls['media'] +
+                                        profileData.photo +
+                                        '/300.jpg',
                                     fit: BoxFit.cover,
                                   )
                                 : Image.network(
