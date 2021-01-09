@@ -8,7 +8,13 @@ class LoadWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      color: Colors.blue,
+      color: Color.fromRGBO(44, 62, 80, 1),
+      child: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.transparent,
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      ),
     );
   }
 }

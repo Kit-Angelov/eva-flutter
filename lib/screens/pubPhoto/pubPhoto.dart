@@ -103,17 +103,28 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                   Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(44, 62, 80, 1),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: const Radius.circular(20),
+                            bottomRight: const Radius.circular(20),
+                          )),
                       child: Stack(
                         children: [
+                          Positioned(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.transparent,
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )),
                           Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(44, 62, 80, 1),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: const Radius.circular(20),
-                                    bottomRight: const Radius.circular(20),
-                                  )),
+                              color: Colors.transparent,
                               child: ClipRRect(
                                 borderRadius: new BorderRadius.only(
                                   bottomLeft: const Radius.circular(20.0),
