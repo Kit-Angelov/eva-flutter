@@ -13,43 +13,10 @@ void openPlaceSearch(context, searchPlaceCallback) {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
-                child: Container(
-                  height: 20,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          child: Text(
-                            "search places",
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "close",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Divider(height: 0, thickness: 1, indent: 0, endIndent: 0),
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: SizedBox(
+                    height: 10,
+                  )),
               Expanded(
                 child:
                     SearchPlaceWidget(geocodingCallback: searchPlaceCallback),

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
+import 'dart:math';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:mapbox_gl_platform_interface/mapbox_gl_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:eva/config.dart';
@@ -27,12 +29,14 @@ class MapWidgetState extends State<MapWidget> {
   MapboxMapController mapController;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
-  int _styleStringIndex = 0;
-  List<String> _styleStrings = [
-    MapboxStyles.MAPBOX_STREETS,
-    MapboxStyles.SATELLITE,
-  ];
-  bool _rotateGesturesEnabled = false;
+  Map<String, String> _styleStrings = {
+    'Dark': MapboxStyles.DARK,
+    'Light': MapboxStyles.LIGHT,
+    'Outdoors': MapboxStyles.OUTDOORS,
+    'Sattelite': MapboxStyles.SATELLITE,
+  };
+  String currentStyleItem = 'Dark';
+  bool _rotateGesturesEnabled = true;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
   bool _zoomGesturesEnabled = true;
@@ -68,10 +72,12 @@ class MapWidgetState extends State<MapWidget> {
       onMapCreated: onMapCreated,
       initialCameraPosition: _kInitialPosition,
       trackCameraPosition: true,
-      compassEnabled: false,
+      compassEnabled: true,
+      compassViewPosition: CompassViewPosition.BottomLeft,
+      compassViewMargins: Point(15, 100),
       cameraTargetBounds: _cameraTargetBounds,
       minMaxZoomPreference: _minMaxZoomPreference,
-      styleString: _styleStrings[_styleStringIndex],
+      styleString: _styleStrings[currentStyleItem],
       rotateGesturesEnabled: _rotateGesturesEnabled,
       scrollGesturesEnabled: _scrollGesturesEnabled,
       tiltGesturesEnabled: _tiltGesturesEnabled,
@@ -83,7 +89,90 @@ class MapWidgetState extends State<MapWidget> {
       onMapClick: (point, latLng) async {},
       onMapLongClick: (point, latLng) async {},
     );
-    return new Scaffold(body: mapboxMap);
+    return new Scaffold(
+        body: Stack(
+      children: [
+        mapboxMap,
+        Positioned(
+          top: 250,
+          left: 5,
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white38, width: 0),
+                color: Color.fromRGBO(44, 62, 80, 1),
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  mapController.animateCamera(
+                    CameraUpdate.zoomIn(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 300,
+          left: 5,
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white38, width: 0),
+                  color: Color.fromRGBO(44, 62, 80, 1),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
+              child: IconButton(
+                icon: Icon(
+                  Icons.remove,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  mapController.animateCamera(
+                    CameraUpdate.zoomOut(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 370,
+          left: 5,
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white38, width: 0),
+                  color: Color.fromRGBO(44, 62, 80, 1),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
+              child: IconButton(
+                icon: Icon(
+                  Icons.layers,
+                  color: Colors.white,
+                ),
+                onPressed: _selectLayer,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 
   void _onCameraIdle() async {
@@ -178,12 +267,24 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   //Set camera position
-  void moveCameraPosition(LatLng position) {
-    mapController.moveCamera(CameraUpdate.newLatLng(position));
+  void moveCameraPosition(LatLng position, {double zoom: 0}) {
+    if (zoom != 0) {
+      mapController.moveCamera(
+        CameraUpdate.newLatLngZoom(position, zoom),
+      );
+    } else {
+      mapController.moveCamera(CameraUpdate.newLatLng(position));
+    }
   }
 
-  void animateCameraPosition(LatLng position) {
-    mapController.animateCamera(CameraUpdate.newLatLng(position));
+  void animateCameraPosition(LatLng position, {double zoom: 0}) {
+    if (zoom != 0) {
+      mapController.animateCamera(
+        CameraUpdate.newLatLngZoom(position, zoom),
+      );
+    } else {
+      mapController.animateCamera(CameraUpdate.newLatLng(position));
+    }
   }
 
   void moveToLastKnownLocation() async {
@@ -249,4 +350,91 @@ class MapWidgetState extends State<MapWidget> {
         coords,
         data);
   }
+
+  // select map layers
+
+  void _selectLayer() {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            child: _bottomSheetSelectLayer(),
+            height: 240,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                )),
+          );
+        });
+  }
+
+  Column _bottomSheetSelectLayer() {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          leading: Icon(
+            Icons.check_circle_outline,
+            color: currentStyleItem == 'Dark'
+                ? Colors.pink.shade600
+                : Colors.grey[300],
+          ),
+          title: Text('Dark'),
+          onTap: () {
+            _setMapStyle('Dark');
+          },
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.check_circle_outline,
+            color: currentStyleItem == 'Light'
+                ? Colors.pink.shade600
+                : Colors.grey[300],
+          ),
+          title: Text('Light'),
+          onTap: () {
+            _setMapStyle('Light');
+          },
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.check_circle_outline,
+            color: currentStyleItem == 'Outdoors'
+                ? Colors.pink.shade600
+                : Colors.grey[300],
+          ),
+          title: Text('Outdoors'),
+          onTap: () {
+            _setMapStyle('Outdoors');
+          },
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.check_circle_outline,
+            color: currentStyleItem == 'Sattelite'
+                ? Colors.pink.shade600
+                : Colors.grey[300],
+          ),
+          title: Text('Sattelite'),
+          onTap: () {
+            _setMapStyle('Sattelite');
+          },
+        ),
+      ],
+    );
+  }
+
+  _setMapStyle(styleName) {
+    setState(() {
+      currentStyleItem = styleName;
+      Navigator.pop(context);
+      getPhotoPosts();
+    });
+  }
+  //----------------------------
 }

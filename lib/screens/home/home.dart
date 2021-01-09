@@ -31,8 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
-  double bottomMargin = 0;
-
   Widget _userDetailWidget;
   Widget _getPhotoWidget;
   Widget _minPubWidget;
@@ -41,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Profile profileData;
 
-  void _searchPlaceCallback(lat, lng) {
-    // _mapWidgetState.currentState.setCameraPosition(lat, lng);
+  void _searchPlaceCallback(latLng) {
+    _mapWidgetState.currentState.animateCameraPosition(latLng, zoom: 11);
   }
 
   @override
@@ -73,23 +71,22 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Positioned(
                 //search places
-                bottom: bottomMargin + 165,
+                top: 400,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
                   child: Container(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Color.fromRGBO(44, 62, 80, 1), width: 1),
-                      color: Colors.transparent,
+                      border: Border.all(color: Colors.white38, width: 2),
+                      color: Color.fromRGBO(44, 62, 80, 1),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: Icon(
                         Icons.search,
-                        color: Color.fromRGBO(44, 62, 80, 1),
+                        color: Colors.white,
                       ),
                       onPressed: () {
                         openPlaceSearch(context, _searchPlaceCallback);
@@ -141,16 +138,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Opacity(
                   opacity: 0.9,
                   child: Container(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      color: Colors.transparent,
+                      color: Color.fromRGBO(44, 62, 80, 0.5),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: Icon(
                         Icons.settings,
-                        color: Color.fromRGBO(44, 62, 80, 1),
+                        color: Colors.white,
                       ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/profile');
@@ -161,24 +158,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Positioned(
                 // my position
-                bottom: bottomMargin + 110,
+                top: 450,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
                   child: Container(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Color.fromRGBO(44, 62, 80, 1), width: 1),
-                      color: Colors.transparent,
+                      border: Border.all(color: Colors.white38, width: 2),
+                      color: Color.fromRGBO(44, 62, 80, 1),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: Icon(
-                        Icons.my_location,
-                        color: Color.fromRGBO(44, 62, 80, 1),
-                      ),
+                      icon: Icon(Icons.my_location, color: Colors.white),
                       onPressed: () {
                         _mapWidgetState.currentState.moveToLastKnownLocation();
                       },
@@ -188,22 +181,22 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Positioned(
                 // camera
-                bottom: bottomMargin + 290,
+                top: 300,
                 right: 5,
                 child: Opacity(
                   opacity: 0.9,
                   child: Container(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.pink.shade600, width: 1),
-                      color: Colors.transparent,
+                      color: Colors.pink.shade600,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: Icon(
                         Icons.camera,
-                        color: Colors.pink.shade600,
+                        color: Colors.white,
                       ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/pubPhoto');
