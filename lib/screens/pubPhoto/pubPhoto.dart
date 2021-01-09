@@ -17,6 +17,7 @@ class PubPhotoScreen extends StatefulWidget {
 }
 
 class _PubPhotoScreenState extends State<PubPhotoScreen> {
+  bool load = false;
   TextEditingController _photoTitleTextController =
       TextEditingController(text: '');
   TextEditingController _photoDescriptionTextController =
@@ -46,6 +47,7 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     latlng = await getLastKnownLocation();
     setState(() {
       _image = image;
+      load = true;
     });
   }
 
@@ -90,105 +92,104 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: _image == null
-            ? SizedBox()
-            : Center(
-                child: ListView(
-                  padding: const EdgeInsets.all(0),
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width,
-                        child: Stack(
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.width,
-                                child: ClipRRect(
-                                  borderRadius: new BorderRadius.only(
-                                    bottomLeft: const Radius.circular(20.0),
-                                    bottomRight: const Radius.circular(20.0),
-                                  ),
-                                  child: _image == null
-                                      ? Text('No image selected.')
-                                      : Image.file(
-                                          _image,
-                                          fit: BoxFit.cover,
-                                        ),
-                                )),
-                            Positioned(
-                              bottom: 20,
-                              right: 20,
-                              child: Container(
-                                width: 42,
-                                height: 42,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Color.fromRGBO(44, 62, 80, 1),
-                                      width: 1),
-                                  color: Colors.transparent,
-                                  shape: BoxShape.circle,
+    return load == false
+        ? LoadWidget()
+        : Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: ListView(
+                padding: const EdgeInsets.all(0),
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: [
+                          Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Color.fromRGBO(44, 62, 80, 1),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: const Radius.circular(20),
+                                    bottomRight: const Radius.circular(20),
+                                  )),
+                              child: ClipRRect(
+                                borderRadius: new BorderRadius.only(
+                                  bottomLeft: const Radius.circular(20.0),
+                                  bottomRight: const Radius.circular(20.0),
                                 ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Color.fromRGBO(44, 62, 80, 1),
-                                  ),
-                                  onPressed: () {
-                                    _getImageFromDevice(ImageSource.camera);
-                                  },
+                                child: _image == null
+                                    ? SizedBox()
+                                    : Image.file(
+                                        _image,
+                                        fit: BoxFit.cover,
+                                      ),
+                              )),
+                          Positioned(
+                            bottom: 20,
+                            right: 20,
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.pink[600], width: 1),
+                                color: Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.refresh,
+                                  color: Colors.pink[600],
                                 ),
+                                onPressed: () {
+                                  _getImageFromDevice(ImageSource.camera);
+                                },
                               ),
                             ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                        child: Column(children: <Widget>[
-                          SizedBox(
-                            height: 10,
                           ),
-                          InputWithLabelWidget(_photoTitleTextController,
-                              (e) => {}, 15, "Title", "Enter title"),
-                          Divider(
-                              height: 20,
-                              thickness: 1,
-                              indent: 0,
-                              endIndent: 0),
-                          InputWithLabelMultilineWidget(
-                              _photoDescriptionTextController,
-                              (e) => {},
-                              2000,
-                              "Description",
-                              "Enter description"),
-                          Divider(
-                              height: 20,
-                              thickness: 1,
-                              indent: 0,
-                              endIndent: 0),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          OutlineButton(
-                              onPressed: () {
-                                _upload(context);
-                              },
-                              child: const Text('Publish',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Color.fromRGBO(44, 62, 80, 1))),
-                              borderSide: BorderSide(
-                                  width: 1.0,
-                                  color: Color.fromRGBO(44, 62, 80, 1)),
-                              shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                              )),
-                        ]))
-                  ],
-                ),
-              ));
+                        ],
+                      )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                      child: Column(children: <Widget>[
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InputWithLabelWidget(_photoTitleTextController,
+                            (e) => {}, 15, "Title", "Enter title"),
+                        Divider(
+                            height: 20, thickness: 1, indent: 0, endIndent: 0),
+                        InputWithLabelMultilineWidget(
+                            _photoDescriptionTextController,
+                            (e) => {},
+                            2000,
+                            "Description",
+                            "Enter description"),
+                        Divider(
+                            height: 20, thickness: 1, indent: 0, endIndent: 0),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        OutlineButton(
+                            onPressed: () {
+                              _upload(context);
+                            },
+                            child: const Text('Publish',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Color.fromRGBO(44, 62, 80, 1))),
+                            borderSide: BorderSide(
+                                width: 1.0,
+                                color: Color.fromRGBO(44, 62, 80, 1)),
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0),
+                            )),
+                      ]))
+                ],
+              ),
+            ));
   }
 
   showAlertDialog(
