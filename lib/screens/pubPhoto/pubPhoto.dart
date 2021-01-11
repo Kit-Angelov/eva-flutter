@@ -106,8 +106,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                       decoration: BoxDecoration(
                           color: Color.fromRGBO(44, 62, 80, 1),
                           borderRadius: BorderRadius.only(
-                            bottomLeft: const Radius.circular(20),
-                            bottomRight: const Radius.circular(20),
+                            bottomLeft: const Radius.circular(40),
+                            bottomRight: const Radius.circular(40),
                           )),
                       child: Stack(
                         children: [
@@ -127,8 +127,8 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                               color: Colors.transparent,
                               child: ClipRRect(
                                 borderRadius: new BorderRadius.only(
-                                  bottomLeft: const Radius.circular(20.0),
-                                  bottomRight: const Radius.circular(20.0),
+                                  bottomLeft: const Radius.circular(40.0),
+                                  bottomRight: const Radius.circular(40.0),
                                 ),
                                 child: _image == null
                                     ? SizedBox()

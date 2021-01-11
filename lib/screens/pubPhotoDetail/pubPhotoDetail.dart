@@ -48,8 +48,8 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                           height: MediaQuery.of(context).size.width,
                           child: ClipRRect(
                             borderRadius: new BorderRadius.only(
-                              bottomLeft: const Radius.circular(20.0),
-                              bottomRight: const Radius.circular(20.0),
+                              bottomLeft: const Radius.circular(40.0),
+                              bottomRight: const Radius.circular(40.0),
                             ),
                             child: Image.network(
                               config.urls['media'] +
@@ -67,13 +67,13 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                           decoration: BoxDecoration(
                             border:
                                 Border.all(color: Colors.pink[600], width: 1),
-                            color: Colors.transparent,
+                            color: Colors.pink[600],
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             icon: Icon(
                               Icons.favorite_border,
-                              color: Colors.pink[600],
+                              color: Colors.white,
                             ),
                             onPressed: () {},
                           ),

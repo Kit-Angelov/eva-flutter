@@ -72,213 +72,201 @@ class _ProfileScreenState extends State<ProfileScreen> {
             body: Center(
               child: Stack(
                 children: <Widget>[
-                  ListView(
-                      // physics: BouncingScrollPhysics(),
-                      padding: const EdgeInsets.all(0),
-                      children: <Widget>[
-                        Container(
-                          decoration: new BoxDecoration(
-                              color: Color.fromRGBO(44, 62, 80, 1),
-                              borderRadius: new BorderRadius.only(
-                                bottomLeft: const Radius.circular(20.0),
-                                bottomRight: const Radius.circular(20.0),
+                  ListView(padding: const EdgeInsets.all(0), children: <Widget>[
+                    Container(
+                      decoration: new BoxDecoration(
+                          color: Color.fromRGBO(44, 62, 80, 1),
+                          borderRadius: new BorderRadius.only(
+                            bottomLeft: const Radius.circular(40.0),
+                            bottomRight: const Radius.circular(40.0),
+                          )),
+                      height: MediaQuery.of(context).size.width - 35,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            top: 38,
+                            left: 48,
+                            child: Container(
+                                height:
+                                    MediaQuery.of(context).size.width - 96.0,
+                                width: MediaQuery.of(context).size.width - 96.0,
+                                decoration: new BoxDecoration(
+                                  color: Color.fromRGBO(44, 62, 80, 1),
+                                  borderRadius: BorderRadius.circular(9999.0),
+                                )),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.fromLTRB(
+                                  50.0, 40.0, 50.0, 25.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(9999.0),
+                                child: profilePhoto == null
+                                    ? Image.network(
+                                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
+                                        fit: BoxFit.cover,
+                                        height:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                      )
+                                    : profilePhoto,
                               )),
-                          height: MediaQuery.of(context).size.width - 35,
-                          width: MediaQuery.of(context).size.width,
-                          child: Stack(
-                            children: <Widget>[
-                              Positioned(
-                                top: 38,
-                                left: 48,
-                                child: Container(
-                                    height: MediaQuery.of(context).size.width -
-                                        96.0,
-                                    width: MediaQuery.of(context).size.width -
-                                        96.0,
-                                    decoration: new BoxDecoration(
-                                      color: Color.fromRGBO(44, 62, 80, 1),
-                                      borderRadius:
-                                          BorderRadius.circular(9999.0),
-                                    )),
+                          Positioned(
+                            bottom: 20,
+                            right: 20,
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.pink[600], width: 1),
+                                color: Colors.transparent,
+                                shape: BoxShape.circle,
                               ),
-                              Container(
-                                  margin: const EdgeInsets.fromLTRB(
-                                      50.0, 40.0, 50.0, 25.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(9999.0),
-                                    child: profilePhoto == null
-                                        ? Image.network(
-                                            'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                                            fit: BoxFit.cover,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                100.0,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                100.0,
-                                          )
-                                        : profilePhoto,
-                                  )),
-                              Positioned(
-                                bottom: 20,
-                                right: 20,
-                                child: Container(
-                                  width: 42,
-                                  height: 42,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.pink[600], width: 1),
-                                    color: Colors.transparent,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.photo_camera,
-                                      color: Colors.pink[600],
-                                    ),
-                                    onPressed: _getImage,
-                                  ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.photo_camera,
+                                  color: Colors.pink[600],
                                 ),
+                                onPressed: _getImage,
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                          child: Column(
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                      child: Column(
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Text('username',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
                                 children: <Widget>[
-                                  Text('username',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12)),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: <Widget>[
-                                      Text(username),
-                                      Expanded(
-                                        child: SizedBox(),
-                                      ),
-                                      SizedBox(
-                                        height: 20.0,
-                                        width: 20.0,
-                                        child: new IconButton(
-                                            padding: new EdgeInsets.all(0.0),
-                                            icon: new Icon(Icons.edit,
-                                                size: 20.0),
-                                            onPressed: () {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EnterUsernameScreen(
-                                                    currentUsername: username,
-                                                    currentInsta: instagram,
-                                                    successPushName: '/profile',
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      )
-                                    ],
+                                  Text(username),
+                                  Expanded(
+                                    child: SizedBox(),
                                   ),
+                                  SizedBox(
+                                    height: 20.0,
+                                    width: 20.0,
+                                    child: new IconButton(
+                                        padding: new EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.edit, size: 20.0),
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EnterUsernameScreen(
+                                                currentUsername: username,
+                                                currentInsta: instagram,
+                                                successPushName: '/profile',
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  )
                                 ],
                               ),
-                              Divider(
-                                  height: 30,
-                                  thickness: 1,
-                                  indent: 0,
-                                  endIndent: 0),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('phone',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12)),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(Icons.phone),
-                                      SizedBox(width: 20),
-                                      Text(phone),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Divider(
-                                  height: 30,
-                                  thickness: 1,
-                                  indent: 0,
-                                  endIndent: 0),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('instagram',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12)),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(FontAwesomeIcons.instagram),
-                                      SizedBox(width: 20),
-                                      Text("instagram.com/" + instagram),
-                                      Expanded(
-                                        child: SizedBox(),
-                                      ),
-                                      SizedBox(
-                                        height: 20.0,
-                                        width: 20.0,
-                                        child: new IconButton(
-                                            padding: new EdgeInsets.all(0.0),
-                                            icon: new Icon(Icons.edit,
-                                                size: 20.0),
-                                            onPressed: () {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EnterInstaScreen(
-                                                    currentUsername: username,
-                                                    currentInsta: instagram,
-                                                    successPushInsta:
-                                                        '/profile',
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              OutlineButton(
-                                  onPressed: () {
-                                    logout();
-                                  },
-                                  child: const Text('Log out',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color:
-                                              Color.fromRGBO(44, 62, 80, 1))),
-                                  borderSide: BorderSide(
-                                      width: 1.0,
-                                      color: Color.fromRGBO(44, 62, 80, 1)),
-                                  shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0),
-                                  )),
-                              SizedBox(height: 50),
                             ],
                           ),
-                        )
-                      ]),
+                          Divider(
+                              height: 30,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('phone',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Icon(Icons.phone),
+                                  SizedBox(width: 20),
+                                  Text(phone),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(
+                              height: 30,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('instagram',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 10),
+                              Row(
+                                children: <Widget>[
+                                  Icon(FontAwesomeIcons.instagram),
+                                  SizedBox(width: 20),
+                                  Text("instagram.com/" + instagram),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  SizedBox(
+                                    height: 20.0,
+                                    width: 20.0,
+                                    child: new IconButton(
+                                        padding: new EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.edit, size: 20.0),
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EnterInstaScreen(
+                                                currentUsername: username,
+                                                currentInsta: instagram,
+                                                successPushInsta: '/profile',
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          OutlineButton(
+                              onPressed: () {
+                                logout();
+                              },
+                              child: const Text('Log out',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color.fromRGBO(44, 62, 80, 1))),
+                              borderSide: BorderSide(
+                                  width: 1.0,
+                                  color: Color.fromRGBO(44, 62, 80, 1)),
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                              )),
+                          SizedBox(height: 50),
+                        ],
+                      ),
+                    )
+                  ]),
                 ],
               ),
             ));
