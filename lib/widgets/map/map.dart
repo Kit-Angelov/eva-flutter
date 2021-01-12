@@ -326,7 +326,7 @@ class MapWidgetState extends State<MapWidget> {
       _getPhotoPosts(url).then((res) {
         print(res.body);
         if (res.body != null && res.body != 'null') {
-          photoPosts = (json.decode(res.body) as List)
+          photoPosts = (json.decode(utf8.decode(res.bodyBytes)) as List)
               .map((i) => PhotoPost.fromJson(i))
               .toList();
           for (var i in photoPosts) {

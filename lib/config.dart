@@ -2,6 +2,8 @@ class DevHome {
   final urls = {
     'pubPhoto': 'http://192.168.0.105:8000/post-photo',
     'getPhoto': 'http://192.168.0.105:8000/get-photos',
+    'getDetailPhoto': 'http://192.168.0.105:8000/get-detail-photo',
+    'likePhoto': 'http://192.168.0.105:8000/like-photo',
     // 'userLocationGetter': 'ws://192.168.0.105:8000',
     'profilePhoto': 'http://192.168.0.105:8000/profile/update-photo',
     'profile': 'http://192.168.0.105:8000/profile',

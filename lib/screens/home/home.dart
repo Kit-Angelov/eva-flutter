@@ -228,7 +228,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void symbolClickCallBack(symbolData) async {
-    print(symbolData['userId']);
     setState(() {
       Provider.of<PhotoDataModel>(currentContext)
           .setPhotoData(PhotoPost.fromSymbolData(symbolData));

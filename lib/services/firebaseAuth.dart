@@ -30,6 +30,19 @@ Future<String> getUserIdToken() async {
   });
 }
 
+Future<String> getUserId() async {
+  FirebaseAuth _auth = await FirebaseAuth.instance;
+  return await _auth.currentUser().then((user) {
+    if (user != null) {
+      return user.uid;
+    } else {
+      return "";
+    }
+  }).catchError((error) {
+    return "";
+  });
+}
+
 Future<void> signOut() async {
   FirebaseAuth _auth = await FirebaseAuth.instance;
   await _auth.signOut();

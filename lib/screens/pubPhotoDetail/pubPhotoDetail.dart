@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/widgets/widgets.dart';
 import 'package:eva/models/photoData.dart';
 import 'package:eva/models/profile.dart';
+import 'package:eva/models/photoPost.dart';
 import 'package:eva/config.dart';
 
 class PubPhotoDetailScreen extends StatefulWidget {
@@ -18,6 +20,8 @@ class PubPhotoDetailScreen extends StatefulWidget {
 }
 
 class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
+  bool load = false;
+  bool like = false;
   var photoData;
   Profile authorData;
 
@@ -25,127 +29,171 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   void initState() {
     super.initState();
     setState(() {
-      getAuthor();
+      getDetailPhotoPost();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     photoData = Provider.of<PhotoDataModel>(context).getPhotoData();
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: ListView(
-            padding: const EdgeInsets.all(0),
-            children: [
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width,
-                          child: ClipRRect(
-                            borderRadius: new BorderRadius.only(
-                              bottomLeft: const Radius.circular(40.0),
-                              bottomRight: const Radius.circular(40.0),
-                            ),
-                            child: Image.network(
-                              config.urls['media'] +
-                                  photoData.imagesPaths +
-                                  '/640.jpg',
-                              fit: BoxFit.cover,
-                            ),
+    return load == false
+        ? LoadWidget()
+        : Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: ListView(
+                padding: const EdgeInsets.all(0),
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(44, 62, 80, 1),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: const Radius.circular(40),
+                            bottomRight: const Radius.circular(40),
                           )),
-                      Positioned(
-                        bottom: 20,
-                        right: 20,
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.pink[600], width: 1),
-                            color: Colors.pink[600],
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: Row(
-                            children: [
-                              Text(getDateString()),
-                              Expanded(child: SizedBox()),
-                              Icon(Icons.favorite),
-                              Text(photoData.favorites?.length.toString()),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(Icons.remove_red_eye),
-                              Text(photoData.views.toString())
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          photoData.title,
-                          textAlign: TextAlign.start,
-                        ),
-                        Divider(
-                            height: 20, thickness: 1, indent: 0, endIndent: 0),
-                        Container(
-                            child: Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(44, 62, 80, 1),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(25))),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.transparent,
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )),
+                          Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.width,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: new BorderRadius.only(
+                                  bottomLeft: const Radius.circular(40.0),
+                                  bottomRight: const Radius.circular(40.0),
+                                ),
+                                child: photoPost.imagesPaths == null
+                                    ? SizedBox()
+                                    : Image.network(
+                                        config.urls['media'] +
+                                            photoPost.imagesPaths +
+                                            '/640.jpg',
+                                        fit: BoxFit.cover,
+                                      ),
+                              )),
+                        ],
+                      )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Row(
+                                children: [
+                                  Text(
+                                    getDateString(),
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  GestureDetector(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          like
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: Colors.pink[600],
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        Text(photoPost?.favorites?.length
+                                            .toString()),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      likePhotoPost();
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    Icons.remove_red_eye,
+                                    color: Color.fromRGBO(44, 62, 80, 1),
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text(photoPost?.views.toString())
+                                ],
                               ),
                             ),
                             SizedBox(
-                              width: 20,
+                              height: 10,
                             ),
-                            Text(authorData == null ? '' : authorData.username)
-                          ],
-                        )),
-                        Divider(
-                            height: 20, thickness: 1, indent: 0, endIndent: 0),
-                        Text(photoData.description),
-                        SizedBox(
-                          height: 20,
-                        )
-                      ]))
-            ],
-          ),
-        ));
+                            Text(
+                              photoPost?.title,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Divider(
+                                height: 20,
+                                thickness: 1,
+                                indent: 0,
+                                endIndent: 0),
+                            Container(
+                                child: Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      color: Color.fromRGBO(44, 62, 80, 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(25))),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(25),
+                                      child: authorData != null
+                                          ? authorData.photo != ''
+                                              ? Image.network(
+                                                  config.urls['media'] +
+                                                      authorData.photo +
+                                                      '/300.jpg',
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : SizedBox()
+                                          : SizedBox()),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text(authorData == null
+                                    ? ''
+                                    : authorData.username)
+                              ],
+                            )),
+                            Divider(
+                                height: 20,
+                                thickness: 1,
+                                indent: 0,
+                                endIndent: 0),
+                            Text(photoPost?.description),
+                            SizedBox(
+                              height: 20,
+                            )
+                          ]))
+                ],
+              ),
+            ));
   }
   // get profile data
 
-  Future<http.Response> _getAuthor(url) async {
-    var res = await http.get(url);
+  Future<Response> _getAuthor(url) async {
+    var res = await get(url);
     print(res.body);
     return res;
   }
@@ -156,7 +204,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
       token = idToken;
       var url = config.urls['user'] +
           '?idToken=${token}' +
-          '&userId=${photoData.userId}';
+          '&userId=${photoPost.userId}';
       _getAuthor(url).then((res) {
         if (res.body != null && res.body != 'null') {
           setState(() {
@@ -170,15 +218,85 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
     });
   }
 
+  //PhotoPost
+
+  PhotoPost photoPost = PhotoPost();
+
+  Future<Response> _getDetailPhotoPost(url) async {
+    var res = await get(url);
+    return res;
+  }
+
+  void getDetailPhotoPost() async {
+    String token;
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['getDetailPhoto'] +
+          '?idToken=${token}&photoId=${photoData.id}';
+      _getDetailPhotoPost(url).then((res) {
+        print(res.body);
+        if (res.body != null && res.body != 'null') {
+          photoPost =
+              PhotoPost.fromJson(json.decode(utf8.decode(res.bodyBytes)));
+          print(photoPost);
+          getAuthor();
+          checkLike();
+          load = true;
+        }
+      }).catchError((error) {
+        print("NOT OK");
+        print(error);
+      });
+    });
+  }
+
+  // Like photo
+
+  Future<Response> _likePhotoPost(url) async {
+    var res = await get(url);
+    return res;
+  }
+
+  void likePhotoPost() async {
+    String token;
+    var userId = await getUserId();
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['likePhoto'] +
+          '?idToken=${token}&photoId=${photoData.id}';
+      _likePhotoPost(url).then((res) {
+        print(res.statusCode);
+        setState(() {
+          like = !like;
+          if (photoPost.favorites.contains(userId)) {
+            photoPost.favorites.remove(userId);
+          } else {
+            photoPost.favorites.add(userId);
+          }
+        });
+      }).catchError((error) {
+        print("NOT OK");
+        print(error);
+      });
+    });
+  }
+
+  //-----------
+
   getDateString() {
-    if (photoData.date == null) {
+    if (photoPost?.date == null) {
       return "no date";
     }
-    var dateTime = DateTime.fromMillisecondsSinceEpoch(photoData.date * 1000);
-    var dateTimeUTC = DateTime.utc(dateTime.year, dateTime.month, dateTime.day,
-        dateTime.hour, dateTime.minute);
-    print(dateTimeUTC.isUtc);
-    var dateTimeLocal = dateTimeUTC.toLocal();
-    return "${dateTimeLocal.hour.toString()}:${dateTimeLocal.minute.toString()} ${dateTimeLocal.day.toString()}/${dateTimeLocal.month.toString()}/${dateTimeLocal.year.toString()}";
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(photoPost.date * 1000);
+    return "${dateTime.hour.toString()}:${dateTime.minute.toString()} ${dateTime.day.toString()}/${dateTime.month.toString()}/${dateTime.year.toString()}";
+  }
+
+  checkLike() async {
+    var userId = await getUserId();
+    if (photoPost.favorites.contains(userId)) {
+      setState(() {
+        like = true;
+      });
+    }
   }
 }

@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:eva/config.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/services/firebaseAuth.dart';
-import 'package:eva/widgets/widgets.dart';
 
 class PubPhotoScreen extends StatefulWidget {
   @override
