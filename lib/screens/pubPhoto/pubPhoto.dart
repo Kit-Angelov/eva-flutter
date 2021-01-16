@@ -43,7 +43,11 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
     if (image == null) {
       Navigator.pop(context);
     }
-    latlng = await getLastKnownLocation();
+    try {
+      latlng = await getLastKnownLocation();
+    } catch (e) {
+      Navigator.pop(context);
+    }
     setState(() {
       _image = image;
       load = true;
@@ -51,16 +55,19 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
   }
 
   void _upload(BuildContext context) {
-    if (_image == null) return;
+    if (_image == null) {
+      Navigator.pop(context);
+    }
     String token;
+    showWaitDialog(context);
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['pubPhoto'] + '?idToken=${token}';
       _postImage(url, _image).then((res) {
-        print(res);
+        Navigator.pop(context);
         showAlertDialog(context, 'Success', 'Photo is publish', 'ok');
       }).catchError((error) {
-        print(error);
+        Navigator.pop(context);
         showAlertDialog(context, 'Fault', "Photo is't publish", 'ok');
       });
     });

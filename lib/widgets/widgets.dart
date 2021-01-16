@@ -5,3 +5,4 @@ export 'package:eva/widgets/inputWithStaticTextWidget.dart';
 export 'package:eva/widgets/search/searchPlaceWidget.dart';
 export 'package:eva/widgets/map/map.dart';
 export 'package:eva/widgets/load.dart';
+export 'package:eva/widgets/waitDialog.dart';

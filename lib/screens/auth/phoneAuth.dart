@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:eva/widgets/widgets.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class AuthPhoneInputScreen extends StatefulWidget {
@@ -26,6 +28,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
+      Navigator.pop(context);
       setState(() {
         if (authException.code == 'invalidCredential') {
           verificationFiledText = 'invalid phone format';
@@ -40,6 +43,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
         (String verificationId, [int forceResendingToken]) async {
       this.verificationId = verificationId;
       print("code sent to " + _phoneNumberController.text);
+      Navigator.pop(context);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -53,6 +57,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
       print("time out");
     };
 
+    showWaitDialog(context);
     await _auth.verifyPhoneNumber(
         phoneNumber: "+" + _phoneNumberController.text,
         timeout: const Duration(seconds: 5),
@@ -174,6 +179,7 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
   TextEditingController _smsCodeController = TextEditingController();
 
   void _signInWithPhoneNumber(String smsCode) async {
+    showWaitDialog(context);
     try {
       final AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: widget.verificationId,
@@ -185,15 +191,17 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
       assert(user.uid == currentUser.uid);
       setState(() {
         if (user != null) {
-          print(user.uid);
+          Navigator.pop(context);
           Navigator.pushReplacementNamed(context, '/home');
         } else {
+          Navigator.pop(context);
           verificationFiledText = "sign in failed";
           print('Sign in failed');
         }
       });
     } catch (e) {
       print(e.code);
+      Navigator.pop(context);
       setState(() {
         if (e.code == 'ERROR_INVALID_VERIFICATION_CODE') {
           verificationFiledText = "invalide code";

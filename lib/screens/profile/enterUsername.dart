@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:eva/config.dart';
 import 'package:eva/services/firebaseAuth.dart';
+import 'package:eva/widgets/widgets.dart';
 
 class EnterUsernameScreen extends StatefulWidget {
   final currentUsername;
@@ -25,11 +26,14 @@ class _EnterUsernameScreenState extends State<EnterUsernameScreen> {
   String validationFiledText = '';
 
   Future<int> _postProfileData(String url, String body) async {
+    showWaitDialog(context);
     try {
       var response = await http.post(url, body: body);
       print("Response status: ${response.statusCode}");
+      Navigator.pop(context);
       Navigator.pushReplacementNamed(context, widget.successPushName);
     } catch (error) {
+      Navigator.pop(context);
       setState(() {
         validationFiledText = 'invalid username';
       });

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart';
@@ -34,12 +35,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<MapWidgetState> _mapWidgetState = GlobalKey<MapWidgetState>();
 
   Widget _userDetailWidget;
-  Widget _getPhotoWidget;
   Widget _minPubWidget;
 
   Location location = new Location();
 
   Profile profileData;
+  Profile userData;
+  int userFilterIndex = 0;
 
   void _searchPlaceCallback(latLng) {
     _mapWidgetState.currentState.animateCameraPosition(latLng, zoom: 11);
@@ -100,41 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Positioned(
-                    //user avatar
+                    //filter user
                     top: 30,
                     right: 5,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/profile');
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                            color: Color.fromRGBO(44, 62, 80, 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25))),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: profileData != null
-                                ? profileData.photo != ''
-                                    ? Image.network(
-                                        config.urls['media'] +
-                                            profileData.photo +
-                                            '/300.jpg',
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                                        fit: BoxFit.cover,
-                                      )
-                                : Image.network(
-                                    'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                                    fit: BoxFit.cover,
-                                  )),
-                      ),
-                    ),
+                        onTap: () {
+                          setFilterUser();
+                        },
+                        child: getFilterLabelWidget()),
                   ),
                   Positioned(
                     // profile
@@ -178,8 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: IconButton(
                           icon: Icon(Icons.my_location, color: Colors.white),
                           onPressed: () {
-                            _mapWidgetState.currentState
-                                .moveToLastKnownLocation();
+                            toMyLocation();
                           },
                         ),
                       ),
@@ -206,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/pubPhoto');
+                            pushToPubNewPhoto();
                           },
                         ),
                       ),
@@ -217,6 +191,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 ].where(notNull).toList(),
               ),
             ));
+  }
+
+  // check location
+
+  void toMyLocation() async {
+    final location = Location();
+    final hasPermissions = await location.hasPermission();
+    if (hasPermissions != PermissionStatus.granted) {
+      showAlertLocationDialog(
+          context, 'Location request', 'Allow to request my location');
+    } else {
+      _mapWidgetState.currentState.moveToLastKnownLocation();
+    }
+  }
+
+  void pushToPubNewPhoto() async {
+    final location = Location();
+    final hasPermissions = await location.hasPermission();
+    if (hasPermissions != PermissionStatus.granted) {
+      showAlertLocationDialog(
+          context, 'Location request', 'Allow to request my location');
+    } else {
+      Navigator.pushNamed(context, '/pubPhoto')
+          .then((value) => _mapWidgetState.currentState.getPhotoPosts());
+    }
   }
 
   // PubPhotoDetail
@@ -292,5 +291,124 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+
   // -----------------
+  // LOCATION ALERT DIALOG
+  showAlertLocationDialog(BuildContext context, String title, String content) {
+    Widget ok = FlatButton(
+      child: Text('Ok'),
+      onPressed: () {
+        location.requestPermission();
+        Navigator.pop(context);
+      },
+    );
+    Widget cancel = FlatButton(
+      child: Text('Cancel'),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    CupertinoAlertDialog alert = CupertinoAlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [ok, cancel],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  //------------------
+  // set filter user
+
+  setFilterUser({Profile newUserData}) {
+    if (newUserData != null) {
+      setState(() {
+        userData = newUserData;
+        userFilterIndex = 2;
+      });
+    } else {
+      setState(() {
+        if (userFilterIndex == 0) {
+          userFilterIndex = 1;
+        } else if (userFilterIndex == 1) {
+          if (userData != null) {
+            userFilterIndex = 2;
+          } else {
+            userFilterIndex = 0;
+          }
+        } else if (userFilterIndex == 2) {
+          userFilterIndex = 0;
+        }
+      });
+    }
+    _mapWidgetState.currentState.removeAllSymbols();
+    if (userFilterIndex == 0) {
+      _mapWidgetState.currentState.showSnackBar('All posts');
+      Timer(Duration(milliseconds: 200), () {
+        _mapWidgetState.currentState.getPhotoPosts();
+      });
+    } else if (userFilterIndex == 1) {
+      _mapWidgetState.currentState.showSnackBar('My posts');
+      Timer(Duration(milliseconds: 200), () {
+        _mapWidgetState.currentState.getPhotoPosts(profile: profileData);
+      });
+    } else {
+      _mapWidgetState.currentState.showSnackBar('User posts');
+      Timer(Duration(milliseconds: 200), () {
+        _mapWidgetState.currentState.getPhotoPosts(profile: userData);
+      });
+    }
+  }
+
+  getFilterLabelWidget() {
+    var labelWidget;
+    if (userFilterIndex == 0) {
+      labelWidget = Container(
+          child: Icon(
+        Icons.all_inclusive,
+        color: Colors.white,
+        size: 20,
+      ));
+    } else if (userFilterIndex == 1) {
+      if (profileData != null) {
+        if (profileData.photo != null) {
+          labelWidget = Image.network(
+              config.urls['media'] + profileData.photo + '/300.jpg',
+              fit: BoxFit.cover);
+        } else {
+          labelWidget = SizedBox();
+        }
+      } else {
+        labelWidget = SizedBox();
+      }
+    } else if (userFilterIndex == 2) {
+      if (userData != null) {
+        if (userData.photo != null) {
+          labelWidget = Image.network(
+              config.urls['media'] + userData.photo + '/300.jpg',
+              fit: BoxFit.cover);
+        } else {
+          labelWidget = SizedBox();
+        }
+      } else {
+        labelWidget = SizedBox();
+      }
+    }
+
+    return Container(
+        width: 40,
+        height: 40,
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(44, 62, 80, 1),
+            borderRadius: BorderRadius.all(Radius.circular(25))),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(25), child: labelWidget));
+  }
+  //------------------
 }

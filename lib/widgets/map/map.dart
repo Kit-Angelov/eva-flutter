@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
 import 'dart:math';
+import 'package:eva/models/profile.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
@@ -313,7 +314,7 @@ class MapWidgetState extends State<MapWidget> {
     return res;
   }
 
-  void getPhotoPosts() async {
+  void getPhotoPosts({Profile profile}) async {
     String token;
     LatLngBounds latLngBounds = await mapController.getVisibleRegion();
     print("GET");
@@ -322,7 +323,9 @@ class MapWidgetState extends State<MapWidget> {
       token = idToken;
       var url = config.urls['getPhoto'] +
           '?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
-      print(url);
+      if (profile != null) {
+        url = url + '&userId=${profile.userId}';
+      }
       _getPhotoPosts(url).then((res) {
         print(res.body);
         if (res.body != null && res.body != 'null') {
@@ -433,8 +436,20 @@ class MapWidgetState extends State<MapWidget> {
     setState(() {
       currentStyleItem = styleName;
       Navigator.pop(context);
-      getPhotoPosts();
+      removeAllSymbols();
+      Timer(Duration(milliseconds: 200), () {
+        getPhotoPosts();
+      });
     });
   }
+
   //----------------------------
+  // show snackbar
+  showSnackBar(text) {
+    final snackBar = SnackBar(
+      content: Text(text),
+      duration: Duration(seconds: 1),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 }
