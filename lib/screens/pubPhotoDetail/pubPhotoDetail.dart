@@ -180,26 +180,14 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                                 Expanded(
                                   child: SizedBox(),
                                 ),
-                                (authorData != null)
-                                    ? authorData.insta != null
-                                        ? GestureDetector(
-                                            child: Icon(
-                                              FontAwesomeIcons.instagram,
-                                              color:
-                                                  Color.fromRGBO(44, 62, 80, 1),
-                                            ),
-                                            onTap: () {})
-                                        : SizedBox()
-                                    : SizedBox(),
-                                SizedBox(
-                                  width: 10,
-                                ),
                                 GestureDetector(
                                     child: Icon(
-                                      Icons.filter,
+                                      Icons.more_vert,
                                       color: Color.fromRGBO(44, 62, 80, 1),
                                     ),
-                                    onTap: () {})
+                                    onTap: () {
+                                      _moreAuthorOptions();
+                                    })
                               ],
                             )),
                             Divider(
@@ -242,6 +230,48 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
         print(e);
       });
     });
+  }
+
+  Column _bottomSheetAuthorOptions() {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          leading: Icon(Icons.filter),
+          title: Text('Show all user posts'),
+          onTap: () {},
+        ),
+        authorData != null
+            ? authorData.insta != null
+                ? ListTile(
+                    leading: Icon(FontAwesomeIcons.instagram),
+                    title: Text('Open instagram page'),
+                    onTap: () {},
+                  )
+                : null
+            : null
+      ],
+    );
+  }
+
+  void _moreAuthorOptions() {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            child: _bottomSheetAuthorOptions(),
+            height: 120,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                )),
+          );
+        });
   }
 
   //PhotoPost
