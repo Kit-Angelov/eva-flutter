@@ -18,6 +18,7 @@ import 'package:eva/screens/home/modalSheets/minPubWidget.dart';
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/config.dart';
 import 'package:eva/models/profile.dart';
+import 'package:eva/screens/pubPhotoDetail/pubPhotoDetail.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -214,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context, 'Location request', 'Allow to request my location');
     } else {
       Navigator.pushNamed(context, '/pubPhoto')
-          .then((value) => _mapWidgetState.currentState.getPhotoPosts());
+          .then((value) => getPhotoPosts());
     }
   }
 
@@ -226,11 +227,26 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void openDetailCallback() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PubPhotoDetailScreen(
+          setFilterUserCallback: setFilterUserCallback,
+        ),
+      ),
+    ).then((value) => getPhotoPosts());
+    minPubWidgetClose();
+  }
+
   void symbolClickCallBack(symbolData) async {
     setState(() {
       Provider.of<PhotoDataModel>(currentContext)
           .setPhotoData(PhotoPost.fromSymbolData(symbolData));
-      _minPubWidget = new MinPubWidget(closeCallback: minPubWidgetClose);
+      _minPubWidget = new MinPubWidget(
+        closeCallback: minPubWidgetClose,
+        openDetailCallback: openDetailCallback,
+      );
     });
   }
 
@@ -325,14 +341,18 @@ class _HomeScreenState extends State<HomeScreen> {
   //------------------
   // set filter user
 
-  setFilterUser({Profile newUserData}) {
+  void setFilterUserCallback(Profile userData) {
+    if (userData.userId != profileData.userId) {
+      setFilterUser(newUserData: userData);
+    }
+  }
+
+  void setFilterUser({Profile newUserData}) {
     if (newUserData != null) {
-      if (newUserData.userId != profileData.userId) {
-        setState(() {
-          userData = newUserData;
-          userFilterIndex = 2;
-        });
-      }
+      setState(() {
+        userData = newUserData;
+        userFilterIndex = 2;
+      });
     } else {
       setState(() {
         if (userFilterIndex == 0) {
@@ -348,6 +368,10 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
     }
+    getPhotoPosts();
+  }
+
+  getPhotoPosts() {
     _mapWidgetState.currentState.removeAllSymbols();
     if (userFilterIndex == 0) {
       _mapWidgetState.currentState.showSnackBar('All posts');

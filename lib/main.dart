@@ -19,8 +19,6 @@ import 'screens/auth/phoneAuth.dart';
 import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
-import 'screens/pubPhotoDetail/pubPhotoDetail.dart';
-import 'package:eva/screens/profile/enterUsername.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,7 +33,6 @@ class MyApp extends StatelessWidget {
       '/': (context) => LoadPage(),
       '/authPhoneInput': (context) => AuthPhoneInputScreen(),
       '/home': (context) => HomeScreen(),
-      '/detailPubPhoto': (context) => PubPhotoDetailScreen(),
       '/profile': (context) => ProfileScreen(),
       '/pubPhoto': (context) => PubPhotoScreen(),
     };

@@ -13,8 +13,10 @@ import 'package:eva/models/profile.dart';
 
 class MinPubWidget extends StatefulWidget {
   final closeCallback;
+  final openDetailCallback;
 
-  MinPubWidget({Key key, this.closeCallback}) : super(key: key);
+  MinPubWidget({Key key, this.closeCallback, this.openDetailCallback})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MinPubWidgetState();
@@ -46,7 +48,7 @@ class MinPubWidgetState extends State<MinPubWidget> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/detailPubPhoto');
+              widget.openDetailCallback();
             },
             child: Container(
               height: 200,

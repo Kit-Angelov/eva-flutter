@@ -1,6 +1,7 @@
 class DevHome {
   final urls = {
     'pubPhoto': 'http://192.168.0.105:8000/post-photo',
+    'deletePhoto': 'http://192.168.0.105:8000/delete-photo',
     'getPhoto': 'http://192.168.0.105:8000/get-photos',
     'getDetailPhoto': 'http://192.168.0.105:8000/get-detail-photo',
     'likePhoto': 'http://192.168.0.105:8000/like-photo',
