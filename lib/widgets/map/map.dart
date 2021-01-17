@@ -324,7 +324,7 @@ class MapWidgetState extends State<MapWidget> {
       var url = config.urls['getPhoto'] +
           '?idToken=${token}&swlng=${latLngBounds.southwest.longitude}&swlat=${latLngBounds.southwest.latitude}&nelng=${latLngBounds.northeast.longitude}&nelat=${latLngBounds.northeast.latitude}';
       if (profile != null) {
-        url = url + '&userId=${profile.userId}';
+        url = url + '&userid=${profile.userId}';
       }
       _getPhotoPosts(url).then((res) {
         print(res.body);

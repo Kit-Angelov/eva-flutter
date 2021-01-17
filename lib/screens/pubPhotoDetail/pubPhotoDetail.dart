@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:eva/services/firebaseAuth.dart';
 import 'package:eva/widgets/widgets.dart';
 import 'package:eva/models/photoData.dart';
@@ -22,6 +24,7 @@ class PubPhotoDetailScreen extends StatefulWidget {
 class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   bool load = false;
   bool like = false;
+  bool authorDetail = false;
   var photoData;
   Profile authorData;
 
@@ -169,11 +172,36 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                                           : SizedBox()),
                                 ),
                                 SizedBox(
-                                  width: 20,
+                                  width: 10,
                                 ),
                                 Text(authorData == null
                                     ? ''
-                                    : authorData.username)
+                                    : authorData.username),
+                                Expanded(
+                                  child: SizedBox(),
+                                ),
+                                (authorData != null)
+                                    ? authorData.insta != null
+                                        ? IconButton(
+                                            padding: new EdgeInsets.all(0.0),
+                                            iconSize: 20,
+                                            icon: new Icon(
+                                              FontAwesomeIcons.instagram,
+                                            ),
+                                            onPressed: () {})
+                                        : SizedBox()
+                                    : SizedBox(),
+                                IconButton(
+                                    iconSize: 20,
+                                    padding: new EdgeInsets.all(0.0),
+                                    icon: new Icon(
+                                      FontAwesomeIcons.globeAmericas,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        authorDetail = !authorDetail;
+                                      });
+                                    }),
                               ],
                             )),
                             Divider(

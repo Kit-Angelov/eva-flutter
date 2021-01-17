@@ -327,10 +327,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   setFilterUser({Profile newUserData}) {
     if (newUserData != null) {
-      setState(() {
-        userData = newUserData;
-        userFilterIndex = 2;
-      });
+      if (newUserData.userId != profileData.userId) {
+        setState(() {
+          userData = newUserData;
+          userFilterIndex = 2;
+        });
+      }
     } else {
       setState(() {
         if (userFilterIndex == 0) {
