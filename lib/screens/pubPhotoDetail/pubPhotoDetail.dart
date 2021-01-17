@@ -182,26 +182,24 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                                 ),
                                 (authorData != null)
                                     ? authorData.insta != null
-                                        ? IconButton(
-                                            padding: new EdgeInsets.all(0.0),
-                                            iconSize: 20,
-                                            icon: new Icon(
+                                        ? GestureDetector(
+                                            child: Icon(
                                               FontAwesomeIcons.instagram,
+                                              color:
+                                                  Color.fromRGBO(44, 62, 80, 1),
                                             ),
-                                            onPressed: () {})
+                                            onTap: () {})
                                         : SizedBox()
                                     : SizedBox(),
-                                IconButton(
-                                    iconSize: 20,
-                                    padding: new EdgeInsets.all(0.0),
-                                    icon: new Icon(
-                                      FontAwesomeIcons.globeAmericas,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                    child: Icon(
+                                      Icons.filter,
+                                      color: Color.fromRGBO(44, 62, 80, 1),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        authorDetail = !authorDetail;
-                                      });
-                                    }),
+                                    onTap: () {})
                               ],
                             )),
                             Divider(
@@ -288,20 +286,20 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
   void likePhotoPost() async {
     String token;
     var userId = await getUserId();
+    setState(() {
+      like = !like;
+      if (photoPost.favorites.contains(userId)) {
+        photoPost.favorites.remove(userId);
+      } else {
+        photoPost.favorites.add(userId);
+      }
+    });
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['likePhoto'] +
           '?idToken=${token}&photoId=${photoData.id}';
       _likePhotoPost(url).then((res) {
         print(res.statusCode);
-        setState(() {
-          like = !like;
-          if (photoPost.favorites.contains(userId)) {
-            photoPost.favorites.remove(userId);
-          } else {
-            photoPost.favorites.add(userId);
-          }
-        });
       }).catchError((error) {
         print("NOT OK");
         print(error);
