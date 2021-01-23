@@ -317,8 +317,6 @@ class MapWidgetState extends State<MapWidget> {
   void getPhotoPosts({Profile profile}) async {
     String token;
     LatLngBounds latLngBounds = await mapController.getVisibleRegion();
-    print("GET");
-    print(latLngBounds);
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['getPhoto'] +
@@ -327,6 +325,7 @@ class MapWidgetState extends State<MapWidget> {
         url = url + '&userid=${profile.userId}';
       }
       _getPhotoPosts(url).then((res) {
+        print('posts');
         print(res.body);
         if (res.body != null && res.body != 'null') {
           photoPosts = (json.decode(utf8.decode(res.bodyBytes)) as List)
@@ -337,7 +336,6 @@ class MapWidgetState extends State<MapWidget> {
           }
         }
       }).catchError((error) {
-        print("NOT OK");
         print(error);
       });
     });

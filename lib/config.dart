@@ -8,6 +8,7 @@ class DevHome {
     // 'userLocationGetter': 'ws://192.168.0.105:8000',
     'profilePhoto': 'http://192.168.0.105:8000/profile/update-photo',
     'profile': 'http://192.168.0.105:8000/profile',
+    'deleteProfile': 'http://192.168.0.105:8000/delete-profile',
     'user': 'http://192.168.0.105:8000/user',
     'media': 'http://192.168.0.105:8001/',
   };

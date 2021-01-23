@@ -250,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(height: 20),
                           OutlineButton(
                               onPressed: () {
-                                logout();
+                                showLogoutAlertDialog(context);
                               },
                               child: const Text('Log out',
                                   style: TextStyle(
@@ -262,6 +262,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
                               )),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Delete account',
+                              style: TextStyle(color: Colors.pink[600]),
+                            ),
+                            onPressed: () {
+                              showDeleteAlertDialog(context);
+                            },
+                          ),
                           SizedBox(height: 50),
                         ],
                       ),
@@ -381,4 +393,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // -------------
+
+  // logout
+
+  showLogoutAlertDialog(BuildContext context) {
+    Widget ok = FlatButton(
+      child: Text(
+        'logout',
+        style: TextStyle(color: Colors.pink[600]),
+      ),
+      onPressed: () {
+        logout();
+      },
+    );
+    Widget cancel = FlatButton(
+      child: Text('cancel'),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    CupertinoAlertDialog alert = CupertinoAlertDialog(
+      title: Text('Logout'),
+      content: Text('Do you really want to leave'),
+      actions: [ok, cancel],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  // delete account
+
+  Future<http.Response> _deleteAccount(url) async {
+    var res = await http.get(url);
+    return res;
+  }
+
+  void deleteAccount() async {
+    String token;
+    getUserIdToken().then((idToken) {
+      token = idToken;
+      var url = config.urls['deleteProfile'] + '?idToken=${token}';
+      _deleteAccount(url).then((res) {
+        logout();
+      }).catchError((error) {
+        print("NOT OK");
+        print(error);
+      });
+    });
+  }
+
+  showDeleteAlertDialog(BuildContext context) {
+    Widget ok = FlatButton(
+      child: Text(
+        'delete',
+        style: TextStyle(color: Colors.pink[600]),
+      ),
+      onPressed: () {
+        deleteAccount();
+      },
+    );
+    Widget cancel = FlatButton(
+      child: Text('cancel'),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    CupertinoAlertDialog alert = CupertinoAlertDialog(
+      title: Text('Deleting account'),
+      content: Text('Are you sure you want to delete account'),
+      actions: [ok, cancel],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  // --------------
 }
