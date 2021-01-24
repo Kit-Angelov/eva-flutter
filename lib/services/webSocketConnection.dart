@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:eva/services/firebaseAuth.dart';
 
-
 class WebSocketConnection {
   Future<WebSocket> wsFuture;
   WebSocket ws;
@@ -14,78 +13,63 @@ class WebSocketConnection {
   Map urlParams;
   int state = 0;
 
-  WebSocketConnection(this.url, {this.urlParams, this.messageHandle, }) {
+  WebSocketConnection(
+    this.url, {
+    this.urlParams,
+    this.messageHandle,
+  }) {
     if (messageHandle == null) {
       messageHandle = defautlMessageHandle;
     }
-    print(messageHandle);
   }
-  
+
   initws(wsURL) {
     ws = null;
-    wsFuture = WebSocket
-      .connect(wsURL)
-      .timeout(new Duration(seconds: 5))
-      .then((v) {
-        ws = v;
-        ws.handleError((e, s) {
-          timeprint("ERROR HANDLED $e");
-          ws = null;
-          state = 2;
-        });
-        ws.done.then((v) {
-          timeprint("DONE");
-        });
-        ws.listen((d) {
-          transferredData = d;
-          timeprint("DATA RECEIVED");
-          messageHandle(d);
-        }, onError: (e, stack) {
-          timeprint("ERROR ON LISTEN");
-          ws = null;
-          state = 2;
-        }, onDone: () {
-          timeprint("DONE ON LISTEN");
-          ws = null;
-          state = 2;
-        });
-      }, onError: (e, stack) {
-        timeprint("onerror $e");
+    wsFuture =
+        WebSocket.connect(wsURL).timeout(new Duration(seconds: 5)).then((v) {
+      ws = v;
+      ws.handleError((e, s) {
         ws = null;
         state = 2;
       });
-    timeprint("inited");
+      ws.done.then((v) {});
+      ws.listen((d) {
+        transferredData = d;
+        messageHandle(d);
+      }, onError: (e, stack) {
+        ws = null;
+        state = 2;
+      }, onDone: () {
+        ws = null;
+        state = 2;
+      });
+    }, onError: (e, stack) {
+      ws = null;
+      state = 2;
+    });
     state = 1;
   }
 
-  defautlMessageHandle(data) {
-    print(data);
-  }
-
-  timeprint(msg){
-    print(new DateTime.now().toString() + "    " +  msg);
-  }
+  defautlMessageHandle(data) {}
 
   void setParams(urlParams) {
     this.urlParams = urlParams;
   }
 
   close() {
-    print("CLOSE WS");
     if (ws != null) {
       ws.close();
     }
     state = 2;
   }
-  
+
   connect() {
     String token;
     getUserIdToken().then((idToken) {
       token = idToken;
       var wsURL = '${url}?idToken=${token}';
       if (urlParams != null) {
-        for (var item in urlParams.entries){
-          print("${item.key} - ${item.value}");
+        for (var item in urlParams.entries) {
           wsURL = '${wsURL}&${item.key}=${item.value}';
         }
       }

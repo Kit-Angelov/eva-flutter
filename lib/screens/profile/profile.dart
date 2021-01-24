@@ -293,7 +293,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void getProfileData() async {
     String token;
-    print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['profile'] + '?idToken=${token}';
@@ -355,10 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['profilePhoto'] + '?idToken=${token}';
-      print(url);
-      _postImage(url, _image).then((res) {
-        print(res);
-      });
+      _postImage(url, _image).then((res) {});
     });
   }
 
@@ -441,10 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       var url = config.urls['deleteProfile'] + '?idToken=${token}';
       _deleteAccount(url).then((res) {
         logout();
-      }).catchError((error) {
-        print("NOT OK");
-        print(error);
-      });
+      }).catchError((error) {});
     });
   }
 

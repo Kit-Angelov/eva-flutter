@@ -29,7 +29,6 @@ class _EnterInstaScreenState extends State<EnterInstaScreen> {
     showWaitDialog(context);
     try {
       var response = await http.post(url, body: body);
-      print("Response status: ${response.statusCode}");
       Navigator.pop(context);
       Navigator.pushReplacementNamed(context, widget.successPushInsta);
     } catch (error) {
@@ -48,14 +47,11 @@ class _EnterInstaScreenState extends State<EnterInstaScreen> {
     getUserIdToken().then((idToken) {
       token = idToken;
       var url = config.urls['profile'] + '?idToken=${token}';
-      print(url);
       var data = {
         'username': widget.currentUsername,
         'insta': _instaController.text,
       };
-      _postProfileData(url, jsonEncode(data)).then((res) {
-        print(res);
-      });
+      _postProfileData(url, jsonEncode(data)).then((res) {});
     });
   }
 

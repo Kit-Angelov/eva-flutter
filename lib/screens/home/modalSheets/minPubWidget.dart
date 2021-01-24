@@ -101,14 +101,12 @@ class MinPubWidgetState extends State<MinPubWidget> {
 
   void getUserData() async {
     String token;
-    print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
       var url =
           config.urls['user'] + '/?idToken=${token}&userId=${photoData.userId}';
       _getUserData(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          print(res.body);
           setState(() {
             userData =
                 Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));

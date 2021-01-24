@@ -8,6 +8,7 @@ class PhotoPost {
   String description;
   String userId;
   List favorites;
+  int favoritesCount;
   int views;
   int date;
 
@@ -19,6 +20,7 @@ class PhotoPost {
       this.description,
       this.userId,
       this.favorites,
+      this.favoritesCount,
       this.views,
       this.date}) {
     if (this.views == null) {
@@ -26,6 +28,9 @@ class PhotoPost {
     }
     if (this.favorites == null) {
       this.favorites = [];
+    }
+    if (this.favoritesCount == null) {
+      this.favoritesCount = 0;
     }
     if (this.description == null) {
       this.description = '';
@@ -44,6 +49,7 @@ class PhotoPost {
         imagesPaths: json['imagesPaths'],
         location: Geometry.fromJson(json['location']),
         favorites: json['favorites'],
+        favoritesCount: json['favoritesCount'],
         views: json['views'],
         date: json['date']);
   }

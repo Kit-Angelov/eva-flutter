@@ -20,10 +20,7 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
   Future<void> _sendCodeToPhoneNumber() async {
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential credential) {
-      setState(() {
-        print(
-            'Inside _sendCodeToPhoneNumber: signInWithPhoneNumber auto succeeded');
-      });
+      setState(() {});
     };
 
     final PhoneVerificationFailed verificationFailed =
@@ -33,7 +30,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
         if (authException.code == 'invalidCredential') {
           verificationFiledText = 'invalid phone format';
         } else {
-          print(authException.code);
           verificationFiledText = 'error sending code';
         }
       });
@@ -42,7 +38,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
       this.verificationId = verificationId;
-      print("code sent to " + _phoneNumberController.text);
       Navigator.pop(context);
       Navigator.push(
           context,
@@ -54,7 +49,6 @@ class _AuthPhoneInputState extends State<AuthPhoneInputScreen> {
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
       this.verificationId = verificationId;
-      print("time out");
     };
 
     showWaitDialog(context);
@@ -196,11 +190,9 @@ class _AuthSmsCodeInputState extends State<AuthSmsCodeInputScreen> {
         } else {
           Navigator.pop(context);
           verificationFiledText = "sign in failed";
-          print('Sign in failed');
         }
       });
     } catch (e) {
-      print(e.code);
       Navigator.pop(context);
       setState(() {
         if (e.code == 'ERROR_INVALID_VERIFICATION_CODE') {

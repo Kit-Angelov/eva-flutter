@@ -19,6 +19,7 @@ import 'screens/auth/phoneAuth.dart';
 import 'screens/profile/profile.dart';
 import 'screens/home/home.dart';
 import 'screens/pubPhoto/pubPhoto.dart';
+import 'widgets/widgets.dart';
 
 void main() => runApp(MyApp());
 
@@ -56,41 +57,29 @@ class LoadPage extends StatefulWidget {
   State<StatefulWidget> createState() => _LoadPageState();
 }
 
-class _LoadPageState extends State<LoadPage> {
-  var text = "Load";
-
+class _LoadPageState extends State<LoadPage>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 5), () {
+    Timer(Duration(seconds: 1), () {
       setState(() {
         checkAuth().then((state) {
           if (state) {
-            print('Auth');
             Navigator.pushReplacementNamed(context, '/home');
           } else {
-            print('No Auth');
             Navigator.pushReplacementNamed(context, '/authPhoneInput');
           }
-        }).catchError((error) {
-          print(error);
-        });
+        }).catchError((error) {});
       });
     });
   }
 
+  AnimationController _controller;
+  Animation<Offset> _animation;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(this.text),
-          ],
-        ),
-      ),
-    );
+    return LoadWidget();
   }
 }

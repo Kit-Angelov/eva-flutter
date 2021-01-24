@@ -302,9 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           }
         }
-      }).catchError((e) {
-        print(e);
-      });
+      }).catchError((e) {});
     });
   }
 

@@ -81,7 +81,6 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
                     IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
-                        print("close");
                         widget.closeCallback();
                       },
                     )
@@ -176,14 +175,12 @@ class _UserDetailWidgetState extends State<UserDetailWidget> {
 
   void getUserData() async {
     String token;
-    print("GET");
     getUserIdToken().then((idToken) {
       token = idToken;
       var url =
           config.urls['user'] + '/?idToken=${token}&userId=${widget.userId}';
       _getUserData(url).then((res) {
         if (res.body != null && res.body != 'null') {
-          print(res.body);
           setState(() {
             userData =
                 Profile.fromJson(json.decode(utf8.decode(res.bodyBytes)));

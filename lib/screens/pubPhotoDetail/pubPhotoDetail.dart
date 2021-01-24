@@ -229,7 +229,6 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
 
   Future<Response> _getAuthor(url) async {
     var res = await get(url);
-    print(res.body);
     return res;
   }
 
@@ -248,9 +247,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
             checkOwning();
           });
         }
-      }).catchError((e) {
-        print(e);
-      });
+      }).catchError((e) {});
     });
   }
 
@@ -325,10 +322,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
           checkLike();
           load = true;
         }
-      }).catchError((error) {
-        print("NOT OK");
-        print(error);
-      });
+      }).catchError((error) {});
     });
   }
 
@@ -364,12 +358,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
       token = idToken;
       var url = config.urls['likePhoto'] +
           '?idToken=${token}&photoId=${photoData.id}';
-      _likePhotoPost(url).then((res) {
-        print(res.statusCode);
-      }).catchError((error) {
-        print("NOT OK");
-        print(error);
-      });
+      _likePhotoPost(url).then((res) {}).catchError((error) {});
     });
   }
 
@@ -477,12 +466,7 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
       token = idToken;
       var url = config.urls['deletePhoto'] +
           '?idToken=${token}&photoId=${photoData.id}';
-      _deletePost(url).then((res) {
-        print(res.statusCode);
-      }).catchError((error) {
-        print("NOT OK");
-        print(error);
-      });
+      _deletePost(url).then((res) {}).catchError((error) {});
     });
   }
 

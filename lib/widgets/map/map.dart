@@ -218,18 +218,24 @@ class MapWidgetState extends State<MapWidget> {
     return mapController.addImage(id, response.bodyBytes);
   }
 
-  SymbolOptions _getSymbolOptions(String iconImage, LatLng coordinates) {
-    return SymbolOptions(geometry: coordinates, iconImage: iconImage);
+  SymbolOptions _getSymbolOptions(
+      String iconImage, LatLng coordinates, int favoritesCount, int zIndex) {
+    return SymbolOptions(
+        geometry: coordinates,
+        iconImage: iconImage,
+        iconSize: 1.2 + favoritesCount / 100,
+        zIndex: zIndex);
   }
 
   // ------------------
 
   //PUBLIC METHODS---------
 
-  void addSymbol(
-      String id, String imageUrl, LatLng coordinates, Map data) async {
+  void addSymbol(String id, String imageUrl, LatLng coordinates, Map data,
+      int favoritesCount, int zIndex) async {
     await _addImageFromUrl(id, imageUrl);
-    await mapController.addSymbol(_getSymbolOptions(id, coordinates), data);
+    await mapController.addSymbol(
+        _getSymbolOptions(id, coordinates, favoritesCount, zIndex), data);
   }
 
   void updateSelectedSymbol(SymbolOptions changes) {
@@ -325,23 +331,21 @@ class MapWidgetState extends State<MapWidget> {
         url = url + '&userid=${profile.userId}';
       }
       _getPhotoPosts(url).then((res) {
-        print('posts');
-        print(res.body);
         if (res.body != null && res.body != 'null') {
           photoPosts = (json.decode(utf8.decode(res.bodyBytes)) as List)
               .map((i) => PhotoPost.fromJson(i))
               .toList();
+          var index = 0;
           for (var i in photoPosts) {
-            addPhotoPostToMap(i);
+            addPhotoPostToMap(i, index);
+            index -= 1;
           }
         }
-      }).catchError((error) {
-        print(error);
-      });
+      }).catchError((error) {});
     });
   }
 
-  void addPhotoPostToMap(PhotoPost photoPost) {
+  void addPhotoPostToMap(PhotoPost photoPost, int zIndex) {
     LatLng coords = LatLng(
         photoPost.location.coordinates[1], photoPost.location.coordinates[0]);
     var data = photoPost.toJson();
@@ -349,7 +353,9 @@ class MapWidgetState extends State<MapWidget> {
         photoPost.id,
         config.urls['media'] + photoPost.imagesPaths + "/100circle.png",
         coords,
-        data);
+        data,
+        photoPost.favoritesCount,
+        zIndex);
   }
 
   // select map layers
