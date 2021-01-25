@@ -102,15 +102,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(9999.0),
                                 child: profilePhoto == null
-                                    ? Image.network(
-                                        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-                                        fit: BoxFit.cover,
-                                        height:
-                                            MediaQuery.of(context).size.width -
-                                                100.0,
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                100.0,
+                                    ? LogoBlankWidget(
+                                        MediaQuery.of(context).size.width - 100,
+                                        MediaQuery.of(context).size.width - 100,
                                       )
                                     : profilePhoto,
                               )),

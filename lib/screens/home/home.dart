@@ -400,27 +400,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ));
     } else if (userFilterIndex == 1) {
       if (profileData != null) {
-        if (profileData.photo != null) {
+        if (profileData.photo != null && profileData.photo != '') {
           labelWidget = Image.network(
               config.urls['media'] + profileData.photo + '/300.jpg',
               fit: BoxFit.cover);
         } else {
-          labelWidget = SizedBox();
+          labelWidget = LogoBlankWidget(36.0, 36.0);
         }
       } else {
-        labelWidget = SizedBox();
+        labelWidget = LogoBlankWidget(36.0, 36.0);
       }
     } else if (userFilterIndex == 2) {
       if (userData != null) {
-        if (userData.photo != null) {
+        if (userData.photo != null && userData.photo != '') {
           labelWidget = Image.network(
               config.urls['media'] + userData.photo + '/300.jpg',
               fit: BoxFit.cover);
         } else {
-          labelWidget = SizedBox();
+          labelWidget = LogoBlankWidget(36.0, 36.0);
         }
       } else {
-        labelWidget = SizedBox();
+        labelWidget = LogoBlankWidget(36.0, 36.0);
       }
     }
 

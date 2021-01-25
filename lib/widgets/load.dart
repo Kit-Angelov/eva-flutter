@@ -16,7 +16,7 @@ class LoadWidget extends StatelessWidget {
                 child: Stack(children: [
                   Center(
                     child: Container(
-                      width: MediaQuery.of(context).size.width - 80,
+                      width: MediaQuery.of(context).size.width - 90,
                       height: 100,
                       child: FittedBox(
                           fit: BoxFit.contain,
@@ -28,13 +28,13 @@ class LoadWidget extends StatelessWidget {
                   ),
                   Positioned(
                     right: 20,
-                    top: 0,
+                    top: 10,
                     child: Container(
                         height: 20,
                         width: 20,
                         decoration: new BoxDecoration(
                           color: Colors.pink[600],
-                          borderRadius: BorderRadius.circular(9999.0),
+                          // borderRadius: BorderRadius.circular(9999.0),
                         )),
                   ),
                 ])),
