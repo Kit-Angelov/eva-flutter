@@ -26,17 +26,6 @@ class LoadWidget extends StatelessWidget {
                           )),
                     ),
                   ),
-                  Positioned(
-                    right: 20,
-                    top: 10,
-                    child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: new BoxDecoration(
-                          color: Colors.pink[600],
-                          // borderRadius: BorderRadius.circular(9999.0),
-                        )),
-                  ),
                 ])),
             SizedBox(
               height: 20,

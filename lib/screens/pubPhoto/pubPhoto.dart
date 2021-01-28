@@ -117,16 +117,29 @@ class _PubPhotoScreenState extends State<PubPhotoScreen> {
                           )),
                       child: Stack(
                         children: [
-                          Positioned(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.transparent,
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )),
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 90,
+                              height: 100,
+                              child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    "STRINGER",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 55),
+                                  )),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 120),
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.transparent,
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            ),
+                          ),
                           Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.width,

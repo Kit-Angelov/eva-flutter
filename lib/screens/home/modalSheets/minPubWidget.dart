@@ -76,11 +76,7 @@ class MinPubWidgetState extends State<MinPubWidget> {
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  size: 14.0,
-                  color: Color.fromRGBO(44, 62, 80, 1),
-                ),
+                icon: Icon(Icons.close, size: 14.0, color: Colors.white),
                 onPressed: () {
                   widget.closeCallback();
                 },

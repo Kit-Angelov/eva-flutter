@@ -60,16 +60,29 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                           )),
                       child: Stack(
                         children: [
-                          Positioned(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.transparent,
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )),
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 90,
+                              height: 100,
+                              child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    "STRINGER",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 55),
+                                  )),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 120),
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.transparent,
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            ),
+                          ),
                           Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.width,
@@ -174,26 +187,25 @@ class _PubPhotoDetailScreenState extends State<PubPhotoDetailScreen> {
                                 child: Row(
                               children: [
                                 Container(
-                                  width: 50,
-                                  height: 50,
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(44, 62, 80, 1),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(25))),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(25),
-                                      child: authorData != null
-                                          ? authorData.photo != ''
-                                              ? Image.network(
-                                                  config.urls['media'] +
-                                                      authorData.photo +
-                                                      '/300.jpg',
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : SizedBox()
-                                          : SizedBox()),
-                                ),
+                                    width: 50,
+                                    height: 50,
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                        color: Color.fromRGBO(44, 62, 80, 1),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25))),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: authorData != null
+                                            ? authorData.photo != ''
+                                                ? Image.network(
+                                                    config.urls['media'] +
+                                                        authorData.photo +
+                                                        '/300.jpg',
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : LogoBlankWidget(36.0, 36.0)
+                                            : LogoBlankWidget(36.0, 36.0))),
                                 SizedBox(
                                   width: 10,
                                 ),
